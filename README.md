@@ -25,7 +25,6 @@ Overall, **hdev** helps create better acceleration solutions for research instit
 * [Installation](https://github.com/fpgasystems/hdev_install/?tab=readme-ov-file#installation)
 * [License](#license)
 * [Known limitations](./known-limitations.md#known-limitations)
-* [Programming model](./programming-model.md#programming-model)
 
 # Disclaimer
 
