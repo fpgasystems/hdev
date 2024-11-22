@@ -1,0 +1,5 @@
+FLAGS:
+   -c, --config    - Configuration index.
+   -d, --device    - Device Index (according to sgutil examine).
+
+   -h, --help      - Help to use this command.

@@ -1,0 +1,77 @@
+---
+
+- hosts: 
+    - hacc-build
+    - alveo-u250
+    - alveo-u280
+    - alveo-u50d
+    - alveo-u55c
+    - versal-vck5000
+    - hacc-boxes
+    #- alveo-u55c-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
+  become: true
+  become_method: community.general.sudosu
+  become_user: root
+  ignore_unreachable: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    #paths definition
+    sgrt_base_path: /opt/sgrt #/opt/cli
+    api_path: "{{ sgrt_base_path }}/api"
+    cli_path: "{{ sgrt_base_path }}/cli"
+    cli_name: sgutil
+    #installation control (all means we attempt to delete all directories, files, and scripts)
+    all: false
+    #api
+    api_host: false
+    #cli
+    cli_constants: false
+    cli_common: false
+  tasks:
+
+    #deleting sgrt
+    - name: managing sgrt
+      block:
+        - name: deleting sgrt
+          file:
+            path: "{{ sgrt_base_path }}"
+            state: absent
+        - name: deleting sgutil_completion
+          file:
+            path: /usr/share/bash-completion/completions/{{ cli_name }}
+            state: absent
+        - name: remove from system-wide $PATH.
+          file:
+            path: "/etc/profile.d/{{ cli_name }}.sh"
+            state: absent
+      when: all
+
+    #deleting individual items
+    #CLI
+    - name: deleting CLI constants
+      file:
+        path: "{{ cli_path }}/constants/{{ item }}"
+        state: absent
+      when: all or cli_constants
+      loop:
+        - HACC_PATH
+        - CLI_PATH
+        - LM_LICENSE_FILE
+        - SHELLS_PATH
+        - BITSTREAM_PATH
+    - name: deleting CLI common scripts
+      file:
+        path: "{{ cli_path }}/common/{{ item }}"
+        state: absent
+      when: all or cli_common
+      loop:
+        - get_server_type
+    #API    
+    - name: deleting API host scripts
+      file:
+        path: "{{ api_path }}/host/{{ item }}"
+        state: absent
+      when: all or api_host
+      loop:
+        - config.hpp

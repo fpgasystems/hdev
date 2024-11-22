@@ -1,0 +1,785 @@
+---
+
+- hosts: 
+    #- alveo_u250
+    #- alveo_u280
+    #- alveo_u50d
+    #- alveo_u55c
+    #- versal_v80
+    #- versal_vck5000
+    #- hacc_build 
+    #- hacc_boxes
+    #- hacc-box-01.inf.ethz.ch
+    - versal-v80-04.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
+    #- alveo-u55c-05.inf.ethz.ch
+    #- alveo-u55c-06.inf.ethz.ch
+  become: true
+  become_method: community.general.sudosu
+  become_user: root
+  ignore_unreachable: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    #paths definition
+    sgrt_base_path: /opt/sgrt
+    cli_path: "{{ sgrt_base_path }}/cli"
+    cli_name: sgutil
+    templates_path: "{{ sgrt_base_path }}/templates"
+    #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
+    all: false
+    #cli installation
+    aved: false
+    bitstreams: false
+    build: false
+    common: false
+    directories: false
+    enable: false
+    examine: false
+    get: false
+    help: false
+    hip: false
+    new: false
+    opennic: false
+    program: false
+    reboot: false
+    run: false
+    set: false
+    sgutil: true 
+    templates: false
+    update: false
+    validate: false
+    vitis: false
+    #release
+    #    1. Merge a development branch into main.
+    #    2. Login to a server (i.e., hacc-box-01), run "sgutil update," and capture COMMIT and COMMIT_DATE. Remeber that "sgutil update" is only for sudo users.
+    #    3. Replace COMMIT and COMMIT_DATE in this playbook, and play it on all servers (all: true) to install "sgrt" on all the remotes.
+    #    4. We revert the changes on this playbook.
+    COMMIT: "0000000"
+    COMMIT_DATE: "1982-08-15T23:55:57Z"
+  tasks:
+
+    #creating directories
+    - name: creating directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      when: all or directories
+      loop:
+        #base
+        - "{{ sgrt_base_path }}"
+        #cli  
+        - "{{ cli_path }}"
+        - "{{ cli_path }}/build"
+        - "{{ cli_path }}/bitstreams"
+        - "{{ cli_path }}/common"
+        - "{{ cli_path }}/constants"
+        - "{{ cli_path }}/enable"
+        - "{{ cli_path }}/get"
+        - "{{ cli_path }}/help"
+        - "{{ cli_path }}/new"
+        - "{{ cli_path }}/program"
+        - "{{ cli_path }}/run"
+        - "{{ cli_path }}/set"
+        - "{{ cli_path }}/validate"
+        #templates
+        - "{{ templates_path }}"
+
+    #cli
+    #bitstreams
+    - name: copying bitstreams 
+      copy:
+        src: "../cli/bitstreams/"
+        dest: "{{ cli_path }}/bitstreams"
+        mode: "0644"
+      when: all or bitstreams
+    #copying files (when all/only if they do not exist on the remote)
+    #commit and commit date
+    - name: overwrite COMMIT
+      copy:
+        content: "{{ COMMIT }}"
+        dest: "{{ sgrt_base_path }}/COMMIT"
+        mode: "0644"
+    - name: overwrite COMMIT_DATE
+      copy:
+        content: "{{ COMMIT_DATE }}"
+        dest: "{{ sgrt_base_path }}/COMMIT_DATE"
+        mode: "0644"
+    #constants
+    - name: checking constants
+      find:
+        paths: "{{ cli_path }}/constants"
+        recurse: no
+      register: constants_contents
+      when: all
+    - name: copying constants (if folder is empty)
+      copy:
+        src: "../cli/constants/{{ item }}"
+        dest: "{{ cli_path }}/constants/{{ item }}"
+        mode: "0644"
+      when: all and constants_contents.matched == 0
+      loop:
+        - ACAP_SERVERS_LIST
+        - ASOC_SERVERS_LIST
+        - AVED_DRIVER_NAME
+        - AVED_PATH
+        - AVED_REPO
+        - AVED_SMBUS_IP
+        - AVED_TAG
+        - AVED_TOOLS_PATH
+        - AVED_UUID
+        - BUILD_SERVERS_LIST
+        - COLOR_ACAP
+        - COLOR_CPU
+        - COLOR_FAILED
+        - COLOR_FPGA
+        - COLOR_GPU
+        - COLOR_OFF
+        - COLOR_PASSED
+        - COLOR_XILINX
+        - EMAIL
+        - FPGA_SERVERS_LIST
+        - GITHUB_CLI_PATH
+        - GPU_SERVERS_LIST
+        - LOCAL_PATH
+        - MTU_DEFAULT
+        - MTU_MAX
+        - MTU_MIN
+        - MY_DRIVERS_PATH
+        - MY_PROJECTS_PATH
+        - ONIC_DRIVER_COMMIT
+        - ONIC_DRIVER_NAME
+        - ONIC_DRIVER_REPO
+        - ONIC_SHELL_COMMIT
+        - ONIC_SHELL_NAME
+        - ONIC_SHELL_REPO
+        - UPDATES_PATH
+        - ROCM_PATH  
+        - VIRTUALIZED_SERVERS_LIST
+        - XILINX_PLATFORMS_PATH
+        - XILINX_TOOLS_PATH
+        - XILINXD_LICENSE_FILE
+        - XRT_PATH
+    #devices
+    #devices_acap_fpga
+    - name: checking devices_acap_fpga
+      stat:
+        path: "{{ cli_path }}/devices_acap_fpga"
+      register: devices_acap_fpga_stat
+      when: all
+    - name: copying devices_acap_fpga 
+      copy:
+        src: "../cli/devices_acap_fpga"
+        dest: "{{ cli_path }}/devices_acap_fpga"
+        mode: "0644"
+      when: all and not devices_acap_fpga_stat.stat.exists
+    #devices_gpu
+    - name: checking devices_gpu
+      stat:
+        path: "{{ cli_path }}/devices_gpu"
+      register: devices_gpu_stat
+      when: all
+    - name: copying devices_gpu 
+      copy:
+        src: "../cli/devices_gpu"
+        dest: "{{ cli_path }}/devices_gpu"
+        mode: "0644"
+      when: all and not devices_gpu_stat.stat.exists
+    #platforminfo
+    - name: checking platforminfo
+      stat:
+        path: "{{ cli_path }}/platforminfo"
+      register: platforminfo_stat
+      when: all
+    - name: copying platforminfo 
+      copy:
+        src: "../cli/platforminfo"
+        dest: "{{ cli_path }}/platforminfo"
+        mode: "0644"
+      when: all and not platforminfo_stat.stat.exists
+    #templates
+    #aved
+    - name: managing aved template
+      block:
+        - name: managing aved template
+          debug:
+            msg: ""
+        - name: deleting aved template
+          file:
+            path: "{{ sgrt_base_path }}/templates/aved"
+            state: absent
+          register: aved_templates
+        - name: copying aved template
+          copy:
+            src: "../templates/aved"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
+      when: all or (templates and aved)
+    #hip
+    - name: managing hip template
+      block:
+        - name: managing hip template
+          debug:
+            msg: ""
+        - name: deleting hip template
+          file:
+            path: "{{ sgrt_base_path }}/templates/hip"
+            state: absent
+          register: hip_templates
+        - name: copying hip template
+          copy:
+            src: "../templates/hip"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
+      when: all or (templates and hip)
+    #opennic
+    - name: managing opennic template
+      block:
+        - name: managing opennic template
+          debug:
+            msg: ""
+        - name: deleting opennic template
+          file:
+            path: "{{ sgrt_base_path }}/templates/opennic"
+            state: absent
+          register: opennic_templates
+        - name: copying opennic template
+          copy:
+            src: "../templates/opennic"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
+      when: all or (templates and opennic)
+
+    #copying scripts 
+    #build
+    - name: copying build scripts
+      copy:
+        src: "../cli/build/{{ item }}.sh"
+        dest: "{{ cli_path }}/build/{{ item }}"
+        mode: "0755"
+      when: all or build
+      loop:
+        - aved
+        - c
+        - hip
+        - opennic
+    #common
+    - name: copying common scripts
+      copy:
+        src: "../cli/common/{{ item }}.sh"
+        dest: "{{ cli_path }}/common/{{ item }}"
+        mode: "0755"
+      when: all or common
+      loop:
+        - address_to_hex
+        - bitstream_dialog_check
+        - boot_type_check
+        - cfile_dialog_check
+        - chown
+        - compare_files
+        - commit_dialog_check
+        - config_dialog
+        - config_dialog_check
+        - cp
+        - deployment_dialog
+        - deployment_dialog_check
+        - device_dialog
+        - device_dialog_check
+        - device_dialog_gpu
+        - device_list_check
+        - driver_dialog_check
+        - fec_dialog_check
+        - file_path_dialog_check
+        - get_devices_acap_fpga_coyote
+        - get_config_param
+        - get_config_string
+        - get_constant
+        - get_FDEV_NAME
+        - get_files
+        - get_max_devices
+        - get_multiple_devices
+        - get_servers
+        - get_tclargs
+        - get_vivado_devices
+        - get_xclbin_cfg
+        - get_xilinx_version
+        - get_workflow
+        - gh_auth_status
+        - gh_commit_check
+        - gh_tag_check
+        - git_clone_aved
+        - git_clone_opennic
+        - github_tag_dialog_check
+        - iface_dialog_check
+        - is_acap
+        - is_asoc
+        - is_build
+        - is_fpga
+        - is_gpu
+        - is_member
+        - is_sudo
+        - is_virtualized
+        - mkdir
+        - new_dialog
+        - new_dialog_check
+        - params_dialog_check
+        - partition_dialog_check
+        - platform_dialog
+        - platform_dialog_check
+        - port_dialog_check
+        - print_legend
+        - project_dialog
+        - project_dialog_check
+        - push_dialog
+        - push_dialog_check
+        - rm
+        - ssh_key_add
+        - target_dialog
+        - target_dialog_check
+        - value_dialog_check
+        - version_dialog
+        - version_dialog_check
+        - xclbin_dialog
+        - xclbin_dialog_check
+    #enable
+    - name: copying enable scripts
+      copy:
+        src: "../cli/enable/{{ item }}.sh"
+        dest: "{{ cli_path }}/enable/{{ item }}"
+        mode: "0755"
+      when: all or enable
+      loop:
+        - vitis
+        - vitis-msg
+        - vivado
+        - vivado-msg
+        - xrt
+        - xrt-msg
+    #examine
+    - name: copying examine
+      copy:
+        src: "../cli/examine.sh"
+        dest: "{{ cli_path }}/examine"
+        mode: "0755"
+      when: all or examine
+    #get
+    - name: copying get scripts
+      copy:
+        src: "../cli/get/{{ item }}.sh"
+        dest: "{{ cli_path }}/get/{{ item }}"
+        mode: "0755"
+      when: all or get
+      loop:
+        - bdf
+        - bus 
+        - clock
+        - get_fpga_device_param
+        - get_gpu_device_param
+        - get_nic_config
+        - get_nic_device_param
+        - ifconfig
+        - memory
+        - name
+        - network
+        - partitions
+        - platform
+        - resource
+        - serial
+        - slr
+        - servers
+        - syslog
+        - topo
+        - uuid
+        - workflow
+    #help
+    - name: copying help scripts
+      copy:
+        src: "../cli/help/{{ item }}.sh"
+        dest: "{{ cli_path }}/help/{{ item }}"
+        mode: "0755"
+      when: all or help
+      loop:
+        - build_aved
+        - build_c
+        - build_hip
+        - build_opennic
+        - build
+        - enable_vitis
+        - enable_vivado
+        - enable_xrt
+        - enable
+        - examine
+        - get_network
+        - get_topo
+        - get
+        - new
+        - program_aved
+        - program_bitstream
+        - program_driver
+        - program_image
+        - program_opennic
+        - program_reset
+        - program_revert
+        - reboot
+        - run_aved
+        - run_opennic
+        - set_keys
+        - validate_opennic
+    #new
+    - name: copying new scripts
+      copy:
+        src: "../cli/new/{{ item }}.sh"
+        dest: "{{ cli_path }}/new/{{ item }}"
+        mode: "0755"
+      when: all or new
+      loop:
+        - aved
+        - hip
+        - opennic
+    #program
+    - name: copying program scripts
+      copy:
+        src: "../cli/program/{{ item }}.sh"
+        dest: "{{ cli_path }}/program/{{ item }}"
+        mode: "0755"
+      when: all or program
+      loop:
+        - aved
+        - bitstream
+        - driver
+        - image
+        - fpga_chmod
+        - opennic
+        - opennic_ifconfig
+        - pci_hot_plug
+        - remote
+        - reset
+        - revert
+        - vivado #program bitstream should be used, but we keep it for backward compatibility
+    - name: copying program tcl
+      copy:
+        src: "../cli/program/{{ item }}"
+        dest: "{{ cli_path }}/program/{{ item }}"
+        mode: "0755"
+      when: all or program
+      loop:
+        - flash_bitstream.tcl
+        - flash_xrt_bitstream.tcl
+    #reboot
+    - name: copying reboot
+      copy:
+        src: "../cli/reboot.sh"
+        dest: "{{ cli_path }}/reboot"
+        mode: "0755"
+      when: all or reboot
+    #- name: copying reboot (cold boot playbooks)
+    #  copy:
+    #    src: "../cli/{{ item }}"
+    #    dest: "{{ cli_path }}/{{ item }}"
+    #    mode: "0755"
+    #  when: all or reboot
+    #  loop:
+    #    - reboot_ansible_root.cfg
+    #    - reboot_defined-idrac-cold-boot.yml
+    #    - reboot_defined-idrac-cold-boot-task.yml
+    #    - reboot_hosts
+    #    - reboot_run_root.sh
+    #run
+    - name: copying run scripts
+      copy:
+        src: "../cli/run/{{ item }}.sh"
+        dest: "{{ cli_path }}/run/{{ item }}"
+        mode: "0755"
+      when: all or run
+      loop:
+        - aved
+        - hip
+        - opennic
+    #set
+    - name: copying set scripts
+      copy:
+        src: "../cli/set/{{ item }}.sh"
+        dest: "{{ cli_path }}/set/{{ item }}"
+        mode: "0755"
+      when: all or set
+      loop:
+        - gh
+        - keys
+        - license
+        - license-msg
+        - mtu
+    #sgutil
+    - name: managing sgutil
+      block:
+        - name: managing sgutil
+          debug:
+            msg: ""
+        - name: copying sgutil
+          copy:
+            src: "../cli/{{ cli_name }}.sh"
+            dest: "{{ cli_path }}/{{ cli_name }}"
+            mode: 0755
+          register: sgutil_copy
+        - name: adding to profile.d (system-wide $PATH)
+          copy:
+            dest: "/etc/profile.d/{{ cli_name }}.sh" #cli.sh
+            content: 'PATH=$PATH:{{ cli_path }}'
+        - name: copying sgutil_completion
+          copy:
+            src: "../cli/{{ cli_name }}_completion.sh"
+            dest: /usr/share/bash-completion/completions/{{ cli_name }}
+            mode: 0755
+        - name: export CLI_PATH
+          lineinfile:
+            path: "/etc/bash.bashrc"
+            line: "export CLI_PATH={{ cli_path }}"
+      when: all or sgutil
+    #update
+    - name: copying update (to sgrt_base_path)
+      copy:
+        src: "../update.sh"
+        dest: "{{ sgrt_base_path }}/update"
+        mode: "0755"
+      when: all or update
+    #validate
+    - name: copying validate scripts
+      copy:
+        src: "../cli/validate/{{ item }}.sh"
+        dest: "{{ cli_path }}/validate/{{ item }}"
+        mode: "0755"
+      when: all or validate
+      loop:
+        - aved
+        - docker
+        - hip
+        - opennic
+        - vitis
+
+    #copying workflows
+    #aved
+    - name: copying aved workflow
+      block:
+        - name: copying aved workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/aved.sh"
+            dest: "{{ cli_path }}/new/aved"
+            mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/aved.sh"
+            dest: "{{ cli_path }}/build/aved"
+            mode: "0755"
+        - name: program
+          copy:
+            src: "../cli/program/aved.sh"
+            dest: "{{ cli_path }}/program/aved"
+            mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/aved.sh"
+            dest: "{{ cli_path }}/run/aved"
+            mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/aved.sh"
+            dest: "{{ cli_path }}/validate/aved"
+            mode: "0755"
+      when: all or aved
+    #hip
+    - name: copying hip workflow
+      block:
+        - name: copying hip workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/hip.sh"
+            dest: "{{ cli_path }}/new/hip"
+            mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/hip.sh"
+            dest: "{{ cli_path }}/build/hip"
+            mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/hip.sh"
+            dest: "{{ cli_path }}/run/hip"
+            mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/hip.sh"
+            dest: "{{ cli_path }}/validate/hip"
+            mode: "0755"
+      when: all or hip
+    #opennic
+    - name: copying opennic workflow
+      block:
+        - name: copying opennic workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/opennic.sh"
+            dest: "{{ cli_path }}/new/opennic"
+            mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/opennic.sh"
+            dest: "{{ cli_path }}/build/opennic"
+            mode: "0755"
+        - name: program
+          copy:
+            src: "../cli/program/opennic.sh"
+            dest: "{{ cli_path }}/program/opennic"
+            mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/opennic.sh"
+            dest: "{{ cli_path }}/run/opennic"
+            mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/opennic.sh"
+            dest: "{{ cli_path }}/validate/opennic"
+            mode: "0755"
+      when: all or opennic
+    #vitis
+    - name: copying vitis workflow
+      block:
+        - name: copying vitis workflow (validate stays)
+          debug:
+            msg: ""
+        - name: validate
+          copy:
+            src: "../cli/validate/vitis.sh"
+            dest: "{{ cli_path }}/validate/vitis"
+            mode: "0755"
+      when: all or vitis
+    
+    #deleting files
+    #api
+    - name: deleting api
+      file:
+        path: "{{ sgrt_base_path }}/api"
+        state: absent
+    #build
+    - name: deleting build scripts
+      file:
+        path: "{{ cli_path }}/build/{{ item }}"
+        state: absent
+      loop:
+        - shell
+    #common
+    - name: deleting common scripts
+      file:
+        path: "{{ cli_path }}/common/{{ item }}"
+        state: absent
+      loop:
+        - check_on_vivado
+        - remote_dialog
+        - is_enabled
+        - is_cpu
+        - enable_integrations
+        - get_email
+    #constants
+    - name: deleting constants
+      file:
+        path: "{{ cli_path }}/constants/{{ item }}"
+        state: absent
+      loop:
+        - ONIC_COMMIT
+        - BITSTREAM_PATH
+        - BITSTREAMS_PATH
+        - VIVADO_DEVICES_MAX
+        - ONIC_BITSTREAM_NAME
+        - WORKFLOWS_PATH
+        - VITIS_COMMIT
+        - MPICH_PATH
+        - COYOTE_COMMIT
+        - CPU_SERVERS_LIST
+    #coyote
+    - name: deleting coyote workflow
+      file:
+        path: "{{ cli_path }}/{{ item }}/coyote"
+        state: absent
+      loop:
+        - new
+        - build
+        - program
+        - run
+        - validate
+    #include folder
+    - name: deleting include folder
+      file:
+        path: "{{ sgrt_base_path }}/include"
+        state: absent
+    #iperf
+    - name: deleting iperf
+      file:
+        path: "{{ cli_path }}/validate/iperf"
+        state: absent
+    #help
+    - name: deleting help scripts
+      file:
+        path: "{{ cli_path }}/help/{{ item }}"
+        state: absent
+      loop:
+        - opennic_validate
+        - update
+        - new_opennic
+        - program_vivado
+    #get
+    #- name: deleting get scripts
+    #  file:
+    #    path: "{{ cli_path }}/get/{{ item }}"
+    #    state: absent
+    #  loop:
+    #    - partitions
+    #mpi
+    - name: deleting mpi workflow
+      file:
+        path: "{{ cli_path }}/{{ item }}/mpi"
+        state: absent
+      loop:
+        - new
+        - build
+        - run
+        - validate
+    #program
+    - name: deleting program scripts
+      file:
+        path: "{{ cli_path }}/program/{{ item }}"
+        state: absent
+      loop:
+        - enable_N_REGIONS
+        - enable_regions
+        - get_bus_device
+        - opennic_setpci
+    #update
+    - name: deleting update (from cli_path)
+      file:
+        path: "{{ cli_path }}/update"
+        state: absent
+    #VERSION
+    - name: deleting VERSION
+      file:
+        path: "{{ sgrt_base_path }}/VERSION"
+        state: absent
+    #vitis
+    - name: deleting vitis workflow (validate stays)
+      file:
+        path: "{{ cli_path }}/{{ item }}/vitis"
+        state: absent
+      loop:
+        - new
+        - build
+        - program
+        - run
+    #vitis-ai
+    - name: deleting vitis-ai validation
+      file:
+        path: "{{ cli_path }}/validate/vitis-ai"
+        state: absent

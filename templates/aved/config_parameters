@@ -1,0 +1,6 @@
+device:
+W_MAX    1,2,4,8,16,32,64,128,256 "Maximum number of bits" 
+
+host:
+W        1:W_MAX                  "Number of bits"
+F        0:W                      "Fractional part"
