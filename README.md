@@ -12,9 +12,7 @@
   HACC Development
 </h1> 
 
-Initially developed for the [ETH Zurich Heterogeneous Accelerated Compute Cluster (ETHZ-HACC),](https://github.com/fpgasystems/hacc) **HACC Development (hdev)** is a versatile development platform designed for use on any AMD-compatible heterogeneous cluster. 
-
-The tool is built around a simple yet powerful command-line interpreter (CLI) and a set of optimized deployment templates. While the CLI simplifies infrastructure setup, validation, and device configuration through an intuitive device index, the deployment templates integrate a variety of open-source projects, enabling developers to easily tackle a broader range of acceleration workflows and problems. 
+Initially developed for the [ETH Zurich Heterogeneous Accelerated Compute Cluster (ETHZ-HACC),](https://github.com/fpgasystems/hacc) **HACC Development (hdev)** is a versatile development platform designed for use on any AMD-compatible heterogeneous cluster. The tool is built around a simple yet powerful command-line interpreter (CLI) and a set of optimized deployment templates. While the CLI simplifies infrastructure setup, validation, and device configuration through an intuitive device index, the deployment templates integrate a variety of open-source projects, enabling developers to easily tackle a broader range of acceleration workflows and problems. 
 
 Overall, **hdev** helps create better acceleration solutions for research institutions with high-performance computing needs.
 
