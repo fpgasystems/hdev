@@ -118,7 +118,7 @@ char* get_interface_name(char *device_ip) {
 
 char* get_network(int device_index, int port_number) {
     char command[256];
-    snprintf(command, sizeof(command), "sgutil get network --device %d --port %d", device_index, port_number);
+    snprintf(command, sizeof(command), "hdev get network --device %d --port %d", device_index, port_number);
 
     // Open a pipe to the command and read the output
     FILE *fp = popen(command, "r");

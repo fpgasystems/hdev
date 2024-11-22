@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$0")/cli"
-CLI_NAME="sgutil"
+CLI_NAME="hdev"
 SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -30,7 +30,7 @@ MAIN_BRANCH_URL="https://api.github.com/repos/fpgasystems/$REPO_NAME/commits/mai
 REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
 
 #get destination path
-installation_path=$(which sgutil | xargs dirname | xargs dirname)
+installation_path=$(which hdev | xargs dirname | xargs dirname)
 
 #get last commit date on the remote
 remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
@@ -46,7 +46,7 @@ local_timestamp=$(date -d "$local_commit_date" +%s)
 update="0"
 if [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
-    echo "${bold}sgutil update${normal}"
+    echo "${bold}hdev update${normal}"
     echo ""
     echo "This will update $REPO_NAME to its latest version. Would you like to continue (y/n)?"
     update=$($CLI_PATH/common/push_dialog)
@@ -126,7 +126,7 @@ if [ $update = "1" ]; then
   echo "Done!"
   echo ""
   
-  #copy files (from /tmp/sgrt to /opt/sgrt)
+  #copy files (from /tmp/sgrt to /opt/hdev)
   echo "${bold}Copying new version:${normal}"
   sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
   sleep 1
@@ -159,7 +159,7 @@ if [ $update = "1" ]; then
   #ensure ownership
   sudo chown -R root:root $installation_path
   
-  #copying sgutil_completion
+  #copying hdev_completion
   sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
   sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
 
