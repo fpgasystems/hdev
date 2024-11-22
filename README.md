@@ -88,15 +88,11 @@ If you use **hdev** in your work, we kindly request that you cite it as follows:
 }
 ```
 
-## Download
-
-To get a printed copy of the cited resource, please follow [this link.](https://public.3.basecamp.com/p/JaPjS5ngnvcAERRhfJdexFjh)
-
 # License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Copyright (c) 2023 FPGA @ Systems Group, ETH Zurich
+Copyright (c) 2024 FPGA @ Systems Group, ETH Zurich
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
