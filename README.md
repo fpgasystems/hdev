@@ -1,11 +1,11 @@
 <!-- <div id="readme" class="Box-body readme blob js-code-block-container">
 <article class="markdown-body entry-content p-3 p-md-6" itemprop="text"> -->
 <p align="right">
-<a href="https://github.com/fpgasystems">fpgasystems</a> <a href="https://github.com/fpgasystems/hacc">HACC</a> <a href="https://github.com/fpgasystems/hacc-platform">HACC Platform</a>
+<a href="https://github.com/fpgasystems">fpgasystems</a> <a href="https://github.com/fpgasystems/hacc">HACC</a>
 </p>
 
 <p align="center">
-<img src="https://github.com/fpgasystems/sgrt/blob/main/hdev-removebg.png" align="center" width="350">
+<img src="https://github.com/fpgasystems/hdev/blob/main/hdev-removebg.png" align="center" width="350">
 </p>
 
 <h1 align="center">
