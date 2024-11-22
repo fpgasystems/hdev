@@ -12,9 +12,9 @@
   HACC Development
 </h1> 
 
-While initially developed for [ETHZ-HACC,](https://github.com/fpgasystems/hacc) **hdev** is a versatile development platform ready to be used on any AMD-compatible heterogeneous cluster.
+Initially developed for the [ETH Zurich Heterogeneous Accelerated Compute Cluster (ETHZ-HACC),](https://github.com/fpgasystems/hacc) **HACC Development (hdev)** is a versatile platform designed for use on any AMD-compatible heterogeneous cluster. 
 
-SGRT includes a command-line interpreter (CLI) and an API, **both utilizing an intuitive device index to improve user workflow.** The [CLI](./cli/manual.md#cli) simplifies infrastructure setup, validation, and device configuration, while the [API](./api/manual.md) streamlines accelerated application development, allowing users to focus on their primary objectives.
+The tool is built around a command-line interpreter (CLI) and a set of deployment templates. While the CLI simplifies infrastructure setup, validation, and device configuration through an intuitive device index, the deployment templates further streamline accelerated application development. Overall, **hdev** helps create better acceleration solutions for research institutions with demanding high-performance computing needs.
 
 ## Sections
 * [Citation](#citation)
