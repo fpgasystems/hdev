@@ -9,10 +9,10 @@
 </p>
 
 <h1 align="center">
-  Systems Group RunTime
+  HACC Development
 </h1> 
 
-While initially developed for [ETHZ-HACC,](https://github.com/fpgasystems/hacc), **hdev** is a versatile development platform ready to be used on any AMD-compatible heterogeneous cluster.
+While initially developed for [ETHZ-HACC,](https://github.com/fpgasystems/hacc) **hdev** is a versatile development platform ready to be used on any AMD-compatible heterogeneous cluster.
 
 SGRT includes a command-line interpreter (CLI) and an API, **both utilizing an intuitive device index to improve user workflow.** The [CLI](./cli/manual.md#cli) simplifies infrastructure setup, validation, and device configuration, while the [API](./api/manual.md) streamlines accelerated application development, allowing users to focus on their primary objectives.
 
