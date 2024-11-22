@@ -2,7 +2,7 @@
 
 CLI_PATH=$(dirname "$0")
 CLI_NAME=${0##*/}
-SGRT_PATH=$(dirname "$CLI_PATH")
+HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -33,7 +33,7 @@ ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
-REPO_NAME="sgrt"
+REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
@@ -144,8 +144,8 @@ cli_help() {
 }
 
 cli_release() {
-    release=$(cat $SGRT_PATH/COMMIT)
-    release_date=$(cat $SGRT_PATH/COMMIT_DATE)
+    release=$(cat $HDEV_PATH/COMMIT)
+    release_date=$(cat $HDEV_PATH/COMMIT_DATE)
     echo ""
     echo "Release (commit_ID) : $release ($release_date)"
     echo ""
@@ -3356,16 +3356,16 @@ case "$command" in
 
         #get update.sh
         cd $UPDATES_PATH
-        git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/sgrt.git
+        git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
 
         #copy update
-        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $SGRT_PATH/update
+        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
         
         #remove temporal copy
         rm -rf $UPDATES_PATH/$REPO_NAME
         
         #run up to date update 
-        $SGRT_PATH/update
+        $HDEV_PATH/update
         ;;
     esac
     ;;

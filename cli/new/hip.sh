@@ -89,9 +89,9 @@ if ! [ -d "$DIR" ]; then
     exit
 fi
 
-#copy template from SGRT_PATH
-SGRT_PATH=$(dirname "$CLI_PATH")
-cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
+#copy template from HDEV_PATH
+HDEV_PATH=$(dirname "$CLI_PATH")
+cp -rf $HDEV_PATH/templates/$WORKFLOW/hello_world/* $DIR
 #compile src
 cd $DIR/src
 g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null

@@ -2,7 +2,7 @@
 
 CLI_PATH="$(dirname "$0")/cli"
 CLI_NAME="hdev"
-SGRT_PATH=$(dirname "$CLI_PATH")
+HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -22,7 +22,7 @@ if [ "$is_sudo" = "0" ]; then
 fi
 
 #constants
-REPO_NAME="sgrt"
+REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 
 #derived
@@ -36,7 +36,7 @@ installation_path=$(which hdev | xargs dirname | xargs dirname)
 remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
 
 #get installed commit date
-local_commit_date=$(cat $SGRT_PATH/COMMIT_DATE)
+local_commit_date=$(cat $HDEV_PATH/COMMIT_DATE)
 
 #convert the dates to Unix timestamps
 remote_timestamp=$(date -d "$remote_commit_date" +%s)
@@ -52,7 +52,7 @@ if [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 else
-    commit_id=$(cat $SGRT_PATH/COMMIT)
+    commit_id=$(cat $HDEV_PATH/COMMIT)
     echo ""
     echo "$REPO_NAME is on its latest version ${bold}(commit ID: $commit_id)!${normal}"
     echo ""
@@ -62,7 +62,7 @@ fi
 if [ $update = "1" ]; then
   #checkout
   cd $UPDATES_PATH
-  git clone $REPO_URL #https://github.com/fpgasystems/sgrt.git
+  git clone $REPO_URL #https://github.com/fpgasystems/hdev.git
 
   #change to directory
   cd $UPDATES_PATH/$REPO_NAME
@@ -126,7 +126,7 @@ if [ $update = "1" ]; then
   echo "Done!"
   echo ""
   
-  #copy files (from /tmp/sgrt to /opt/hdev)
+  #copy files (from /tmp/hdev to /opt/hdev)
   echo "${bold}Copying new version:${normal}"
   sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
   sleep 1

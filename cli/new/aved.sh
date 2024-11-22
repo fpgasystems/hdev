@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-SGRT_PATH=$(dirname "$CLI_PATH")
+HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -71,22 +71,22 @@ rm $DIR/README.md
 aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 
 #get SMBus version
-smbus_version=$(find "$SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
+smbus_version=$(find "$HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
 smbus_version=$(basename "$smbus_version")
 
 #copy SMBus IP
-cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
+cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
 
 #add template files
-cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
-cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
-cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
-#cp $SGRT_PATH/templates/$WORKFLOW/get_incoming_uuid.c $DIR/sw/AMI/app/cmd_handlers/get_incoming_uuid.c
+cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
+cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+#cp $HDEV_PATH/templates/$WORKFLOW/get_incoming_uuid.c $DIR/sw/AMI/app/cmd_handlers/get_incoming_uuid.c
 #adds the flag -n to cmd_cfgmem_program.c (Quit after returning new_uuid)
-#cp $SGRT_PATH/templates/$WORKFLOW/cmd_cfgmem_program.c $DIR/sw/AMI/app/cmd_handlers/cmd_cfgmem_program.c
+#cp $HDEV_PATH/templates/$WORKFLOW/cmd_cfgmem_program.c $DIR/sw/AMI/app/cmd_handlers/cmd_cfgmem_program.c
 
-cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
-#cp -r $SGRT_PATH/templates/$WORKFLOW/src $DIR
+cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
+#cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
 
 #compile files
 chmod +x $DIR/config_add

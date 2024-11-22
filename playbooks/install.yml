@@ -21,10 +21,10 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
-    sgrt_base_path: /opt/hdev
-    cli_path: "{{ sgrt_base_path }}/cli"
+    hdev_base_path: /opt/hdev
+    cli_path: "{{ hdev_base_path }}/cli"
     cli_name: hdev
-    templates_path: "{{ sgrt_base_path }}/templates"
+    templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #cli installation
@@ -52,7 +52,7 @@
     #release
     #    1. Merge a development branch into main.
     #    2. Login to a server (i.e., hacc-box-01), run "hdev update," and capture COMMIT and COMMIT_DATE. Remeber that "hdev update" is only for sudo users.
-    #    3. Replace COMMIT and COMMIT_DATE in this playbook, and play it on all servers (all: true) to install "sgrt" on all the remotes.
+    #    3. Replace COMMIT and COMMIT_DATE in this playbook, and play it on all servers (all: true) to install "hdev" on all the remotes.
     #    4. We revert the changes on this playbook.
     COMMIT: "0000000"
     COMMIT_DATE: "1982-08-15T23:55:57Z"
@@ -66,7 +66,7 @@
       when: all or directories
       loop:
         #base
-        - "{{ sgrt_base_path }}"
+        - "{{ hdev_base_path }}"
         #cli  
         - "{{ cli_path }}"
         - "{{ cli_path }}/build"
@@ -97,12 +97,12 @@
     - name: overwrite COMMIT
       copy:
         content: "{{ COMMIT }}"
-        dest: "{{ sgrt_base_path }}/COMMIT"
+        dest: "{{ hdev_base_path }}/COMMIT"
         mode: "0644"
     - name: overwrite COMMIT_DATE
       copy:
         content: "{{ COMMIT_DATE }}"
-        dest: "{{ sgrt_base_path }}/COMMIT_DATE"
+        dest: "{{ hdev_base_path }}/COMMIT_DATE"
         mode: "0644"
     #constants
     - name: checking constants
@@ -205,13 +205,13 @@
             msg: ""
         - name: deleting aved template
           file:
-            path: "{{ sgrt_base_path }}/templates/aved"
+            path: "{{ hdev_base_path }}/templates/aved"
             state: absent
           register: aved_templates
         - name: copying aved template
           copy:
             src: "../templates/aved"
-            dest: "{{ sgrt_base_path }}/templates"
+            dest: "{{ hdev_base_path }}/templates"
             mode: "0755"
       when: all or (templates and aved)
     #hip
@@ -222,13 +222,13 @@
             msg: ""
         - name: deleting hip template
           file:
-            path: "{{ sgrt_base_path }}/templates/hip"
+            path: "{{ hdev_base_path }}/templates/hip"
             state: absent
           register: hip_templates
         - name: copying hip template
           copy:
             src: "../templates/hip"
-            dest: "{{ sgrt_base_path }}/templates"
+            dest: "{{ hdev_base_path }}/templates"
             mode: "0755"
       when: all or (templates and hip)
     #opennic
@@ -239,13 +239,13 @@
             msg: ""
         - name: deleting opennic template
           file:
-            path: "{{ sgrt_base_path }}/templates/opennic"
+            path: "{{ hdev_base_path }}/templates/opennic"
             state: absent
           register: opennic_templates
         - name: copying opennic template
           copy:
             src: "../templates/opennic"
-            dest: "{{ sgrt_base_path }}/templates"
+            dest: "{{ hdev_base_path }}/templates"
             mode: "0755"
       when: all or (templates and opennic)
 
@@ -534,10 +534,10 @@
             line: "export CLI_PATH={{ cli_path }}"
       when: all or hdev
     #update
-    - name: copying update (to sgrt_base_path)
+    - name: copying update (to hdev_base_path)
       copy:
         src: "../update.sh"
-        dest: "{{ sgrt_base_path }}/update"
+        dest: "{{ hdev_base_path }}/update"
         mode: "0755"
       when: all or update
     #validate
@@ -663,7 +663,7 @@
     #api
     - name: deleting api
       file:
-        path: "{{ sgrt_base_path }}/api"
+        path: "{{ hdev_base_path }}/api"
         state: absent
     #build
     - name: deleting build scripts
@@ -714,7 +714,7 @@
     #include folder
     - name: deleting include folder
       file:
-        path: "{{ sgrt_base_path }}/include"
+        path: "{{ hdev_base_path }}/include"
         state: absent
     #iperf
     - name: deleting iperf
@@ -766,7 +766,7 @@
     #VERSION
     - name: deleting VERSION
       file:
-        path: "{{ sgrt_base_path }}/VERSION"
+        path: "{{ hdev_base_path }}/VERSION"
         state: absent
     #vitis
     - name: deleting vitis workflow (validate stays)

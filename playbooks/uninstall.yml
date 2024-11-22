@@ -17,9 +17,9 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
-    sgrt_base_path: /opt/hdev #/opt/cli
-    api_path: "{{ sgrt_base_path }}/api"
-    cli_path: "{{ sgrt_base_path }}/cli"
+    hdev_base_path: /opt/hdev #/opt/cli
+    api_path: "{{ hdev_base_path }}/api"
+    cli_path: "{{ hdev_base_path }}/cli"
     cli_name: hdev
     #installation control (all means we attempt to delete all directories, files, and scripts)
     all: false
@@ -30,12 +30,12 @@
     cli_common: false
   tasks:
 
-    #deleting sgrt
-    - name: managing sgrt
+    #deleting hdev
+    - name: managing hdev
       block:
-        - name: deleting sgrt
+        - name: deleting hdev
           file:
-            path: "{{ sgrt_base_path }}"
+            path: "{{ hdev_base_path }}"
             state: absent
         - name: deleting hdev_completion
           file:
