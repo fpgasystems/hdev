@@ -141,6 +141,9 @@ _hdev_completions()
             if [ "$is_acap" = "1" ]; then
                 commands="${commands} build"
             fi
+            if [ "$is_asoc" = "1" ]; then
+                commands="${commands} build"
+            fi
             if [ "$is_build" = "1" ]; then
                 commands="${commands} build enable examine new"
             fi
