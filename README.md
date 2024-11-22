@@ -12,7 +12,9 @@
   HACC Development
 </h1> 
 
-Initially developed for the [ETH Zurich Heterogeneous Accelerated Compute Cluster (ETHZ-HACC),](https://github.com/fpgasystems/hacc) **HACC Development (hdev)** is a versatile development platform designed for use on any AMD-compatible heterogeneous cluster. The tool is built around a simple yet powerful command-line interpreter (CLI) and a set of optimized deployment templates. While the CLI simplifies infrastructure setup, validation, and device configuration through an intuitive device index, the deployment templates integrate a variety of open-source projects, enabling developers to easily tackle a broader range of acceleration workflows and problems. 
+Initially developed for the [ETH Zurich Heterogeneous Accelerated Compute Cluster (ETHZ-HACC),](https://github.com/fpgasystems/hacc) **HACC Development (hdev)** is a versatile development platform designed for use on any AMD-compatible heterogeneous cluster. 
+
+The tool is built around a simple yet powerful command-line interpreter (CLI) and a set of optimized deployment templates. While the CLI simplifies infrastructure setup, validation, and device configuration through an intuitive device index, the deployment templates integrate a variety of open-source projects, enabling developers to easily tackle a broader range of acceleration workflows and problems. 
 
 Overall, **hdev** helps create better acceleration solutions for research institutions with high-performance computing needs.
 
@@ -61,33 +63,28 @@ Overall, **hdev** helps create better acceleration solutions for research instit
 <tfoot><tr><td colspan="5">&#9679; Existing release installed on the cluster.</td></tr></tfoot>
 </table>
 
-<!-- # Limitations
-* SGRT has only been tested on **Ubuntu 20.04.6 LTS.**
-* For deployment servers with reconfigurable devices, it's imperative to maintain a single version of the Xilinx toolset (comprising XRT, Vivado, and Vitis_HLS) on the system. Multiple versions of these tools should not coexist to ensure proper operation.
-* For deployment servers with GPUs, only one version of HIP/ROCm should be installed. -->
-
 # Disclaimer
 
-* The Systems Group RunTime (SGRT) software is provided "as is" and without warranty of any kind, express or implied. The authors and maintainers of this repository make no claims regarding the fitness of this software for specific purposes or its compatibility with any particular hardware or software environment.
-* SGRT users are responsible for assessing its suitability for their intended use, including compatibility with their high-performance computing clusters and heterogeneous environments. The authors and maintainers of SGRT assume no liability for any issues, damages, or losses arising from the use of this software.
-* It is recommended to thoroughly test SGRT in a controlled environment before deploying it in a production setting. Any issues or feedback should be reported to the repository's issue tracker.
-* By using SGRT, you acknowledge and accept the terms and conditions outlined in this disclaimer.
+* **HACC Development (hdev)** software is provided "as is" and without warranty of any kind, express or implied. The authors and maintainers of this repository make no claims regarding the fitness of this software for specific purposes or its compatibility with any particular hardware or software environment.
+* **hdev** users are responsible for assessing its suitability for their intended use, including compatibility with their high-performance computing clusters and heterogeneous environments. The authors and maintainers of **hdev** assume no liability for any issues, damages, or losses arising from the use of this software.
+* It is recommended to thoroughly test **hdev** in a controlled environment before deploying it in a production setting. Any issues or feedback should be reported to the repository's issue tracker.
+* By using **hdev**, you acknowledge and accept the terms and conditions outlined in this disclaimer.
 
 # Citation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8346565.svg)](https://doi.org/10.5281/zenodo.8346565)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14202998.svg)](https://doi.org/10.5281/zenodo.14202998)
 
-If you use this repository in your work, we kindly request that you cite it as follows:
+If you use **hdev** in your work, we kindly request that you cite it as follows:
 
 ```
-@misc{moya2023sgrt,
+@misc{moya2024-hdev,
   author       = {Javier Moya and Gustavo Alonso},
-  title        = {fpgasystems/sgrt: ETHZ-SGRT 2022.2.5.4.3},
+  title        = {fpgasystems/hdev: HACC Development},
   howpublished = {Zenodo},
-  year         = {2023},
-  month        = sep,
-  note         = {\url{https://doi.org/10.5281/zenodo.10075311}},
-  doi          = {10.5281/zenodo.8346565}
+  year         = {2024},
+  month        = nov,
+  note         = {\url{https://doi.org/10.5281/zenodo.14202998}},
+  doi          = {10.5281/zenodo.14202998}
 }
 ```
 
