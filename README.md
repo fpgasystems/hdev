@@ -12,18 +12,12 @@
   Systems Group RunTime
 </h1> 
 
-While initially developed for ETHZ-[HACC,](https://github.com/fpgasystems/hacc) the **Systems Group RunTime (SGRT)** is a versatile RunTime software ready to be used on any AMD-compatible heterogeneous cluster. 
-
-<!-- SGRT comprises a command-line interpreter (CLI) and an API. Whereas the [CLI](./cli/manual.md#cli) simplifies infrastructure setup and device configuration through an intuitive device index, the [API](./api/manual.md) streamlines the development of accelerated applications, allowing you to concentrate on your primary objectives.
-SGRT comprises a command-line interpreter (CLI) and an API, both leveraging an intuitive device index to enhance user workflow. The CLI simplifies infrastructure setup and validation and device configuration, while the API streamlines the development of accelerated applications, enabling users to focus on their primary objectives. -->
+While initially developed for [ETHZ-HACC,](https://github.com/fpgasystems/hacc), **hdev** is a versatile development platform ready to be used on any AMD-compatible heterogeneous cluster.
 
 SGRT includes a command-line interpreter (CLI) and an API, **both utilizing an intuitive device index to improve user workflow.** The [CLI](./cli/manual.md#cli) simplifies infrastructure setup, validation, and device configuration, while the [API](./api/manual.md) streamlines accelerated application development, allowing users to focus on their primary objectives.
 
 ## Sections
-* [API](./api/manual.md#api)
-* [CLI](./cli/manual.md#cli)
 * [Citation](#citation)
-* [Developers guide](./developers-guide.md#developers-guide)
 * [Disclaimer](#disclaimer)
 * [Features](./features.md#features)
 * [Installation](https://github.com/fpgasystems/sgrt_install#--systems-group-runtime-installation)
