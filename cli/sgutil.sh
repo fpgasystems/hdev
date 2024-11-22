@@ -6,7 +6,7 @@ SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#example: sgutil program opennic --device 1
+#example: hdev program opennic --device 1
 
 #inputs
 command=$1

@@ -1,12 +1,12 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-CLI_NAME="sgutil"
+CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil get partitions --device $device_index --type $boot_type
-#example: /opt/sgrt/cli/sgutil get partitions --device             1 --type    primary
+#usage:       $CLI_PATH/hdev get partitions --device $device_index --type $boot_type
+#example: /opt/hdev/cli/hdev get partitions --device             1 --type    primary
 
 #early exit
 url="${HOSTNAME}"

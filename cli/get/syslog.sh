@@ -23,7 +23,7 @@ if [ "$member" = "0" ]; then
 fi
 
 echo ""
-echo "${bold}sgutil get syslog${normal}"
+echo "${bold}hdev get syslog${normal}"
 echo ""
 
 eval "sudo /bin/cat /var/log/syslog"

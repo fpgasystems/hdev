@@ -68,7 +68,7 @@ device_index=""
 if [ "$flags" = "" ]; then
     #header (1/2)
     echo ""
-    echo "${bold}sgutil validate vitis${normal}"
+    echo "${bold}hdev validate vitis${normal}"
     #device_dialog
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
@@ -96,7 +96,7 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        #$CLI_PATH/sgutil validate vitis -h
+        #$CLI_PATH/hdev validate vitis -h
         echo ""
         echo "Please, choose a valid device index."
         echo ""
@@ -112,13 +112,13 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil validate vitis${normal}"
+    echo "${bold}hdev validate vitis${normal}"
     #device_dialog (forgotten mandatory)
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
         device_index="1"
     elif [[ $device_found = "0" ]]; then
-        $CLI_PATH/sgutil validate vitis -h
+        $CLI_PATH/hdev validate vitis -h
         exit
     fi    
 fi

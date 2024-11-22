@@ -37,7 +37,7 @@ fi
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
     echo ""
-    echo "You must create your project first! Please, use sgutil new $WORKFLOW"
+    echo "You must create your project first! Please, use hdev new $WORKFLOW"
     echo ""
     exit
 fi
@@ -51,7 +51,7 @@ project_name=""
 if [ "$flags" = "" ]; then
     #header (1/2)
     echo ""
-    echo "${bold}sgutil build $WORKFLOW${normal}"
+    echo "${bold}hdev build $WORKFLOW${normal}"
     #project_dialog
     echo ""
     echo "${bold}Please, choose your $WORKFLOW project:${normal}"
@@ -70,7 +70,7 @@ else
     project_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then 
-        #$CLI_PATH/sgutil build $WORKFLOW -h
+        #$CLI_PATH/hdev build $WORKFLOW -h
         echo ""
         echo $CHECK_ON_PROJECT_ERR_MSG
         echo ""
@@ -78,7 +78,7 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil build $WORKFLOW${normal}"
+    echo "${bold}hdev build $WORKFLOW${normal}"
     echo ""
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then

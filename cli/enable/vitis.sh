@@ -2,7 +2,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-#CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")"
+#CLI_PATH="/opt/hdev/cli" #"$(dirname "$(dirname "$0")")"
 CHECK_ON_VITIS_ERR_MSG="Please, choose a valid Vitis version."
 EMAIL=$($CLI_PATH/common/get_constant $CLI_PATH EMAIL)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH) # CLI_PATH is declared as an environment variable
@@ -37,7 +37,7 @@ else
     if [ "$flags" = "" ]; then
         #header
         echo ""
-        echo "${bold}sgutil enable vitis${normal}"
+        echo "${bold}hdev enable vitis${normal}"
         #version_dialog
         echo ""
         echo "${bold}Please, choose your Vitis version:${normal}"
@@ -57,7 +57,7 @@ else
         version_name=$(echo "$result" | sed -n '2p')
         #forbidden combinations
         if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$VITIS_PATH/$version_name" ]); then 
-            #$CLI_PATH/sgutil enable vitis -h
+            #$CLI_PATH/hdev enable vitis -h
             echo ""
             echo $CHECK_ON_VITIS_ERR_MSG
             echo ""

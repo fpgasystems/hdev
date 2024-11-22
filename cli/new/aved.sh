@@ -5,8 +5,8 @@ SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil new aved --tag                            $tag_name --project   $new_name --push $push_option
-#example: /opt/sgrt/cli/sgutil new aved --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --push            0
+#usage:       $CLI_PATH/hdev new aved --tag                            $tag_name --project   $new_name --push $push_option
+#example: /opt/hdev/cli/hdev new aved --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --push            0
 
 #early exit
 url="${HOSTNAME}"

@@ -15,7 +15,7 @@ By using **hdev,** you can easily:
 * **Design, build, and deploy modern accelerated applications with ease,** leveraging your own or third-party integrations.
 <!-- * **Transition between Vivado and Vitis workflows effortlessly,** eliminating the need for system reboots and enhancing your development agility. -->
 <!-- * Explore model-based design principles with readily available ***out-of-the-box* examples.**
-* **Simplify the creation of HIP/ROCm GPU applications** using the *sgutil new-build-run hip* commands. -->
+* **Simplify the creation of HIP/ROCm GPU applications** using the *hdev new-build-run hip* commands. -->
 
 ![Validating OpenNIC integration on ETHZ-HACC with hdev.](./features.png "Validating OpenNIC integration on ETHZ-HACC with hdev.")
 *Validating ETHZ-HACC with **hdev.***

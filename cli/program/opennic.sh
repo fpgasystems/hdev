@@ -1,12 +1,12 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-CLI_NAME="sgutil"
+CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option 
-#example: /opt/sgrt/cli/sgutil program opennic --commit      8077751 --device             1 --project   hello_world --version          2022.1 --remote              0 
+#usage:       $CLI_PATH/hdev program opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option 
+#example: /opt/hdev/cli/hdev program opennic --commit      8077751 --device             1 --project   hello_world --version          2022.1 --remote              0 
 
 #early exit
 url="${HOSTNAME}"

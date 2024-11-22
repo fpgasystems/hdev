@@ -1,12 +1,12 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-CLI_NAME="sgutil"
+CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program aved --device $device_index --project $project_name --tag                            $tag_name --version $vivado_version --remote $deploy_option 
-#example: /opt/sgrt/cli/sgutil program aved --device             1 --project   hello_world --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --version          2022.2 --remote              0 
+#usage:       $CLI_PATH/hdev program aved --device $device_index --project $project_name --tag                            $tag_name --version $vivado_version --remote $deploy_option 
+#example: /opt/hdev/cli/hdev program aved --device             1 --project   hello_world --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --version          2022.2 --remote              0 
 
 #early exit
 url="${HOSTNAME}"

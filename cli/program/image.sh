@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program image --device $device_index --path          $image_path --remote $deploy_option 
-#example: /opt/sgrt/cli/sgutil program image --device             1 --path path_to_my_image.pdi --remote              0
+#usage:       $CLI_PATH/hdev program image --device $device_index --path          $image_path --remote $deploy_option 
+#example: /opt/hdev/cli/hdev program image --device             1 --path path_to_my_image.pdi --remote              0
 
 #early exit
 url="${HOSTNAME}"
@@ -39,7 +39,7 @@ AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 PARTITION_INDEX="1"
 PARTITION_TYPE="primary"
 
-echo "${bold}sgutil program image${normal}"
+echo "${bold}hdev program image${normal}"
 echo ""
 
 #extend relative path

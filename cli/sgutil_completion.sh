@@ -99,7 +99,7 @@ command_completion_9() {
     fi
 }
 
-_sgutil_completions()
+_hdev_completions()
 {
     local cur
 
@@ -499,14 +499,14 @@ _sgutil_completions()
             esac
             ;;
         5) 
-            #COMP_WORDS[0]=sgutil
+            #COMP_WORDS[0]=hdev
             #COMP_WORDS[1]=program
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=other_flags
             #COMP_WORDS[4]=value
-            #Example: sgutil program coyote --device       1 -- (there are five words)
-            #         sgutil program driver --insert onic.ko -- (there are five words)
-            #         sgutil program driver --remove    onic -- (there are five words)
+            #Example: hdev program coyote --device       1 -- (there are five words)
+            #         hdev program driver --insert onic.ko -- (there are five words)
+            #         hdev program driver --remove    onic -- (there are five words)
 
             #build
             other_flags=( "--project" "--tag" )
@@ -539,11 +539,11 @@ _sgutil_completions()
             other_flags=( "--insert" "--remove" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
 
-            # For sgutil program driver --insert
+            # For hdev program driver --insert
             other_flags=( "--params" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
 
-            # For sgutil program driver --remove
+            # For hdev program driver --remove
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
 
             #program
@@ -584,14 +584,14 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "validate" "opennic" "${other_flags[@]}"
             ;;
         7)
-            #COMP_WORDS[0]=sgutil
+            #COMP_WORDS[0]=hdev
             #COMP_WORDS[1]=program
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=--device
             #COMP_WORDS[4]=1
             #COMP_WORDS[5]=--project / --remote
             #COMP_WORDS[6]=hello_world
-            #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
+            #Example: hdev program coyote --device 1 --project hello_world -- (there are seven words)
             
             #build aved
             #other_flags=( "--platform" "--project" )
@@ -643,10 +643,10 @@ _sgutil_completions()
             other_flags=( "--params" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
 
-            # For sgutil program driver --remove
+            # For hdev program driver --remove
             command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
 
-            # For sgutil program driver without any flag
+            # For hdev program driver without any flag
             other_flags=( "--insert" "--remove" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
             
@@ -757,7 +757,7 @@ _sgutil_completions()
             ;;
         9)
 
-            #COMP_WORDS[0]=sgutil
+            #COMP_WORDS[0]=hdev
             #COMP_WORDS[1]=program
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=--device
@@ -766,16 +766,16 @@ _sgutil_completions()
             #COMP_WORDS[6]=hello_world
             #COMP_WORDS[7]=--commit / --remote
             #COMP_WORDS[8]=0
-            #Example: sgutil program coyote --device 1 --project hello_world --commit 0 -- (there are nine words)
+            #Example: hdev program coyote --device 1 --project hello_world --commit 0 -- (there are nine words)
 
-            #sgutil program driver --insert
+            #hdev program driver --insert
             other_flags=( "--params" "--remote" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
 
-            #sgutil program driver --remove
+            #hdev program driver --remove
             command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
 
-            #sgutil program driver without any flag
+            #hdev program driver without any flag
             other_flags=( "--insert" "--remove" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
 
@@ -985,4 +985,4 @@ _sgutil_completions()
     esac
 }
 
-complete -F _sgutil_completions sgutil
+complete -F _hdev_completions hdev

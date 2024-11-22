@@ -42,7 +42,7 @@ multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 #inputs
 read -a flags <<< "$@"
 
-#create hip directory (we do not know if sgutil new hip has been run)
+#create hip directory (we do not know if hdev new hip has been run)
 if ! [ -d "$MY_PROJECTS_PATH" ]; then
     mkdir ${MY_PROJECTS_PATH}
 fi
@@ -58,7 +58,7 @@ device_index=""
 if [ "$flags" = "" ]; then
     #header (1/2)
     echo ""
-    echo "${bold}sgutil validate hip${normal}"
+    echo "${bold}hdev validate hip${normal}"
     #device_dialog
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
@@ -78,7 +78,7 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        #$CLI_PATH/sgutil validate hip -h
+        #$CLI_PATH/hdev validate hip -h
         echo ""
         echo "Please, choose a valid device index."
         echo ""
@@ -86,13 +86,13 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil validate hip${normal}"
+    echo "${bold}hdev validate hip${normal}"
     #device_dialog (forgotten mandatory)
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
         device_index="1"
     elif [[ $device_found = "0" ]]; then
-        $CLI_PATH/sgutil validate hip -h
+        $CLI_PATH/hdev validate hip -h
         exit
     fi    
 fi

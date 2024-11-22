@@ -1,12 +1,12 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-CLI_NAME="sgutil"
+CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil validate opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
-#example: /opt/sgrt/cli/sgutil validate opennic --commit            8077751             1cf2578 --device             1 --fec 1           --version          2022.2
+#usage:       $CLI_PATH/hdev validate opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
+#example: /opt/hdev/cli/hdev validate opennic --commit            8077751             1cf2578 --device             1 --fec 1           --version          2022.2
 
 #early exit
 url="${HOSTNAME}"
@@ -221,10 +221,10 @@ if lsmod | grep -q "${DRIVER_NAME%.ko}"; then
     echo ""
     echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
     echo ""
-    echo "sudo /opt/sgrt/cli/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
-    echo "sudo /opt/sgrt/cli/common/rm $MY_DRIVERS_PATH/${DRIVER_NAME%.ko}.*"
-    #echo "$CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko}"
-    $CLI_PATH/sgutil program driver --remove "${DRIVER_NAME%.ko}" >/dev/null 2>&1
+    echo "sudo /opt/hdev/cli/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
+    echo "sudo /opt/hdev/cli/common/rm $MY_DRIVERS_PATH/${DRIVER_NAME%.ko}.*"
+    #echo "$CLI_PATH/hdev program driver --remove ${DRIVER_NAME%.ko}"
+    $CLI_PATH/hdev program driver --remove "${DRIVER_NAME%.ko}" >/dev/null 2>&1
     echo ""
 fi
 
@@ -309,7 +309,7 @@ done
 wait $revert_pid
 
 # Remove driver
-$CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko} >/dev/null 2>&1
+$CLI_PATH/hdev program driver --remove ${DRIVER_NAME%.ko} >/dev/null 2>&1
 
 #remove at the end
 rm -rf $DIR

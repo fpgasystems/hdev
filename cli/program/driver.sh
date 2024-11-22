@@ -4,9 +4,9 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:        $CLI_PATH/sgutil program driver --insert $driver_name --params   $params_string --remote $deploy_option
-#examples: /opt/sgrt/cli/sgutil program driver --insert      onic.ko --params RS_FEC_ENABLED=0 --remote              0
-#          /opt/sgrt/cli/sgutil program driver --remove      onic
+#usage:        $CLI_PATH/hdev program driver --insert $driver_name --params   $params_string --remote $deploy_option
+#examples: /opt/hdev/cli/hdev program driver --insert      onic.ko --params RS_FEC_ENABLED=0 --remote              0
+#          /opt/hdev/cli/hdev program driver --remove      onic
 
 #early exit
 url="${HOSTNAME}"

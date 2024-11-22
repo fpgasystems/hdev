@@ -79,7 +79,7 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        #$CLI_PATH/sgutil get network -h
+        #$CLI_PATH/hdev get network -h
         echo ""
         echo "Please, choose a valid device index."
         echo ""
@@ -94,7 +94,7 @@ else
         device_found="1"
         device_index="1"
     elif [[ $device_found = "0" ]]; then
-        #$CLI_PATH/sgutil get network -h
+        #$CLI_PATH/hdev get network -h
         echo ""
         echo "Please, choose a valid device index."
         echo ""
@@ -105,7 +105,7 @@ else
     MAX_NUM_PORTS=$((MAX_NUM_PORTS + 1))
     #if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $port_index != 1 ))) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
     if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
-        #$CLI_PATH/sgutil get network -h
+        #$CLI_PATH/hdev get network -h
         echo ""
         echo "Please, choose a valid port index."
         echo ""

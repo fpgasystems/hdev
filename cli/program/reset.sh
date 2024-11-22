@@ -1,12 +1,12 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-CLI_NAME="sgutil"
+CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program reset --device $device_index
-#example: /opt/sgrt/cli/sgutil program reset --device             1
+#usage:       $CLI_PATH/hdev program reset --device $device_index
+#example: /opt/hdev/cli/hdev program reset --device             1
 
 #early exit
 url="${HOSTNAME}"

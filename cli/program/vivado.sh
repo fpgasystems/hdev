@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program vivado --bitstream         $bitstream_name --device $device_index --version $vivado_version --remote $deploy_option 
-#example: /opt/sgrt/cli/sgutil program vivado --bitstream    path_to_my_shell.bit --device             1 --version          2022.1 --remote              0
+#usage:       $CLI_PATH/hdev program vivado --bitstream         $bitstream_name --device $device_index --version $vivado_version --remote $deploy_option 
+#example: /opt/hdev/cli/hdev program vivado --bitstream    path_to_my_shell.bit --device             1 --version          2022.1 --remote              0
 
 #arly exit
 url="${HOSTNAME}"
@@ -48,7 +48,7 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 
-echo "${bold}sgutil program vivado${normal}"
+echo "${bold}hdev program vivado${normal}"
 echo ""
 
 #get virtualized

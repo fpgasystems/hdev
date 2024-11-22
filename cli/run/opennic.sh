@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil run opennic --commit $commit_name --config $config_index --device $device_index --project $project_name
-#example: /opt/sgrt/cli/sgutil run opennic --commit      8077751 --config             1 --device             1 --project   hello_world
+#usage:       $CLI_PATH/hdev run opennic --commit $commit_name --config $config_index --device $device_index --project $project_name
+#example: /opt/hdev/cli/hdev run opennic --commit      8077751 --config             1 --device             1 --project   hello_world
 
 #early exit
 url="${HOSTNAME}"

@@ -4,13 +4,13 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil set keys
-#example: /opt/sgrt/cli/sgutil set keys
+#usage:       $CLI_PATH/hdev set keys
+#example: /opt/hdev/cli/hdev set keys
 
 #combine CPU, ACAP and FPGA lists removing duplicates
 mapfile -t SERVER_LIST < <(sort -u "$CLI_PATH/constants/ACAP_SERVERS_LIST" "$CLI_PATH/constants/BUILD_SERVERS_LIST" "$CLI_PATH/constants/FPGA_SERVERS_LIST" "$CLI_PATH/constants/GPU_SERVERS_LIST")
 
-echo "${bold}sgutil set keys${normal}"
+echo "${bold}hdev set keys${normal}"
 echo "" 
 
 #setup keys

@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program revert --device $device_index --version $vivado_version --remote $deploy_option
-#example: /opt/sgrt/cli/sgutil program revert --device             1 --version          2022.2 --remote              0
+#usage:       $CLI_PATH/hdev program revert --device $device_index --version $vivado_version --remote $deploy_option
+#example: /opt/hdev/cli/hdev program revert --device             1 --version          2022.2 --remote              0
 
 #early exit
 url="${HOSTNAME}"

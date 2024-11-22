@@ -38,7 +38,7 @@ mkdir -p $DIR
 
 # create project
 echo ""
-echo "${bold}sgutil new hip${normal}"
+echo "${bold}hdev new hip${normal}"
 echo ""
 echo "${bold}Please, insert a non-existing name for your HIP project:${normal}"
 echo ""
@@ -84,7 +84,7 @@ fi
 
 #catch gh repo create error (DIR has not been created)
 if ! [ -d "$DIR" ]; then
-    echo "Please, start GitHub CLI first using sgutil set gh"
+    echo "Please, start GitHub CLI first using hdev set gh"
     echo ""
     exit
 fi

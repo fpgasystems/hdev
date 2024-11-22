@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil build aved --project $project_name --tag                            $tag_name --version $vivado_version --all $all 
-#example: /opt/sgrt/cli/sgutil build aved --project   hello_world --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --version          2022.2 --all    1 
+#usage:       $CLI_PATH/hdev build aved --project $project_name --tag                            $tag_name --version $vivado_version --all $all 
+#example: /opt/hdev/cli/hdev build aved --project   hello_world --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --version          2022.2 --all    1 
 
 #early exit
 url="${HOSTNAME}"

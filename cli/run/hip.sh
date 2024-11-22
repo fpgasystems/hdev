@@ -43,7 +43,7 @@ multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
     echo ""
-    echo "You must build your project first! Please, use sgutil build $WORKFLOW"
+    echo "You must build your project first! Please, use hdev build $WORKFLOW"
     echo ""
     exit
 fi
@@ -57,7 +57,7 @@ project_name=""
 if [ "$flags" = "" ]; then
     #header (1/2)
     echo ""
-    echo "${bold}sgutil run $WORKFLOW${normal}"
+    echo "${bold}hdev run $WORKFLOW${normal}"
     #project_dialog
     echo ""
     echo "${bold}Please, choose your $WORKFLOW project:${normal}"
@@ -88,7 +88,7 @@ else
     project_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then 
-        #$CLI_PATH/sgutil run $WORKFLOW -h
+        #$CLI_PATH/hdev run $WORKFLOW -h
         echo ""
         echo $CHECK_ON_PROJECT_ERR_MSG
         echo ""
@@ -100,7 +100,7 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        #$CLI_PATH/sgutil run hip -h
+        #$CLI_PATH/hdev run hip -h
         echo ""
         echo "Please, choose a valid device index."
         echo ""
@@ -108,7 +108,7 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil run $WORKFLOW${normal}"
+    echo "${bold}hdev run $WORKFLOW${normal}"
     echo ""
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
@@ -155,7 +155,7 @@ APP_BUILD_DIR="$DIR/build_dir"
 #check for build directory
 if ! [ -d "$APP_BUILD_DIR" ]; then
     echo ""
-    echo "You must build your project first! Please, use sgutil build $WORKFLOW"
+    echo "You must build your project first! Please, use hdev build $WORKFLOW"
     echo ""
     exit
 fi

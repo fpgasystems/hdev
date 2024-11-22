@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil build c --source     $program_path 
-#example: /opt/sgrt/cli/sgutil build c --source my_program_path.c
+#usage:       $CLI_PATH/hdev build c --source     $program_path 
+#example: /opt/hdev/cli/hdev build c --source my_program_path.c
 
 #inputs
 my_program_path=$2

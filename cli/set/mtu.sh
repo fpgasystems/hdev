@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil set mtu --device $device_index --port $port_index --value $mtu_value
-#example: /opt/sgrt/cli/sgutil set mtu --device     enp35s0f0 --port           1 --value       1982
+#usage:       $CLI_PATH/hdev set mtu --device $device_index --port $port_index --value $mtu_value
+#example: /opt/hdev/cli/hdev set mtu --device     enp35s0f0 --port           1 --value       1982
 
 #early exit
 url="${HOSTNAME}"

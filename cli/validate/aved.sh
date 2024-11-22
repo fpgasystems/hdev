@@ -1,12 +1,12 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-CLI_NAME="sgutil"
+CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil validate aved --device $device_index
-#example: /opt/sgrt/cli/sgutil validate aved --device             1
+#usage:       $CLI_PATH/hdev validate aved --device $device_index
+#example: /opt/hdev/cli/hdev validate aved --device             1
 
 #early exit
 url="${HOSTNAME}"

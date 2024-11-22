@@ -21,9 +21,9 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
-    sgrt_base_path: /opt/sgrt
+    sgrt_base_path: /opt/hdev
     cli_path: "{{ sgrt_base_path }}/cli"
-    cli_name: sgutil
+    cli_name: hdev
     templates_path: "{{ sgrt_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
@@ -44,14 +44,14 @@
     reboot: false
     run: false
     set: false
-    sgutil: true 
+    hdev: true 
     templates: false
     update: false
     validate: false
     vitis: false
     #release
     #    1. Merge a development branch into main.
-    #    2. Login to a server (i.e., hacc-box-01), run "sgutil update," and capture COMMIT and COMMIT_DATE. Remeber that "sgutil update" is only for sudo users.
+    #    2. Login to a server (i.e., hacc-box-01), run "hdev update," and capture COMMIT and COMMIT_DATE. Remeber that "hdev update" is only for sudo users.
     #    3. Replace COMMIT and COMMIT_DATE in this playbook, and play it on all servers (all: true) to install "sgrt" on all the remotes.
     #    4. We revert the changes on this playbook.
     COMMIT: "0000000"
@@ -507,23 +507,23 @@
         - license
         - license-msg
         - mtu
-    #sgutil
-    - name: managing sgutil
+    #hdev
+    - name: managing hdev
       block:
-        - name: managing sgutil
+        - name: managing hdev
           debug:
             msg: ""
-        - name: copying sgutil
+        - name: copying hdev
           copy:
             src: "../cli/{{ cli_name }}.sh"
             dest: "{{ cli_path }}/{{ cli_name }}"
             mode: 0755
-          register: sgutil_copy
+          register: hdev_copy
         - name: adding to profile.d (system-wide $PATH)
           copy:
             dest: "/etc/profile.d/{{ cli_name }}.sh" #cli.sh
             content: 'PATH=$PATH:{{ cli_path }}'
-        - name: copying sgutil_completion
+        - name: copying hdev_completion
           copy:
             src: "../cli/{{ cli_name }}_completion.sh"
             dest: /usr/share/bash-completion/completions/{{ cli_name }}
@@ -532,7 +532,7 @@
           lineinfile:
             path: "/etc/bash.bashrc"
             line: "export CLI_PATH={{ cli_path }}"
-      when: all or sgutil
+      when: all or hdev
     #update
     - name: copying update (to sgrt_base_path)
       copy:
