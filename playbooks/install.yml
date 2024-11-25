@@ -1,19 +1,14 @@
 ---
 
 - hosts: 
-    #- alveo_u250
-    #- alveo_u280
-    #- alveo_u50d
-    #- alveo_u55c
-    #- versal_v80
-    #- versal_vck5000
-    #- hacc_build 
-    #- hacc_boxes
-    #- hacc-box-01.inf.ethz.ch
-    - versal-v80-04.inf.ethz.ch
+    - hacc_build 
+    - alveo_u50d
+    - alveo_u55c
+    - versal_v80
+    - hacc_boxes
     #- alveo-u55c-01.inf.ethz.ch
-    #- alveo-u55c-05.inf.ethz.ch
-    #- alveo-u55c-06.inf.ethz.ch
+    #- versal-v80-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -26,7 +21,7 @@
     cli_name: hdev
     templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #cli installation
     aved: false
     bitstreams: false
@@ -44,7 +39,7 @@
     reboot: false
     run: false
     set: false
-    hdev: true 
+    hdev: false 
     templates: false
     update: false
     validate: false
