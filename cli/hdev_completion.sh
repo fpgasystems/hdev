@@ -558,6 +558,10 @@ _hdev_completions()
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
             #program opennic
+            if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "program" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
+                echo "Estas dentro"
+
+            fi
 
             ;;
         9)
