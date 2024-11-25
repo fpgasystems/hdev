@@ -17,6 +17,9 @@ IS_GPU_DEVELOPER="1"
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 
+#flags
+OPENNIC_PROGRAM_FLAGS=("--commit" "--device" "--fec" "--project" "--remote")
+
 command_completion_5() {
     CURRENT_WORD=$1
     COMP_CWORD=$2
@@ -97,6 +100,22 @@ command_completion_9() {
             COMPREPLY=($(compgen -W "$COMP_CWORD_2_1" -- ${CURRENT_WORD}))
         fi
     fi
+}
+
+get_remaining_flags() {
+    local previous_flags=$1
+    shift 1
+    local FLAGS=("$@")
+    local remaining_flags=()
+
+    for flag in "${FLAGS[@]}"; do
+        if [[ "$flag" != "$previous_flags" ]]; then
+            remaining_flags+=("$flag")
+        fi
+    done
+
+    # Print the resulting array as a space-separated string
+    echo "${remaining_flags[@]}"
 }
 
 _hdev_completions()
@@ -502,485 +521,47 @@ _hdev_completions()
             esac
             ;;
         5) 
-            #COMP_WORDS[0]=hdev
-            #COMP_WORDS[1]=program
-            #COMP_WORDS[2]=coyote
-            #COMP_WORDS[3]=other_flags
-            #COMP_WORDS[4]=value
-            #Example: hdev program coyote --device       1 -- (there are five words)
-            #         hdev program driver --insert onic.ko -- (there are five words)
-            #         hdev program driver --remove    onic -- (there are five words)
+            #one flag is already present (the previous_flags)
+            #program opennic --device 1 --
+            #COMP_CWORD-4: program
+            #COMP_CWORD-3: opennic
+            #COMP_CWORD-2: --device
+            #COMP_CWORD-1: 1
 
-            #build
-            other_flags=( "--project" "--tag" )
-            command_completion_5 "$cur" "$COMP_CWORD" "build" "aved" "${other_flags[@]}"
+            previous_flags=${COMP_WORDS[COMP_CWORD-2]}
 
-            if [ "$is_build" = "0" ]; then
-                #platform is not offered
-                other_flags=( "--commit" "--project" )
-                command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"
-            else
-                other_flags=( "--commit" "--platform" "--project" )
-                command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"
+            #program opennic
+            if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "program" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
+                remaining_flags=$(get_remaining_flags "$previous_flags" "${OPENNIC_PROGRAM_FLAGS[@]}")
+                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
 
-            #get
-            other_flags=( "--device" "--port" )
-            command_completion_5 "$cur" "$COMP_CWORD" "get" "ifconfig" "${other_flags[@]}"
-
-            other_flags=( "--device" "--port" )
-            command_completion_5 "$cur" "$COMP_CWORD" "get" "network" "${other_flags[@]}"
-
-            #new
-            other_flags=( "--project" "--push" "--tag" )
-            command_completion_5 "$cur" "$COMP_CWORD" "new" "aved" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" "--push" )
-            command_completion_5 "$cur" "$COMP_CWORD" "new" "opennic" "${other_flags[@]}"
-
-            #program driver
-            other_flags=( "--insert" "--remove" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
-
-            # For hdev program driver --insert
-            other_flags=( "--params" "--remote" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
-
-            # For hdev program driver --remove
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
-
-            #program
-            other_flags=( "--device" "--project" "--tag" "--remote" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "aved" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--path" "--remote" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "bitstream" "${other_flags[@]}"
-
-            other_flags=( "--device" "--path" "--remote" ) #"--partition"
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "image" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--device" "--project" "--remote" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "opennic" "${other_flags[@]}"
-
-            other_flags=( "--device" "--remote" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "revert" "${other_flags[@]}"
-
-            #other_flags=( "--bitstream" "--remote" "--device" )
-            #command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
-
-            #run
-            other_flags=( "--config" "--device" "--project" "--tag" )
-            command_completion_5 "$cur" "$COMP_CWORD" "run" "aved" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--project" )
-            command_completion_5 "$cur" "$COMP_CWORD" "run" "hip" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--config" "--device" "--project" )
-            command_completion_5 "$cur" "$COMP_CWORD" "run" "opennic" "${other_flags[@]}"
-
-            #set
-            other_flags=( "--device" "--port" "--value" )
-            command_completion_5 "$cur" "$COMP_CWORD" "set" "mtu" "${other_flags[@]}"
-
-            #validate
-            other_flags=( "--commit" "--device" "--fec" )
-            command_completion_5 "$cur" "$COMP_CWORD" "validate" "opennic" "${other_flags[@]}"
             ;;
         7)
-            #COMP_WORDS[0]=hdev
-            #COMP_WORDS[1]=program
-            #COMP_WORDS[2]=coyote
-            #COMP_WORDS[3]=--device
-            #COMP_WORDS[4]=1
-            #COMP_WORDS[5]=--project / --remote
-            #COMP_WORDS[6]=hello_world
-            #Example: hdev program coyote --device 1 --project hello_world -- (there are seven words)
-            
-            #build aved
-            #other_flags=( "--platform" "--project" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "build" "aved" "--commit" "${other_flags[@]}"
-            
-            #other_flags=( "--commit" "--project" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "build" "aved" "--platform" "${other_flags[@]}"
+            #two flags are already present
+            #program opennic --device 1 --commit 8077751 --
+            #COMP_CWORD-6: program
+            #COMP_CWORD-5: opennic
+            #COMP_CWORD-4: --device
+            #COMP_CWORD-3: 1
+            #COMP_CWORD-2: --commit
+            #COMP_CWORD-1: 8077751
 
-            #other_flags=( "--commit" "--platform" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "build" "aved" "--project" "${other_flags[@]}"
-            
-            #build opennic
-            other_flags=( "--platform" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "${other_flags[@]}"
+            echo "hey it is 7!"
+            echo "-6: ${COMP_WORDS[COMP_CWORD-6]}"
+            echo "-5: ${COMP_WORDS[COMP_CWORD-5]}"
+            echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
+            echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
+            echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
+            echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
 
-            other_flags=( "--commit" "--platform" )
-            command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "${other_flags[@]}"
-            
-            #new aved
-            other_flags=( "--push" "--tag" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "aved" "--project" "${other_flags[@]}"
+            previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
-            other_flags=( "--project" "--tag" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "aved" "--push" "${other_flags[@]}"
-
-            other_flags=( "--project" "--push" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "aved" "--tag" "${other_flags[@]}"
-            
-            #new opennic
-            other_flags=( "--project" "--push" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "opennic" "--commit" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--push" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "opennic" "--project" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "opennic" "--push" "${other_flags[@]}"
-            
-            #program driver
-            #other_flags=( "--params" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
-
-            #other_flags=( "--insert" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--params" "${other_flags[@]}"
-
-            other_flags=( "--params" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
-
-            # For hdev program driver --remove
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
-
-            # For hdev program driver without any flag
-            other_flags=( "--insert" "--remove" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
-            
-            #program aved
-            other_flags=( "--project" "--tag" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--tag" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--project" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" "--tag" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "${other_flags[@]}"
-            
-            #program bitstream
-            other_flags=( "--path" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--device" "${other_flags[@]}"
-
-            other_flags=( "--device" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--path" "${other_flags[@]}"
-
-            other_flags=( "--device" "--path"  )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--remote" "${other_flags[@]}"
-            
-            #program image
-            other_flags=( "--path" "--remote" ) #"--partition"
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--device" "${other_flags[@]}"
-            
-            #other_flags=( "--device" "--path" "--remote" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--partition" "${other_flags[@]}"
-
-            other_flags=( "--device" "--remote" ) #"--partition" 
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--path" "${other_flags[@]}"
-
-            other_flags=(  "--device" "--path" ) #"--partition" 
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--remote" "${other_flags[@]}"
-            
             #program opennic
-            other_flags=( "--device" "--project" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "${other_flags[@]}"
 
-            other_flags=( "--commit" "--device" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "${other_flags[@]}"
-
-            #program vivado
-            #other_flags=( "--device" "--remote" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--bitstream" "${other_flags[@]}"
-            
-            #other_flags=( "--bitstream" "--remote" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--device" "${other_flags[@]}"
-
-            #other_flags=( "--bitstream" "--device" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--remote" "${other_flags[@]}"
-
-            #run aved
-            other_flags=( "--device" "--project" "--tag" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--config" "${other_flags[@]}"
-
-            other_flags=( "--config" "--project" "--tag" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--device" "${other_flags[@]}"
-
-            other_flags=( "--config" "--device" "--tag" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--project" "${other_flags[@]}"
-
-            other_flags=( "--config" "--device" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "${other_flags[@]}"
-            
-            #run opennic
-            other_flags=( "--config" "--device" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--commit" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--config" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--config" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--config" "--device" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--project" "${other_flags[@]}"
-
-            #set mtu
-            other_flags=( "--port" "--value" )
-            command_completion_7 "$cur" "$COMP_CWORD" "set" "mtu" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--value" )
-            command_completion_7 "$cur" "$COMP_CWORD" "set" "mtu" "--port" "${other_flags[@]}"
-
-            other_flags=( "--device" "--port" )
-            command_completion_7 "$cur" "$COMP_CWORD" "set" "mtu" "--value" "${other_flags[@]}"
-
-            #validate opennic
-            other_flags=( "--device" "--fec" )
-            command_completion_7 "$cur" "$COMP_CWORD" "validate" "opennic" "--commit" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--fec" )
-            command_completion_7 "$cur" "$COMP_CWORD" "validate" "opennic" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" )
-            command_completion_7 "$cur" "$COMP_CWORD" "validate" "opennic" "--fec" "${other_flags[@]}"
             ;;
         9)
-
-            #COMP_WORDS[0]=hdev
-            #COMP_WORDS[1]=program
-            #COMP_WORDS[2]=coyote
-            #COMP_WORDS[3]=--device
-            #COMP_WORDS[4]=1
-            #COMP_WORDS[5]=--project
-            #COMP_WORDS[6]=hello_world
-            #COMP_WORDS[7]=--commit / --remote
-            #COMP_WORDS[8]=0
-            #Example: hdev program coyote --device 1 --project hello_world --commit 0 -- (there are nine words)
-
-            #hdev program driver --insert
-            other_flags=( "--params" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
-
-            #hdev program driver --remove
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
-
-            #hdev program driver without any flag
-            other_flags=( "--insert" "--remove" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
-
-            #program aved --device
-            other_flags=( "--tag" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--device" "--project" "${other_flags[@]}"
-            
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--device" "--tag" "${other_flags[@]}"
-
-            other_flags=( "--project" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--device" "--remote" "${other_flags[@]}"
-
-            #program aved --project
-            other_flags=( "--tag" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--project" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--project" "--tag" "${other_flags[@]}"
-
-            other_flags=( "--device" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--project" "--remote" "${other_flags[@]}"
-
-            #program aved --tag
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "--project" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "--remote" "${other_flags[@]}"
-
-            #program aved --remote
-            other_flags=( "--project" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "--project" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "--tag" "${other_flags[@]}"
-
-            #program image --device
-            #other_flags=( "--path" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--partition" "${other_flags[@]}"
-            
-            #other_flags=( "--partition" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--path" "${other_flags[@]}"
-
-            #other_flags=( "--partition" "--path" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--remote" "${other_flags[@]}"
-
-            #program image --partition
-            #other_flags=( "--path" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--device" "${other_flags[@]}"
-            
-            #other_flags=( "--device" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--path" "${other_flags[@]}"
-
-            #other_flags=( "--device" "--path" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--remote" "${other_flags[@]}"
-
-            #program image --path
-            #other_flags=( "--partition" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--device" "${other_flags[@]}"
-            
-            #other_flags=( "--device" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--partition" "${other_flags[@]}"
-
-            #other_flags=( "--device" "--partition" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--remote" "${other_flags[@]}"
-
-            #program image --remote
-            #other_flags=( "--partition" "--path" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--device" "${other_flags[@]}"
-            
-            #other_flags=( "--device" "--path" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--partition" "${other_flags[@]}"
-
-            #other_flags=( "--device" "--partition" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--path" "${other_flags[@]}"
-            
-            #program opennic --commit
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "--project" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "--remote" "${other_flags[@]}"
-            
-            #program opennic --device
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "--project" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "--remote" "${other_flags[@]}"
-
-            #program opennic --project
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "--remote" "${other_flags[@]}"
-
-            #program opennic --remote
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "--project" "${other_flags[@]}"
-
-            #run aved --config
-            other_flags=( "--project" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--config" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--config" "--project" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--config" "--tag" "${other_flags[@]}"
-            
-            #run aved --device
-            other_flags=( "--project" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--device" "--config" "${other_flags[@]}"
-            
-            other_flags=( "--config" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--device" "--project" "${other_flags[@]}"
-
-            other_flags=( "--config" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--device" "--tag" "${other_flags[@]}"
-
-            #run aved --project
-            other_flags=( "--device" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--project" "--config" "${other_flags[@]}"
-            
-            other_flags=( "--config" "--tag" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--project" "--device" "${other_flags[@]}"
-
-            other_flags=( "--config" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--project" "--tag" "${other_flags[@]}"
-
-            #run aved --tag
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "--config" "${other_flags[@]}"
-            
-            other_flags=( "--config" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "--device" "${other_flags[@]}"
-
-            other_flags=( "--config" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "--project" "${other_flags[@]}"
-
-            #run opennic --commit
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--commit" "--config" "${other_flags[@]}"
-            
-            other_flags=( "--config" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--commit" "--device" "${other_flags[@]}"
-
-            other_flags=( "--config" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--commit" "--project" "${other_flags[@]}"
-            
-            #run opennic --config
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--config" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--config" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--config" "--project" "${other_flags[@]}"
-
-            #run opennic --device
-            other_flags=( "--config" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--device" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--device" "--config" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--config" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--device" "--project" "${other_flags[@]}"
-
-            #run opennic --project
-            other_flags=( "--config" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--project" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--project" "--config" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--config" )
-            command_completion_9 "$cur" "$COMP_CWORD" "run" "opennic" "--project" "--device" "${other_flags[@]}"
+            echo "hey it is 9!"
             ;;
         *)
             COMPREPLY=()
