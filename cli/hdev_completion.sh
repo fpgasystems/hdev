@@ -18,6 +18,7 @@ is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 
 #flags
+AVED_BUILD_FLAGS=("--project" "--tag")
 OPENNIC_PROGRAM_FLAGS=("--commit" "--device" "--fec" "--project" "--remote" "--xdp")
 
 command_completion_5() {
@@ -528,7 +529,7 @@ _hdev_completions()
             esac
             ;;
         5) 
-            #one flag is already present (the previous_flag)
+            #one flag is already present
             #program opennic --device 1 --
             #COMP_CWORD-4: program
             #COMP_CWORD-3: opennic
@@ -537,12 +538,17 @@ _hdev_completions()
 
             previous_flags=${COMP_WORDS[COMP_CWORD-2]}
 
+            #build aved
+            if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "build" && "${COMP_WORDS[COMP_CWORD-3]}" == "aved" ]]; then
+                remaining_flags=$(get_remaining_flags previous_flags[@] "${AVED_BUILD_FLAGS[@]}")
+                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            fi
+            
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "program" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
                 remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
-
             ;;
         7)
             #two flags are already present
