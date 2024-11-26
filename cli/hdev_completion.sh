@@ -545,7 +545,6 @@ _hdev_completions()
 
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "program" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
-                #remaining_flags=$(get_remaining_flags "$previous_flag" "${OPENNIC_PROGRAM_FLAGS[@]}")
                 remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
@@ -560,19 +559,6 @@ _hdev_completions()
             #COMP_CWORD-3: 1
             #COMP_CWORD-2: --commit
             #COMP_CWORD-1: 8077751
-
-            #echo "hey it is 7!"
-            #echo "-6: ${COMP_WORDS[COMP_CWORD-6]}"
-            #echo "-5: ${COMP_WORDS[COMP_CWORD-5]}"
-            #echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
-            #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
-            #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
-            #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-
-            #previous_flag_1=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
-
-            #previous_flag_1=${COMP_WORDS[COMP_CWORD-2]}
-            #previous_flag_2=${COMP_WORDS[COMP_CWORD-4]}
 
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
