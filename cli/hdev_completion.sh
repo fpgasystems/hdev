@@ -272,7 +272,6 @@ _hdev_completions()
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
-                    #COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
                     ;;
                 program)
                     commands="--help"
@@ -327,7 +326,6 @@ _hdev_completions()
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
-                    #COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
                     ;;
                 update)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
@@ -350,7 +348,6 @@ _hdev_completions()
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
-                    #COMPREPLY=($(compgen -W "docker hip opennic vitis --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -458,19 +455,18 @@ _hdev_completions()
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         aved)
-                            COMPREPLY=($(compgen -W "--device --project --tag --remote --help" -- ${cur})) # --type
+                            COMPREPLY=($(compgen -W "--device --project --tag --remote --help" -- ${cur}))
                             ;;
                         bitstream) 
-                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur})) #--bitstream
+                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur}))
                             ;;
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
                         image)
-                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur})) # --type --partition
+                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur}))
                             ;;
                         opennic)
-                            #COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
                             COMPREPLY=($(compgen -W "${OPENNIC_PROGRAM_FLAGS[*]}" -- "${cur}"))
                             ;;
                         reset)
@@ -479,9 +475,6 @@ _hdev_completions()
                         revert)
                             COMPREPLY=($(compgen -W "--device --remote --help" -- ${cur}))
                             ;;
-                        #vivado) 
-                        #    COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur}))
-                        #    ;;
                     esac
                     ;;
                 run)
