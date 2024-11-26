@@ -103,18 +103,31 @@ command_completion_9() {
 }
 
 get_remaining_flags() {
-    local previous_flags=$1
-    shift 1
-    local FLAGS=("$@")
-    local remaining_flags=()
+    # First argument: Array of previous flags to exclude
+    local -a previous_flags=("${!1}")
+    # Remaining arguments: All available flags
+    shift
+    local -a FLAGS=("$@")
+
+    # Array to hold remaining flags
+    local -a remaining_flags=()
 
     for flag in "${FLAGS[@]}"; do
-        if [[ "$flag" != "$previous_flags" ]]; then
+        # Check if the current flag is NOT in the previous_flags array
+        local exclude=false
+        for prev_flag in "${previous_flags[@]}"; do
+            if [[ "$flag" == "$prev_flag" ]]; then
+                exclude=true
+                break
+            fi
+        done
+        # Add the flag to remaining_flags if it's not excluded
+        if [[ "$exclude" == false ]]; then
             remaining_flags+=("$flag")
         fi
     done
 
-    # Print the resulting array as a space-separated string
+    # Print the resulting array
     echo "${remaining_flags[@]}"
 }
 
@@ -521,7 +534,7 @@ _hdev_completions()
             esac
             ;;
         5) 
-            #one flag is already present (the previous_flags)
+            #one flag is already present (the previous_flag)
             #program opennic --device 1 --
             #COMP_CWORD-4: program
             #COMP_CWORD-3: opennic
@@ -532,7 +545,8 @@ _hdev_completions()
 
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "program" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
-                remaining_flags=$(get_remaining_flags "$previous_flags" "${OPENNIC_PROGRAM_FLAGS[@]}")
+                #remaining_flags=$(get_remaining_flags "$previous_flag" "${OPENNIC_PROGRAM_FLAGS[@]}")
+                remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
 
@@ -547,20 +561,25 @@ _hdev_completions()
             #COMP_CWORD-2: --commit
             #COMP_CWORD-1: 8077751
 
-            echo "hey it is 7!"
-            echo "-6: ${COMP_WORDS[COMP_CWORD-6]}"
-            echo "-5: ${COMP_WORDS[COMP_CWORD-5]}"
-            echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
-            echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
-            echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
-            echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
+            #echo "hey it is 7!"
+            #echo "-6: ${COMP_WORDS[COMP_CWORD-6]}"
+            #echo "-5: ${COMP_WORDS[COMP_CWORD-5]}"
+            #echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
+            #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
+            #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
+            #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
+
+            #previous_flag_1=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
+
+            #previous_flag_1=${COMP_WORDS[COMP_CWORD-2]}
+            #previous_flag_2=${COMP_WORDS[COMP_CWORD-4]}
 
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "program" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
-                echo "Estas dentro"
-
+                remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
+                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
 
             ;;
