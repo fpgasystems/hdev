@@ -18,7 +18,7 @@ is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 
 #flags
-OPENNIC_PROGRAM_FLAGS=("--commit" "--device" "--fec" "--project" "--remote")
+OPENNIC_PROGRAM_FLAGS=("--commit" "--device" "--fec" "--project" "--remote" "--xdp")
 
 command_completion_5() {
     CURRENT_WORD=$1
@@ -470,7 +470,8 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur})) # --type --partition
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${OPENNIC_PROGRAM_FLAGS[*]}" -- "${cur}"))
                             ;;
                         reset)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
@@ -571,6 +572,16 @@ _hdev_completions()
             ;;
         9)
             echo "hey it is 9!"
+
+            #echo "-8: ${COMP_WORDS[COMP_CWORD-8]}"
+            #echo "-7: ${COMP_WORDS[COMP_CWORD-7]}"
+            #echo "-6: ${COMP_WORDS[COMP_CWORD-6]}"
+            #echo "-5: ${COMP_WORDS[COMP_CWORD-5]}"
+            #echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
+            #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
+            #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
+            #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
+
             ;;
         *)
             COMPREPLY=()
