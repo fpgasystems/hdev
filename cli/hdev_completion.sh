@@ -615,8 +615,7 @@ _hdev_completions()
 
             ;;
         13)
-            
-
+            #five flags are already present
             #program opennic --device 1 --commit 8077751 --fec 0 --project my_project --remote 0 --
             #COMP_CWORD-12: program
             #COMP_CWORD-11: opennic
@@ -638,27 +637,28 @@ _hdev_completions()
                 remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
-
             ;;
-        15)
-            echo "I am 15!"
-
-            echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
-            echo "-13: ${COMP_WORDS[COMP_CWORD-13]}"
-            echo "-12: ${COMP_WORDS[COMP_CWORD-12]}"
-            echo "-11: ${COMP_WORDS[COMP_CWORD-11]}"
-            echo "-10: ${COMP_WORDS[COMP_CWORD-10]}"
-            echo "-9: ${COMP_WORDS[COMP_CWORD-9]}"
-            echo "-8: ${COMP_WORDS[COMP_CWORD-8]}"
-            echo "-7: ${COMP_WORDS[COMP_CWORD-7]}"
-            echo "-6: ${COMP_WORDS[COMP_CWORD-6]}"
-            echo "-5: ${COMP_WORDS[COMP_CWORD-5]}"
-            echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
-            echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
-            echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
-            echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-
-            ;;
+        #15)
+        #    #six flags are already present
+        #    #program opennic --device 1 --commit 8077751 --fec 0 --project my_project --remote 0 --xdp 0 --
+        #    #COMP_CWORD-14: program
+        #    #COMP_CWORD-13: opennic
+        #    #COMP_CWORD-12: --device
+        #    #COMP_CWORD-11: 1
+        #    #COMP_CWORD-10: --commit
+        #    #COMP_CWORD-9: 8077751
+        #    #COMP_CWORD-8: --fec
+        #    #COMP_CWORD-7: 0
+        #    #COMP_CWORD-6: --project
+        #    #COMP_CWORD-5: my_project
+        #    #COMP_CWORD-4: --remote
+        #    #COMP_CWORD-3: 0
+        #    #COMP_CWORD-2: --xdp
+        #    #COMP_CWORD-1: 0
+        #
+        #    Use echo "-14: ${COMP_WORDS[COMP_CWORD-14]}" for discovery
+        #
+        #    ;;
         *)
             COMPREPLY=()
             ;;
