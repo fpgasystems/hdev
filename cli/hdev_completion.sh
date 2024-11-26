@@ -571,8 +571,29 @@ _hdev_completions()
 
             ;;
         9)
-            echo "hey it is 9!"
+            #three flags are already present
+            #program opennic --device 1 --commit 8077751 --fec 1 --
+            #COMP_CWORD-8: program
+            #COMP_CWORD-7: opennic
+            #COMP_CWORD-6: --device
+            #COMP_CWORD-5: 1
+            #COMP_CWORD-4: --commit
+            #COMP_CWORD-3: 8077751
+            #COMP_CWORD-2: --fec
+            #COMP_CWORD-1: 0
+            
+            previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}")
 
+            #program opennic
+            if [[ "${COMP_WORDS[COMP_CWORD-8]}" == "program" && "${COMP_WORDS[COMP_CWORD-7]}" == "opennic" ]]; then
+                remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
+                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            fi
+
+            ;;
+        11)
+
+            #echo "hey it is 11!"
             #echo "-8: ${COMP_WORDS[COMP_CWORD-8]}"
             #echo "-7: ${COMP_WORDS[COMP_CWORD-7]}"
             #echo "-6: ${COMP_WORDS[COMP_CWORD-6]}"
@@ -581,7 +602,6 @@ _hdev_completions()
             #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
             #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
             #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-
             ;;
         *)
             COMPREPLY=()
