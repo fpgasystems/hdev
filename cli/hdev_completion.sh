@@ -305,11 +305,11 @@ _hdev_completions()
                         opennic)
                             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                                 #platform is not offered
-                                COMPREPLY=($(compgen -W "--commit --project --help" -- ${cur}))
-                                #COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
+                                #COMPREPLY=($(compgen -W "--commit --project --help" -- ${cur}))
+                                COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
                             elif [ "$is_vivado_developer" = "1" ]; then
-                                COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
-                                #COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
+                                #COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
+                                COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --platform --help" -- "${cur}"))
                             fi
                             ;;
                     esac
@@ -493,19 +493,28 @@ _hdev_completions()
                             #--commit --platform --project
                             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                                 #platform is not offered
-                                if [ "$flag_1" = "--commit" ]; then
-                                    COMPREPLY=($(compgen -W "--project" -- ${cur}))
-                                elif [ "$flag_1" = "--project" ]; then
-                                    COMPREPLY=($(compgen -W "--commit" -- ${cur}))
-                                fi
+                                #if [ "$flag_1" = "--commit" ]; then
+                                #    COMPREPLY=($(compgen -W "--project" -- ${cur}))
+                                #elif [ "$flag_1" = "--project" ]; then
+                                #    COMPREPLY=($(compgen -W "--commit" -- ${cur}))
+                                #fi
+                                
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]}")
+                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+
+
                             elif [ "$is_vivado_developer" = "1" ]; then
-                                if [ "$flag_1" = "--commit" ]; then
-                                    COMPREPLY=($(compgen -W "--platform --project" -- ${cur}))
-                                elif [ "$flag_1" = "--platform" ]; then
-                                    COMPREPLY=($(compgen -W "--commit --project" -- ${cur}))
-                                elif [ "$flag_1" = "--project" ]; then
-                                    COMPREPLY=($(compgen -W "--commit --platform" -- ${cur}))
-                                fi
+                                
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
+                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                                
+                                #if [ "$flag_1" = "--commit" ]; then
+                                #    COMPREPLY=($(compgen -W "--platform --project" -- ${cur}))
+                                #elif [ "$flag_1" = "--platform" ]; then
+                                #    COMPREPLY=($(compgen -W "--commit --project" -- ${cur}))
+                                #elif [ "$flag_1" = "--project" ]; then
+                                #    COMPREPLY=($(compgen -W "--commit --platform" -- ${cur}))
+                                #fi
                             fi
                             ;;
                     esac
