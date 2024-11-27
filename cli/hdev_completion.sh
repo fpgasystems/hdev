@@ -477,6 +477,18 @@ _hdev_completions()
                     ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        driver)
+                            if [ "${COMP_WORDS[COMP_CWORD-2]}" = "--insert" ]; then
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--params --remote")
+                            elif [ "${COMP_WORDS[COMP_CWORD-2]}" = "--params" ]; then
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --remote") #per aci......
+                            elif [ "${COMP_WORDS[COMP_CWORD-2]}" = "--remote" ]; then
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --params")
+                            elif [ "${COMP_WORDS[COMP_CWORD-2]}" = "--remove" ]; then
+                                remaining_flags=""
+                            fi
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -484,19 +496,6 @@ _hdev_completions()
                     esac
                     ;;
             esac
-            
-            #get)
-            #    case "${COMP_WORDS[COMP_CWORD-3]}" in
-            #        ifconfig)
-            #            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_IFCONFIG_FLAGS[*]}")
-            #            ;;
-            #        network)
-            #            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_NETWORKFLAGS[*]}")
-            #            ;;
-            #    esac
-            #    ;;
-
-
             ;;
         7)
             #two flags are already present
@@ -535,6 +534,10 @@ _hdev_completions()
                     ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        driver)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --params --remote")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -643,9 +646,9 @@ _hdev_completions()
         #    #COMP_CWORD-1: 0
         #
         #    For extending the code: 
-        #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}" for discovery
+        #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
         #        ...
-        #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}" for discovery
+        #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
         #        echo "previous_flags: ${previous_flags[@]}"
         #        echo "remaining_flags: ${remaining_flags[@]}"
         #
