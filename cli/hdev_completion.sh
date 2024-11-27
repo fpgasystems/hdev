@@ -37,6 +37,7 @@ OPENNIC_RUN_FLAGS=( "--commit" "--config" "--device" "--project" )
 PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
+SET_MTU_FLAGS=( "--device" "--port" "--value" )
 
 _hdev_completions()
 {
@@ -534,6 +535,14 @@ _hdev_completions()
                             ;;
                     esac
                     ;;
+                set)
+                    case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        mtu)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SET_MTU_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
             esac
             ;;
         7)
@@ -603,6 +612,14 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+                set)
+                    case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        mtu)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SET_MTU_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
