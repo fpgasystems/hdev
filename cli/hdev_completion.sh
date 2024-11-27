@@ -309,10 +309,12 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         ifconfig) 
-                            COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${GET_IFCONFIG_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         network) 
-                            COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${GET_NETWORK_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         platform) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
@@ -346,29 +348,34 @@ _hdev_completions()
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         aved)
-                            COMPREPLY=($(compgen -W "--project --push --tag --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--project --push --tag --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${AVED_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         hip)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --project --push --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--commit --project --push --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                     esac
                     ;;
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         aved)
-                            COMPREPLY=($(compgen -W "--device --project --tag --remote --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--device --project --tag --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${AVED_PROGRAM_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         bitstream) 
-                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${PROGRAM_BITSTREAM_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
                         image)
-                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${PROGRAM_IMAGE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_PROGRAM_FLAGS[*]} --help" -- "${cur}"))
@@ -377,20 +384,24 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         revert)
-                            COMPREPLY=($(compgen -W "--device --remote --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--device --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${PROGRAM_REVERT_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                     esac
                     ;;
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         aved)
-                            COMPREPLY=($(compgen -W "--config --device --project --tag --help" -- ${cur})) 
+                            #COMPREPLY=($(compgen -W "--config --device --project --tag --help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "${AVED_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         hip)
-                            COMPREPLY=($(compgen -W "--device --project --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--device --project --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${HIP_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --config --device --project --help" -- ${cur})) 
+                            #COMPREPLY=($(compgen -W "--commit --config --device --project --help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                     esac
                     ;;
@@ -406,7 +417,8 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
                         mtu)
-                            COMPREPLY=($(compgen -W "--device --port --value --help" -- ${cur})) 
+                            #COMPREPLY=($(compgen -W "--device --port --value --help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "${SET_MTU_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                     esac
                     ;;
@@ -422,7 +434,8 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --device --fec --help" -- ${cur}))
+                            #COMPREPLY=($(compgen -W "--commit --device --fec --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${OPENNIC_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         vitis) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
