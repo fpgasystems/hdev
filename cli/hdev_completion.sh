@@ -24,6 +24,8 @@ vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] &
 
 #flags
 AVED_BUILD_FLAGS=( "--project" "--tag" )
+GET_IFCONFIG_FLAGS=( "--device" "--port" )
+GET_NETWORKFLAGS=( "--device" "--port" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" "--xdp" )
 
@@ -433,18 +435,25 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         aved)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_BUILD_FLAGS[*]}")
-                            #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
                             #--commit --platform --project
                             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                                 #platform is not offered
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]}")
-                                #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             elif [ "$is_vivado_developer" = "1" ]; then
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
-                                #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             fi
+                            ;;
+                    esac
+                    ;;
+                get)
+                    case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        ifconfig)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_IFCONFIG_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
@@ -452,12 +461,24 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
-                            #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
             esac
-            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            
+            #get)
+            #    case "${COMP_WORDS[COMP_CWORD-3]}" in
+            #        ifconfig)
+            #            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_IFCONFIG_FLAGS[*]}")
+            #            ;;
+            #        network)
+            #            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_NETWORKFLAGS[*]}")
+            #            ;;
+            #    esac
+            #    ;;
+
+
             ;;
         7)
             #two flags are already present
@@ -477,7 +498,7 @@ _hdev_completions()
                         opennic)
                             if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
-                                #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             fi
                             ;;
                     esac
@@ -485,13 +506,12 @@ _hdev_completions()
                 program)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
                         opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")           
-                            #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
             esac
-            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             ;;
         9)
             #three flags are already present
@@ -511,13 +531,12 @@ _hdev_completions()
                 program)
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
                         opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-                            #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
             esac
-            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             ;;
         11)
             #four flags are already present
@@ -539,13 +558,12 @@ _hdev_completions()
                 program)
                     case "${COMP_WORDS[COMP_CWORD-9]}" in
                         opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-                            #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
             esac
-            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             ;;
         13)
             #five flags are already present
@@ -569,13 +587,12 @@ _hdev_completions()
                 program)
                     case "${COMP_WORDS[COMP_CWORD-11]}" in
                         opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-                            #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
             esac
-            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             ;;
         #15)
         #    #six flags are already present
