@@ -26,6 +26,7 @@ vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] &
 AVED_BUILD_FLAGS=( "--project" "--tag" )
 AVED_NEW_FLAGS=( "--project" "--push" "--tag" )
 AVED_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
+AVED_RUN_FLAGS=( "--config" "--device" "--project" "--tag" )
 GET_IFCONFIG_FLAGS=( "--device" "--port" )
 GET_NETWORKFLAGS=( "--device" "--port" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
@@ -515,6 +516,14 @@ _hdev_completions()
                             ;;
                     esac
                     ;;
+                run)
+                    case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
             esac
             ;;
         7)
@@ -576,6 +585,14 @@ _hdev_completions()
                             ;;
                     esac
                     ;;
+                run)
+                    case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
             esac
             ;;
         9)
@@ -601,6 +618,14 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+                run)
+                    case "${COMP_WORDS[COMP_CWORD-7]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
