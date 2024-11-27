@@ -258,10 +258,8 @@ _hdev_completions()
                         opennic)
                             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                                 #platform is not offered
-                                #COMPREPLY=($(compgen -W "--commit --project --help" -- ${cur}))
                                 COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
                             elif [ "$is_vivado_developer" = "1" ]; then
-                                #COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
                                 COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --platform --help" -- "${cur}"))
                             fi
                             ;;
