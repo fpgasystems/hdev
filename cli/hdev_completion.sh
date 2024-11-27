@@ -34,6 +34,7 @@ OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" "--xdp" )
 OPENNIC_RUN_FLAGS=( "--commit" "--config" "--device" "--project" )
+OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
 PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
@@ -543,6 +544,14 @@ _hdev_completions()
                             ;;
                     esac
                     ;;
+                validate)
+                    case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_VALIDATE_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
             esac
             ;;
         7)
@@ -620,6 +629,14 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
                         mtu)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SET_MTU_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+                validate)
+                    case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_VALIDATE_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
