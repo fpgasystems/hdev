@@ -33,6 +33,7 @@ OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" "--xdp" )
 PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
+PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 
 _hdev_completions()
 {
@@ -506,6 +507,10 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        revert)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_REVERT_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
