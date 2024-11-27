@@ -521,11 +521,21 @@ _hdev_completions()
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}")
 
             #program opennic
-            if [[ "${COMP_WORDS[COMP_CWORD-8]}" == "program" && "${COMP_WORDS[COMP_CWORD-7]}" == "opennic" ]]; then
-                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            fi
+            #if [[ "${COMP_WORDS[COMP_CWORD-8]}" == "program" && "${COMP_WORDS[COMP_CWORD-7]}" == "opennic" ]]; then
+            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
+            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            #fi
 
+            case "${COMP_WORDS[COMP_CWORD-8]}" in
+                program)
+                    case "${COMP_WORDS[COMP_CWORD-7]}" in
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+            esac
             ;;
         11)
             #four flags are already present
@@ -544,11 +554,21 @@ _hdev_completions()
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}")
 
             #program opennic
-            if [[ "${COMP_WORDS[COMP_CWORD-10]}" == "program" && "${COMP_WORDS[COMP_CWORD-9]}" == "opennic" ]]; then
-                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            fi
+            #if [[ "${COMP_WORDS[COMP_CWORD-10]}" == "program" && "${COMP_WORDS[COMP_CWORD-9]}" == "opennic" ]]; then
+            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
+            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            #fi
 
+            case "${COMP_WORDS[COMP_CWORD-10]}" in
+                program)
+                    case "${COMP_WORDS[COMP_CWORD-9]}" in
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+            esac
             ;;
         13)
             #five flags are already present
@@ -569,10 +589,21 @@ _hdev_completions()
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}" "${COMP_WORDS[COMP_CWORD-10]}")
 
             #program opennic
-            if [[ "${COMP_WORDS[COMP_CWORD-12]}" == "program" && "${COMP_WORDS[COMP_CWORD-11]}" == "opennic" ]]; then
-                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            fi
+            #if [[ "${COMP_WORDS[COMP_CWORD-12]}" == "program" && "${COMP_WORDS[COMP_CWORD-11]}" == "opennic" ]]; then
+            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
+            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            #fi
+
+            case "${COMP_WORDS[COMP_CWORD-12]}" in
+                program)
+                    case "${COMP_WORDS[COMP_CWORD-11]}" in
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+            esac
             ;;
         #15)
         #    #six flags are already present
