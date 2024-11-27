@@ -32,6 +32,7 @@ OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" "--xdp" )
 PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
+PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 
 _hdev_completions()
 {
@@ -499,6 +500,10 @@ _hdev_completions()
                             fi
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        image)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_IMAGE_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -554,6 +559,10 @@ _hdev_completions()
                             ;;
                         driver)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --params --remote")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        image)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_IMAGE_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
