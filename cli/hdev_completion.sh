@@ -471,18 +471,40 @@ _hdev_completions()
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
             #build opennic
-            if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "build" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
-                if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
-                    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                fi
-            fi
+            #if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "build" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
+            #    if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+            #        remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
+            #        COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            #    fi
+            #fi
             
             #program opennic
-            if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "program" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
-                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")           
-                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            fi
+            #if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "program" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
+            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")           
+            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            #fi
+            #;;
+
+            case "${COMP_WORDS[COMP_CWORD-6]}" in
+                build)
+                    case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        opennic)
+                            if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
+                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            fi
+                            ;;
+                    esac
+                    ;;
+                program)
+                    case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")           
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+            esac
             ;;
         9)
             #three flags are already present
