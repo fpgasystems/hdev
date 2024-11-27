@@ -470,11 +470,13 @@ device_check() {
   device_found=$(echo "$result" | sed -n '1p')
   device_index=$(echo "$result" | sed -n '2p')
   #forbidden combinations
-  if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && [ "$device_index" -ne 1 ]) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-      echo ""
-      echo $CHECK_ON_DEVICE_ERR_MSG
-      echo ""
-      exit
+  if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || 
+     ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && ! [[ "$device_index" =~ ^[0-9]+$ ]]) || 
+     ([ "$device_found" = "1" ] && (! [[ "$device_index" =~ ^[0-9]+$ ]] || [[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+       echo ""
+       echo "$CHECK_ON_DEVICE_ERR_MSG"
+       echo ""
+       exit
   fi
 }
 
@@ -817,12 +819,12 @@ port_check() {
   else
     #forbidden combinations
     if   [ "$port_found" = "0" ] || \
-      ([[ "$port_found" = "1" ]] && [[ -z "$port_index" ]]) || \
-      ([[ "$port_found" = "1" ]] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
-          echo ""
-          echo $CHECK_ON_PORT_ERR_MSG
-          echo ""
-          exit
+          ([[ "$port_found" = "1" ]] && [[ -z "$port_index" ]]) || \
+          ([[ "$port_found" = "1" ]] && (! [[ "$port_index" =~ ^[0-9]+$ ]] || [[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
+        echo ""
+        echo "$CHECK_ON_PORT_ERR_MSG"
+        echo ""
+        exit
     fi
   fi
 }
@@ -1142,7 +1144,8 @@ value_check() {
       exit
   fi
   # Check if MTU_VALUE is a valid integer and within the valid range
-  if ! [[ "$value" =~ ^[0-9]+$ ]] || [ "$value" -lt "$VALUE_MIN" ] || [ "$value" -gt "$VALUE_MAX" ]; then
+  if ! [[ "$value" =~ ^[0-9]+$ ]] || ! [[ "$VALUE_MIN" =~ ^[0-9]+$ ]] || ! [[ "$VALUE_MAX" =~ ^[0-9]+$ ]] || \
+    [ "$value" -lt "$VALUE_MIN" ] || [ "$value" -gt "$VALUE_MAX" ]; then
       echo ""
       echo "$CHECK_ON_VALUE_ERR_MSG"
       echo ""
