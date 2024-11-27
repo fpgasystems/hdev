@@ -470,21 +470,6 @@ _hdev_completions()
 
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
-            #build opennic
-            #if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "build" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
-            #    if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-            #        remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
-            #        COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #    fi
-            #fi
-            
-            #program opennic
-            #if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "program" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
-            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")           
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
-            #;;
-
             case "${COMP_WORDS[COMP_CWORD-6]}" in
                 build)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
@@ -520,12 +505,6 @@ _hdev_completions()
             
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}")
 
-            #program opennic
-            #if [[ "${COMP_WORDS[COMP_CWORD-8]}" == "program" && "${COMP_WORDS[COMP_CWORD-7]}" == "opennic" ]]; then
-            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
-
             case "${COMP_WORDS[COMP_CWORD-8]}" in
                 program)
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
@@ -552,12 +531,6 @@ _hdev_completions()
             #COMP_CWORD-1: my_project
 
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}")
-
-            #program opennic
-            #if [[ "${COMP_WORDS[COMP_CWORD-10]}" == "program" && "${COMP_WORDS[COMP_CWORD-9]}" == "opennic" ]]; then
-            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
 
             case "${COMP_WORDS[COMP_CWORD-10]}" in
                 program)
@@ -587,12 +560,6 @@ _hdev_completions()
             #COMP_CWORD-1: 0
 
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}" "${COMP_WORDS[COMP_CWORD-10]}")
-
-            #program opennic
-            #if [[ "${COMP_WORDS[COMP_CWORD-12]}" == "program" && "${COMP_WORDS[COMP_CWORD-11]}" == "opennic" ]]; then
-            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
 
             case "${COMP_WORDS[COMP_CWORD-12]}" in
                 program)
