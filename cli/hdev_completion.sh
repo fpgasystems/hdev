@@ -24,6 +24,7 @@ vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] &
 
 #flags
 AVED_BUILD_FLAGS=( "--project" "--tag" )
+AVED_NEW_FLAGS=( "--project" "--push" "--tag" )
 GET_IFCONFIG_FLAGS=( "--device" "--port" )
 GET_NETWORKFLAGS=( "--device" "--port" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
@@ -461,6 +462,14 @@ _hdev_completions()
                             ;;
                     esac
                     ;;
+                new)
+                    case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         opennic)
@@ -504,6 +513,14 @@ _hdev_completions()
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
                                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             fi
+                            ;;
+                    esac
+                    ;;
+                new)
+                    case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
