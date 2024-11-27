@@ -25,6 +25,7 @@ vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] &
 #flags
 AVED_BUILD_FLAGS=( "--project" "--tag" )
 AVED_NEW_FLAGS=( "--project" "--push" "--tag" )
+AVED_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 GET_IFCONFIG_FLAGS=( "--device" "--port" )
 GET_NETWORKFLAGS=( "--device" "--port" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
@@ -477,11 +478,15 @@ _hdev_completions()
                     ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         driver)
                             if [ "${COMP_WORDS[COMP_CWORD-2]}" = "--insert" ]; then
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--params --remote")
                             elif [ "${COMP_WORDS[COMP_CWORD-2]}" = "--params" ]; then
-                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --remote") #per aci......
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --remote")
                             elif [ "${COMP_WORDS[COMP_CWORD-2]}" = "--remote" ]; then
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --params")
                             elif [ "${COMP_WORDS[COMP_CWORD-2]}" = "--remove" ]; then
@@ -534,6 +539,10 @@ _hdev_completions()
                     ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         driver)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --params --remote")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -563,6 +572,10 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-8]}" in
                 program)
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
+                        aved)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
