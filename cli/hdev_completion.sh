@@ -620,22 +620,27 @@ _hdev_completions()
 
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
-                #build opennic
-                #if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "build" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
-                #    if [ "$is_build" = "1" ]; then
-                #        #echo "is_build in 7: $is_build"
-                #        #echo "-4: ${COMP_WORDS[COMP_CWORD-6]}"
-                #        #echo "-4: ${COMP_WORDS[COMP_CWORD-5]}"
-                #        #echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
-                #        #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
-                #        #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
-                #        #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-                #        #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_0[@]}")
-                #    #else
-                #        remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_1[@]}")
-                #        COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                #    fi
-                #fi
+            #build opennic
+            if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "build" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
+                if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
+                    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                fi
+                
+            #    if [ "$is_build" = "1" ]; then
+            #        #echo "is_build in 7: $is_build"
+            #        #echo "-4: ${COMP_WORDS[COMP_CWORD-6]}"
+            #        #echo "-4: ${COMP_WORDS[COMP_CWORD-5]}"
+            #        #echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
+            #        #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
+            #        #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
+            #        #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
+            #        #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_0[@]}")
+            #    #else
+            #        remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_1[@]}")
+            #        COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+            #    fi
+            fi
             
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "program" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
