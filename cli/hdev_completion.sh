@@ -27,53 +27,6 @@ AVED_BUILD_FLAGS=( "--project" "--tag" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" "--xdp" )
 
-
-#get_remaining_flags_5() {
-#    local previous_flags=$1
-#    shift 1
-#    local FLAGS=("$@")
-#    local remaining_flags=()
-#
-#    for flag in "${FLAGS[@]}"; do
-#        if [[ "$flag" != "$previous_flags" ]]; then
-#            remaining_flags+=("$flag")
-#        fi
-#    done
-#
-#    # Print the resulting array as a space-separated string
-#    echo "${remaining_flags[@]}"
-#}
-
-#get_remaining_flags() {
-#    # First argument: Array name containing previous flags
-#    local -a previous_flags=("${!1}")  # Expand the array passed by reference
-#    # Remaining arguments: All available flags
-#    shift
-#    local -a FLAGS=("$@")
-#
-#    #echo "previous_flags_inside: ${previous_flags[@]}"
-#    #echo "FLAGS_inside: ${FLAGS[@]}"
-#
-#    # Array to hold remaining flags
-#    local -a remaining_flags=()
-#
-#    for flag in "${FLAGS[@]}"; do
-#        local exclude=false
-#        for prev_flag in "${previous_flags[@]}"; do
-#            if [[ "$flag" == "$prev_flag" ]]; then
-#                exclude=true
-#                break
-#            fi
-#        done
-#        if [[ "$exclude" == false ]]; then
-#            remaining_flags+=("$flag")
-#        fi
-#    done
-#
-#    # Return the remaining flags as space-separated values
-#    echo "${remaining_flags[@]}"
-#}
-
 _hdev_completions()
 {
     local cur
@@ -475,17 +428,12 @@ _hdev_completions()
             #COMP_CWORD-2: --device (flag_1)
             #COMP_CWORD-1: 1
 
-            #previous_flags=${COMP_WORDS[COMP_CWORD-2]}
-
-            #flag_1=${COMP_WORDS[COMP_CWORD-2]}
-
             previous_flags=( "${COMP_WORDS[COMP_CWORD-2]}" )
 
             case "${COMP_WORDS[COMP_CWORD-4]}" in
                 build)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         aved)
-                            #remaining_flags=$(get_remaining_flags previous_flags[@] "${AVED_BUILD_FLAGS[@]}")
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_BUILD_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
@@ -493,28 +441,11 @@ _hdev_completions()
                             #--commit --platform --project
                             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                                 #platform is not offered
-                                #if [ "$flag_1" = "--commit" ]; then
-                                #    COMPREPLY=($(compgen -W "--project" -- ${cur}))
-                                #elif [ "$flag_1" = "--project" ]; then
-                                #    COMPREPLY=($(compgen -W "--commit" -- ${cur}))
-                                #fi
-                                
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]}")
                                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-
-
                             elif [ "$is_vivado_developer" = "1" ]; then
-                                
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
                                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                                
-                                #if [ "$flag_1" = "--commit" ]; then
-                                #    COMPREPLY=($(compgen -W "--platform --project" -- ${cur}))
-                                #elif [ "$flag_1" = "--platform" ]; then
-                                #    COMPREPLY=($(compgen -W "--commit --project" -- ${cur}))
-                                #elif [ "$flag_1" = "--project" ]; then
-                                #    COMPREPLY=($(compgen -W "--commit --platform" -- ${cur}))
-                                #fi
                             fi
                             ;;
                     esac
@@ -522,7 +453,6 @@ _hdev_completions()
                 program)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         opennic)
-                            #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
@@ -530,57 +460,6 @@ _hdev_completions()
                     ;;
             esac
             ;;
-
-            
-
-            #previous_flags=${COMP_WORDS[COMP_CWORD-2]}
-
-            #build aved
-            #if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "build" && "${COMP_WORDS[COMP_CWORD-3]}" == "aved" ]]; then
-            #    remaining_flags=$(get_remaining_flags previous_flags[@] "${AVED_BUILD_FLAGS[@]}")
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
-
-            #build opennic
-            #if [[ "$is_build" == "0" ]] && [[ "${COMP_WORDS[COMP_CWORD-4]}" == "build" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
-            #if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "build" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
-            #    remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS[@]}")
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
-            #if [[ "$is_build" == "1" ]] && [[ "${COMP_WORDS[COMP_CWORD-4]}" == "build" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
-            #    remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS[@]}")
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
-
-
-            #if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "build" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
-            #    if [ "$is_build" = "0" ]; then
-            #        remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_0[@]}")
-            #        COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #    else
-            #        #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_1[@]}")
-            #        #echo "you are here!"
-            #        #echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
-            #        #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
-            #        #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
-            #        #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-            #        echo "previous_flags: ${previous_flags[@]}"
-            #        #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_1[@]}")
-            #
-            #        remaining_flags=$(get_remaining_flags_5 "$previous_flag" "${OPENNIC_BUILD_FLAGS_0[@]}")
-            #
-            #        echo "remaining_flags: ${remaining_flags[@]}"
-            #        #COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #    fi
-            #fi
-            
-            #program opennic
-            #if [[ "${COMP_WORDS[COMP_CWORD-4]}" == "program" && "${COMP_WORDS[COMP_CWORD-3]}" == "opennic" ]]; then
-            #    #echo "I am here!"
-            #    remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
-            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #fi
-            #;;
         7)
             #two flags are already present
             #program opennic --device 1 --commit 8077751 --
@@ -591,33 +470,6 @@ _hdev_completions()
             #COMP_CWORD-2: --commit (flag_2)
             #COMP_CWORD-1: 8077751
 
-            #flag_1=${COMP_WORDS[COMP_CWORD-4]}
-            #flag_2=${COMP_WORDS[COMP_CWORD-2]}
-
-            #case "${COMP_WORDS[COMP_CWORD-6]}" in
-            #    build)
-            #        case "${COMP_WORDS[COMP_CWORD-5]}" in
-            #            opennic)
-            #                #--commit --platform --project
-            #                if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-            #                    if [ "$flag_1" = "--commit" ] && [ "$flag_2" = "--platform" ]; then
-            #                        COMPREPLY=($(compgen -W "--project" -- ${cur}))
-            #                    elif [ "$flag_1" = "--commit" ] && [ "$flag_2" = "--project" ]; then
-            #                        COMPREPLY=($(compgen -W "--platform" -- ${cur}))
-            #                    elif [ "$flag_1" = "--project" ]; then
-            #                        COMPREPLY=($(compgen -W "--commit --platform" -- ${cur}))
-            #                    fi
-            #                fi
-            #                ;;
-            #        esac
-            #        ;;
-            #esac
-            #;;
-            
-
-
-
-
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}")
 
             #build opennic
@@ -626,25 +478,10 @@ _hdev_completions()
                     remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
                     COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                 fi
-                
-            #    if [ "$is_build" = "1" ]; then
-            #        #echo "is_build in 7: $is_build"
-            #        #echo "-4: ${COMP_WORDS[COMP_CWORD-6]}"
-            #        #echo "-4: ${COMP_WORDS[COMP_CWORD-5]}"
-            #        #echo "-4: ${COMP_WORDS[COMP_CWORD-4]}"
-            #        #echo "-3: ${COMP_WORDS[COMP_CWORD-3]}"
-            #        #echo "-2: ${COMP_WORDS[COMP_CWORD-2]}"
-            #        #echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-            #        #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_0[@]}")
-            #    #else
-            #        remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_BUILD_FLAGS_1[@]}")
-            #        COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-            #    fi
             fi
             
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-6]}" == "program" && "${COMP_WORDS[COMP_CWORD-5]}" == "opennic" ]]; then
-                #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")           
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
@@ -665,7 +502,6 @@ _hdev_completions()
 
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-8]}" == "program" && "${COMP_WORDS[COMP_CWORD-7]}" == "opennic" ]]; then
-                #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
@@ -689,7 +525,6 @@ _hdev_completions()
 
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-10]}" == "program" && "${COMP_WORDS[COMP_CWORD-9]}" == "opennic" ]]; then
-                #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
@@ -715,7 +550,6 @@ _hdev_completions()
 
             #program opennic
             if [[ "${COMP_WORDS[COMP_CWORD-12]}" == "program" && "${COMP_WORDS[COMP_CWORD-11]}" == "opennic" ]]; then
-                #remaining_flags=$(get_remaining_flags previous_flags[@] "${OPENNIC_PROGRAM_FLAGS[@]}")
                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")        
                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
             fi
