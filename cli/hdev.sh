@@ -322,7 +322,8 @@ config_dialog() {
   local project_name=$5
   #local file_name=$6
   local config_prefix=$6
-  shift 6
+  local add_echo=$7
+  shift 7
   local flags_array=("$@")
 
   config_found=""
@@ -352,7 +353,7 @@ config_dialog() {
     fi
     echo ""
   else
-    config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "$project_name" "$config_prefix" "${flags_array[@]}"
+    config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "$project_name" "$config_prefix" "$add_echo" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $config_found = "0" ]]; then
         #echo ""
@@ -380,7 +381,8 @@ config_check() {
   local commit_name=$4
   local project_name=$5
   local config_prefix=$6
-  shift 6
+  local add_echo=$7
+  shift 7
   local flags_array=("$@")
   result="$("$CLI_PATH/common/config_dialog_check" "${flags_array[@]}")"
   config_found=$(echo "$result" | sed -n '1p')
@@ -398,7 +400,10 @@ config_check() {
       echo ""
       exit 1
   elif [ "$config_found" = "1" ] && ([ "$config_index" = "" ] || [ "$config_index" = "0" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$config_name" ]); then #implies that --project must be specified
-      echo ""
+      #echo "HEY, project_name: $project_name"
+      if [ "$add_echo" = "yes" ]; then
+        echo ""
+      fi
       echo $CHECK_ON_CONFIG_ERR_MSG
       echo ""
       exit 1
@@ -3111,7 +3116,7 @@ case "$command" in
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
           if [ "$project_found" = "1" ]; then
-            config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+            config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "yes" "${flags_array[@]}"
           fi
         fi
 
@@ -3126,6 +3131,10 @@ case "$command" in
         #  fi
         #fi
 
+        if [ "$project_found" = "0" ]; then
+          add_echo="no"
+        fi
+
         #dialogs
         #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
@@ -3133,7 +3142,7 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
         if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/$config_name" ]; then
             echo ""
             echo "$CHECK_ON_CONFIG_ERR_MSG"
@@ -3212,7 +3221,7 @@ case "$command" in
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           if [ "$project_found" = "1" ]; then
-            config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+            config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "yes" "${flags_array[@]}"
           fi
         fi
 
@@ -3226,14 +3235,18 @@ case "$command" in
               exit
           fi
         fi
-        
+
+        if [ "$project_found" = "0" ]; then
+          add_echo="no"
+        fi
+
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
         if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
             echo ""
             echo "$CHECK_ON_CONFIG_ERR_MSG"
