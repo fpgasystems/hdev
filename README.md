@@ -41,7 +41,7 @@ If you use **hdev** in your work, we kindly request that you cite it as follows:
 
 ```
 @misc{moya2024-hdev,
-  author       = {Javier Moya and Gustavo Alonso},
+  author       = {Javier Moya, Mario Ruiz, Gustavo Alonso},
   title        = {fpgasystems/hdev: HACC Development},
   howpublished = {Zenodo},
   year         = {2024},
