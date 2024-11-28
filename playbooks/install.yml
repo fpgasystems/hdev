@@ -1,14 +1,14 @@
 ---
 
 - hosts: 
-    - hacc_build 
+    #- hacc_build 
     #- alveo_u50d
     #- alveo_u55c
     #- versal_v80
     #- hacc_boxes
     #- alveo-u55c-01.inf.ethz.ch
-    - versal-v80-04.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    #- versal-v80-04.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -26,7 +26,7 @@
     aved: false
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
@@ -657,76 +657,76 @@
     
     #deleting files
     #api
-    - name: deleting api
-      file:
-        path: "{{ hdev_base_path }}/api"
-        state: absent
+    #- name: deleting api
+    #  file:
+    #    path: "{{ hdev_base_path }}/api"
+    #    state: absent
     #build
-    - name: deleting build scripts
-      file:
-        path: "{{ cli_path }}/build/{{ item }}"
-        state: absent
-      loop:
-        - shell
+    #- name: deleting build scripts
+    #  file:
+    #    path: "{{ cli_path }}/build/{{ item }}"
+    #    state: absent
+    #  loop:
+    #    - shell
     #common
-    - name: deleting common scripts
-      file:
-        path: "{{ cli_path }}/common/{{ item }}"
-        state: absent
-      loop:
-        - check_on_vivado
-        - remote_dialog
-        - is_enabled
-        - is_cpu
-        - enable_integrations
-        - get_email
+    #- name: deleting common scripts
+    #  file:
+    #    path: "{{ cli_path }}/common/{{ item }}"
+    #    state: absent
+    #  loop:
+    #    - check_on_vivado
+    #    - remote_dialog
+    #    - is_enabled
+    #    - is_cpu
+    #    - enable_integrations
+    #    - get_email
     #constants
-    - name: deleting constants
-      file:
-        path: "{{ cli_path }}/constants/{{ item }}"
-        state: absent
-      loop:
-        - ONIC_COMMIT
-        - BITSTREAM_PATH
-        - BITSTREAMS_PATH
-        - VIVADO_DEVICES_MAX
-        - ONIC_BITSTREAM_NAME
-        - WORKFLOWS_PATH
-        - VITIS_COMMIT
-        - MPICH_PATH
-        - COYOTE_COMMIT
-        - CPU_SERVERS_LIST
+    #- name: deleting constants
+    #  file:
+    #    path: "{{ cli_path }}/constants/{{ item }}"
+    #    state: absent
+    #  loop:
+    #    - ONIC_COMMIT
+    #    - BITSTREAM_PATH
+    #    - BITSTREAMS_PATH
+    #    - VIVADO_DEVICES_MAX
+    #    - ONIC_BITSTREAM_NAME
+    #    - WORKFLOWS_PATH
+    #    - VITIS_COMMIT
+    #    - MPICH_PATH
+    #    - COYOTE_COMMIT
+    #    - CPU_SERVERS_LIST
     #coyote
-    - name: deleting coyote workflow
-      file:
-        path: "{{ cli_path }}/{{ item }}/coyote"
-        state: absent
-      loop:
-        - new
-        - build
-        - program
-        - run
-        - validate
+    #- name: deleting coyote workflow
+    #  file:
+    #    path: "{{ cli_path }}/{{ item }}/coyote"
+    #    state: absent
+    #  loop:
+    #    - new
+    #    - build
+    #    - program
+    #    - run
+    #    - validate
     #include folder
-    - name: deleting include folder
-      file:
-        path: "{{ hdev_base_path }}/include"
-        state: absent
+    #- name: deleting include folder
+    #  file:
+    #    path: "{{ hdev_base_path }}/include"
+    #    state: absent
     #iperf
-    - name: deleting iperf
-      file:
-        path: "{{ cli_path }}/validate/iperf"
-        state: absent
+    #- name: deleting iperf
+    #  file:
+    #    path: "{{ cli_path }}/validate/iperf"
+    #    state: absent
     #help
-    - name: deleting help scripts
-      file:
-        path: "{{ cli_path }}/help/{{ item }}"
-        state: absent
-      loop:
-        - opennic_validate
-        - update
-        - new_opennic
-        - program_vivado
+    #- name: deleting help scripts
+    #  file:
+    #    path: "{{ cli_path }}/help/{{ item }}"
+    #    state: absent
+    #  loop:
+    #    - opennic_validate
+    #    - update
+    #    - new_opennic
+    #    - program_vivado
     #get
     #- name: deleting get scripts
     #  file:
@@ -735,47 +735,47 @@
     #  loop:
     #    - partitions
     #mpi
-    - name: deleting mpi workflow
-      file:
-        path: "{{ cli_path }}/{{ item }}/mpi"
-        state: absent
-      loop:
-        - new
-        - build
-        - run
-        - validate
+    #- name: deleting mpi workflow
+    #  file:
+    #    path: "{{ cli_path }}/{{ item }}/mpi"
+    #    state: absent
+    #  loop:
+    #    - new
+    #    - build
+    #    - run
+    #    - validate
     #program
-    - name: deleting program scripts
-      file:
-        path: "{{ cli_path }}/program/{{ item }}"
-        state: absent
-      loop:
-        - enable_N_REGIONS
-        - enable_regions
-        - get_bus_device
-        - opennic_setpci
+    #- name: deleting program scripts
+    #  file:
+    #    path: "{{ cli_path }}/program/{{ item }}"
+    #    state: absent
+    #  loop:
+    #    - enable_N_REGIONS
+    #    - enable_regions
+    #    - get_bus_device
+    #    - opennic_setpci
     #update
-    - name: deleting update (from cli_path)
-      file:
-        path: "{{ cli_path }}/update"
-        state: absent
+    #- name: deleting update (from cli_path)
+    #  file:
+    #    path: "{{ cli_path }}/update"
+    #    state: absent
     #VERSION
-    - name: deleting VERSION
-      file:
-        path: "{{ hdev_base_path }}/VERSION"
-        state: absent
+    #- name: deleting VERSION
+    #  file:
+    #    path: "{{ hdev_base_path }}/VERSION"
+    #    state: absent
     #vitis
-    - name: deleting vitis workflow (validate stays)
-      file:
-        path: "{{ cli_path }}/{{ item }}/vitis"
-        state: absent
-      loop:
-        - new
-        - build
-        - program
-        - run
+    #- name: deleting vitis workflow (validate stays)
+    #  file:
+    #    path: "{{ cli_path }}/{{ item }}/vitis"
+    #    state: absent
+    #  loop:
+    #    - new
+    #    - build
+    #    - program
+    #    - run
     #vitis-ai
-    - name: deleting vitis-ai validation
-      file:
-        path: "{{ cli_path }}/validate/vitis-ai"
-        state: absent
+    #- name: deleting vitis-ai validation
+    #  file:
+    #    path: "{{ cli_path }}/validate/vitis-ai"
+    #    state: absent
