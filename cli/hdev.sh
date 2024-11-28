@@ -2823,17 +2823,22 @@ case "$command" in
         gh_check "$CLI_PATH"
       
         #check on flags
-        valid_flags="-c --commit -d --device -p --project -r --remote -h --help"
+        valid_flags="-c --commit -d --device -f --fec -p --project -r --remote -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
+
+        #initialize
+        fec_option_found="0"
+        fec_option=""
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          fec_check "$CLI_PATH" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
@@ -2844,6 +2849,28 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        #fec_dialog
+        if [ "$fec_option_found" = "0" ]; then
+          echo "${bold}Please, choose your encoding scheme:${normal}"
+          echo ""
+          echo "0) RS_FEC_ENABLED = 0"
+          echo "1) RS_FEC_ENABLED = 1"
+          while true; do
+              read -p "" choice
+              case $choice in
+                  "0")
+                      fec_option="0"
+                      break
+                      ;;
+                  "1")
+                      fec_option="1"
+                      break
+                      ;;
+              esac
+          done
+          echo ""
+        fi
         
         #bitstream check
         FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
@@ -2865,7 +2892,7 @@ case "$command" in
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       reset)
         #early exit

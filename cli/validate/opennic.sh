@@ -123,7 +123,7 @@ echo "num_phys_func = 1;" >> "$DIR/configs/device_config"
 echo "num_qdma = 1;" >> "$DIR/configs/device_config"
 echo "num_queue = 512;" >> "$DIR/configs/device_config"
 echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
-echo "rs_fec = $fec_option;" >> "$DIR/configs/device_config"
+#echo "rs_fec = $fec_option;" >> "$DIR/configs/device_config"
 chmod a-w "$DIR/configs/device_config"
 
 #host
@@ -231,7 +231,7 @@ fi
 #program opennic
 echo "${bold}$CLI_NAME program $WORKFLOW (commit ID: $commit_name_shell)${normal}"
 echo ""
-$CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --project $project_name --version $vivado_version --remote $DEPLOY_OPTION
+$CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $DEPLOY_OPTION
 
 #get system interfaces (after adding the OpenNIC interface)
 after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
@@ -270,7 +270,7 @@ if [[ $connected = "1" ]]; then
 
     if [ $return_code -eq 0 ]; then
         #get RS_FEC_ENABLED from .device_config
-        fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+        #fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
 
         #print
         echo -e "${COLOR_PASSED}OpenNIC validated on ${bold}$hostname (device $device_index)${normal}${COLOR_PASSED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"

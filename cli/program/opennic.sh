@@ -5,8 +5,8 @@ CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev program opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option 
-#example: /opt/hdev/cli/hdev program opennic --commit      8077751 --device             1 --project   hello_world --version          2022.1 --remote              0 
+#usage:       $CLI_PATH/hdev program opennic --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option 
+#example: /opt/hdev/cli/hdev program opennic --commit      8077751 --device             1 --fec           1 --project   hello_world --version          2022.1 --remote              0 
 
 #early exit
 url="${HOSTNAME}"
@@ -33,13 +33,14 @@ fi
 #inputs
 commit_name=$2
 device_index=$4
-project_name=$6
-vivado_version=$8
-deploy_option=${10}
-servers_family_list=${11}
+fec_option=$6
+project_name=$8
+vivado_version=${10}
+deploy_option=${12}
+servers_family_list=${13}
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$device_index" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$deploy_option" = "" ]; then
+if [ "$commit_name" = "" ] || [ "$device_index" = "" ] || [ "$fec_option" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$deploy_option" = "" ]; then
     exit
 fi
 
@@ -91,14 +92,14 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 $CLI_PATH/program/bitstream --path $DIR/$BITSTREAM_NAME --device $device_index --version $vivado_version --remote 0
 
 #get RS_FEC_ENABLED from .device_config
-rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+#rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
 
 #get actual filename (i.e. onik.ko without the path)
 driver_name_base=$(basename "$DRIVER_NAME")
 
 #insert driver (only if not present)
 if ! lsmod | grep -q ${driver_name_base%.ko}; then
-    eval "$CLI_PATH/program/driver -i $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=$rs_fec --remote 0"
+    eval "$CLI_PATH/program/driver -i $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=$fec_option --remote 0"
 fi
 
 #this gives time the driver binds the device properly
@@ -147,7 +148,7 @@ fi
 echo ""
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote 0"
+programming_string="$CLI_PATH/program/opennic --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
