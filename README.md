@@ -40,7 +40,7 @@ Overall, **hdev** helps create better acceleration solutions for research instit
 If you use **hdev** in your work, we kindly request that you cite it as follows:
 
 ```
-@misc{moya2024-hdev,
+@misc{moya2024hdev,
   author       = {Javier Moya, Mario Ruiz, Gustavo Alonso},
   title        = {fpgasystems/hdev: HACC Development},
   howpublished = {Zenodo},
