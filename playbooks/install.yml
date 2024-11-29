@@ -318,6 +318,7 @@
         - is_fpga
         - is_gpu
         - is_member
+        - is_nic
         - is_sudo
         - is_virtualized
         - mkdir
