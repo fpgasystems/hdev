@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new opennic --commit $comit_name_shell $comit_name_driver --project   $new_name --push $push_option
-#example: /opt/hdev/cli/hdev new opennic --commit            807775            1cf2578 --project hello_world --push            0
+#usage:       $CLI_PATH/hdev new xdp --commit $comit_name_shell $comit_name_driver --project   $new_name --push $push_option
+#example: /opt/hdev/cli/hdev new xdp --commit            807775            1cf2578 --project hello_world --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -64,7 +64,7 @@ GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NETWORKING_DEVICE_INDEX="1"
 NETWORKING_PORT_INDEX="1"
-WORKFLOW="opennic"
+WORKFLOW="xdp"
 
 #get devices number
 if [ -s "$DEVICES_LIST_NETWORKING" ]; then
@@ -93,7 +93,7 @@ else
 fi
 
 #clone repository
-$CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
+$CLI_PATH/common/git_clone_xdp $DIR $commit_name_shell $commit_name_driver
 
 #change to project directory
 #cd $DIR

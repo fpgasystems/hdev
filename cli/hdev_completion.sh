@@ -10,12 +10,14 @@ is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
 is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
 #check on groups
 IS_GPU_DEVELOPER="1"
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 
 #evaluate integrations
 gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
@@ -39,6 +41,7 @@ PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
+XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 
 _hdev_completions()
 {
@@ -94,6 +97,9 @@ _hdev_completions()
             fi
             if [ "$vivado_enabled" = "1" ]; then
                 commands="${commands} build new"
+            fi
+            if [ "$is_network_developer" = "1" ]; then
+                commands="${commands} new build run"
             fi
             if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                 commands="${commands} run"
@@ -171,6 +177,9 @@ _hdev_completions()
                     fi
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
+                    fi
+                    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+                        commands="${commands} xdp"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -353,6 +362,9 @@ _hdev_completions()
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        xdp)
+                            COMPREPLY=($(compgen -W "${XDP_NEW_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                     esac
                     ;;
                 program)
@@ -479,6 +491,10 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        xdp)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac

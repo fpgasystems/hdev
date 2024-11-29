@@ -12,13 +12,17 @@ is_asoc=$5
 is_build=$6
 is_fpga=$7
 is_gpu=$8
-is_gpu_developer=$9
-is_vivado_developer=${10}
+is_nic=$9
+is_gpu_developer=${10}
+is_vivado_developer=${11}
+is_network_developer=${12}
 
 #constants
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
+XDP_LIBBPF_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_LIBBPF_COMMIT)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -33,7 +37,7 @@ gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || 
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
-if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]; then
     if [ "$parameter" = "--help" ]; then
         echo ""
         echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"
@@ -49,6 +53,9 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         fi
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
+        fi
+        if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+        echo -e "   ${bold}xdp${normal}             - Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
         fi
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -104,8 +111,8 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
             echo ""
         fi
-    elif [ "$parameter" = "xdf" ]; then
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+    elif [ "$parameter" = "xdp" ]; then
+        if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new $parameter [flags] [--help]${normal}"
             echo ""

@@ -14,7 +14,6 @@ arguments=$2
 
 #constants
 AVED_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH AVED_DRIVER_NAME)
-#AVED_PARTITION_TYPE="primary"
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
@@ -35,6 +34,10 @@ ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
+XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
+XDP_BPFTOOL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_REPO)
+XDP_LIBBPF_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_LIBBPF_COMMIT)
+XDP_LIBBPF_REPO=$($CLI_PATH/common/get_constant $CLI_PATH XDP_LIBBPF_REPO)
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
@@ -55,11 +58,13 @@ is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
 is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
 #check on groups
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -1432,7 +1437,8 @@ new_help() {
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
+  is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_GPU_DEVELOPER $is_vivado_developer $is_network_developer
   exit
 }
 
@@ -1440,14 +1446,14 @@ new_aved_help() {
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" "0" $is_vivado_developer
   exit
 }
 
 new_hip_help() {
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" "0" "0" $is_build "0" $is_gpu $IS_GPU_DEVELOPER "0"
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
   exit
 }
 
@@ -1457,7 +1463,18 @@ new_opennic_help() {
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer
+  exit
+}
+
+new_xdp_help() {
+  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  #is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+  #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+  is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "xdp" "0" "0" "$is_build" "0" "0" $is_nic "0" "0" $is_network_developer
   exit
 }
 
@@ -2494,6 +2511,111 @@ case "$command" in
   
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --push $push_option
+        ;;
+      xdp)
+        #early exit
+        if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+            exit 1
+        fi
+
+        #check on groups
+        #vivado_developers_check "$USER"
+        
+        #check on software
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-c --commit --project --push -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+
+        echo "HEY I am here!"
+        exit
+
+
+        #check_on_commits
+        commit_found_bpftool=""
+        commit_name_bpftool=""
+        commit_found_libbpf=""
+        commit_name_libbpf=""
+        if [ "$flags_array" = "" ]; then
+            #commit dialog
+            commit_found_bpftool="1"
+            commit_found_libbpf="1"
+            commit_name_bpftool=$XDP_BPFTOOL_COMMIT
+            commit_name_libbpf=$XDP_LIBBPF_COMMIT
+            #checks (command line)
+            #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        else
+            #commit_dialog_check
+            result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
+            commit_found=$(echo "$result" | sed -n '1p')
+            commit_name=$(echo "$result" | sed -n '2p')
+
+            #check if commit_name is empty
+            if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
+                #$CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
+                exit
+            fi
+            
+            #check if commit_name contains exactly one comma
+            if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
+                echo ""
+                echo "Please, choose valid shell and driver commit IDs."
+                echo ""
+                exit
+            fi
+            
+            #get shell and driver commits (shell_commit,driver_commit)
+            commit_name_bpftool=${commit_name%%,*}
+            commit_name_libbpf=${commit_name#*,}
+
+            #check if commits exist
+            exists_shell=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_SHELL_REPO $commit_name_bpftool)
+            exists_driver=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_DRIVER_REPO $commit_name_libbpf)
+
+            if [ "$commit_found" = "0" ]; then 
+                commit_name_bpftool=$XDP_BPFTOOL_COMMIT
+                commit_name_libbpf=$XDP_LIBBPF_COMMIT
+            elif [ "$commit_found" = "1" ] && ([ "$commit_name_bpftool" = "" ] || [ "$commit_name_libbpf" = "" ]); then 
+                #$CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
+                exit
+            elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
+                if [ "$exists_shell" = "0" ]; then
+                  echo ""
+                  echo "Please, choose a valid shell commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
+                  echo ""
+                  exit 1
+                fi
+                if [ "$exists_driver" = "0" ]; then
+                  echo ""
+                  echo "Please, choose a valid driver commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
+                  echo ""
+                  exit 1
+                fi
+            fi
+        fi
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_bpftool" "${flags_array[@]}"
+          push_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_bpftool,$commit_name_libbpf)${normal}"
+        echo ""
+        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_bpftool" "${flags_array[@]}"
+        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_bpftool" "${flags_array[@]}"
+  
+        #run
+        $CLI_PATH/new/xdp --commit $commit_name_bpftool $commit_name_libbpf --project $new_name --push $push_option
         ;;
       *)
         new_help
