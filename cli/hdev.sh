@@ -2575,8 +2575,8 @@ case "$command" in
             commit_name_libbpf=${commit_name#*,}
 
             #check if commits exist
-            exists_shell=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_SHELL_REPO $commit_name_bpftool)
-            exists_driver=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_DRIVER_REPO $commit_name_libbpf)
+            exists_bpftool=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $XDP_BPFTOOL_REPO $commit_name_bpftool)
+            exists_libbpf=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $XDP_LIBBPF_REPO $commit_name_libbpf)
 
             if [ "$commit_found" = "0" ]; then 
                 commit_name_bpftool=$XDP_BPFTOOL_COMMIT
@@ -2585,14 +2585,14 @@ case "$command" in
                 #$CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
                 $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
                 exit
-            elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
-                if [ "$exists_shell" = "0" ]; then
+            elif [ "$commit_found" = "1" ] && ([ "$exists_bpftool" = "0" ] || [ "$exists_libbpf" = "0" ]); then 
+                if [ "$exists_bpftool" = "0" ]; then
                   echo ""
                   echo "Please, choose a valid shell commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
                   echo ""
                   exit 1
                 fi
-                if [ "$exists_driver" = "0" ]; then
+                if [ "$exists_libbpf" = "0" ]; then
                   echo ""
                   echo "Please, choose a valid driver commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
                   echo ""
