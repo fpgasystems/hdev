@@ -104,5 +104,22 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
             echo ""
         fi
+    elif [ "$parameter" = "xdf" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+            echo ""
+            echo "${bold}$CLI_NAME new $parameter [flags] [--help]${normal}"
+            echo ""
+            echo "Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
+            echo ""
+            echo "FLAGS:"
+            echo "   ${bold}-c, --commit${normal}    - bpftool and libbpf commit IDs (default: ${bold}$XDP_BPFTOOL_COMMIT,$XDP_LIBBPF_COMMIT${normal})."
+            echo "       ${bold}--project${normal}   - Specifies your XDP/eBPF project name." 
+            echo "       ${bold}--push${normal}      - Pushes your XDP/eBPF project to your GitHub account." 
+            echo ""
+            echo "   ${bold}-h, --help${normal}      - Help to use this command."
+            echo ""
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
+            echo ""
+        fi
     fi
 fi
