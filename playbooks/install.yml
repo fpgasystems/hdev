@@ -1,14 +1,14 @@
 ---
 
 - hosts: 
-    - hacc_build 
-    - alveo_u50d
-    - alveo_u55c
-    - versal_v80
-    - hacc_boxes
+    #- hacc_build 
+    #- alveo_u50d
+    #- alveo_u55c
+    #- versal_v80
+    #- hacc_boxes
     #- alveo-u55c-01.inf.ethz.ch
     #- versal-v80-04.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -21,7 +21,7 @@
     cli_name: hdev
     templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: true
+    all: false
     #cli installation
     aved: false
     bitstreams: false
@@ -31,8 +31,8 @@
     enable: false
     examine: false
     get: false
-    hdev: false
-    help: false
+    hdev: true
+    help: true
     hip: false
     new: false
     opennic: false
@@ -44,6 +44,7 @@
     update: false
     validate: false
     vitis: false
+    xdp: true
     #release
     #    1. Merge a development branch into main.
     #    2. Login to a server (i.e., hacc-box-01), run "hdev update," and capture COMMIT and COMMIT_DATE. Remeber that "hdev update" is only for sudo users.
@@ -141,6 +142,7 @@
         - MTU_MIN
         - MY_DRIVERS_PATH
         - MY_PROJECTS_PATH
+        - NIC_SERVERS_LIST
         - ONIC_DRIVER_COMMIT
         - ONIC_DRIVER_NAME
         - ONIC_DRIVER_REPO
@@ -435,6 +437,7 @@
         - aved
         - hip
         - opennic
+        - xdp
     #program
     - name: copying program scripts
       copy:
@@ -646,6 +649,33 @@
             dest: "{{ cli_path }}/validate/opennic"
             mode: "0755"
       when: all or opennic
+    #xdp
+    - name: copying xdp workflow
+      block:
+        - name: copying xdp workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/xdp.sh"
+            dest: "{{ cli_path }}/new/xdp"
+            mode: "0755"
+        #- name: build
+        #  copy:
+        #    src: "../cli/build/xdp.sh"
+        #    dest: "{{ cli_path }}/build/xdp"
+        #    mode: "0755"
+        #- name: run
+        #  copy:
+        #    src: "../cli/run/xdp.sh"
+        #    dest: "{{ cli_path }}/run/xdp"
+        #    mode: "0755"
+        #- name: validate
+        #  copy:
+        #    src: "../cli/validate/xdp.sh"
+        #    dest: "{{ cli_path }}/validate/xdp"
+        #    mode: "0755"
+      when: all or xdp
     #vitis
     - name: copying vitis workflow
       block:
