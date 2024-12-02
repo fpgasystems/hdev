@@ -125,8 +125,8 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
-            echo ""
+            #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
+            #echo ""
         fi
     fi
 fi
