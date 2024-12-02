@@ -2531,11 +2531,6 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-
-        echo "HEY I am here!"
-        exit
-
-
         #check_on_commits
         commit_found_bpftool=""
         commit_name_bpftool=""
@@ -2557,15 +2552,14 @@ case "$command" in
 
             #check if commit_name is empty
             if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
-                #$CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "xdp" "0" "0" "$is_build" "0" "0" $is_nic "0" "0" $is_network_developer
                 exit
             fi
             
             #check if commit_name contains exactly one comma
             if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
                 echo ""
-                echo "Please, choose valid shell and driver commit IDs."
+                echo "Please, choose valid bpftool and libbpf commit IDs."
                 echo ""
                 exit
             fi
@@ -2588,13 +2582,13 @@ case "$command" in
             elif [ "$commit_found" = "1" ] && ([ "$exists_bpftool" = "0" ] || [ "$exists_libbpf" = "0" ]); then 
                 if [ "$exists_bpftool" = "0" ]; then
                   echo ""
-                  echo "Please, choose a valid shell commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
+                  echo "Please, choose a valid bpftool commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
                   echo ""
                   exit 1
                 fi
                 if [ "$exists_libbpf" = "0" ]; then
                   echo ""
-                  echo "Please, choose a valid driver commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
+                  echo "Please, choose a valid libbpf commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
                   echo ""
                   exit 1
                 fi
@@ -2609,10 +2603,13 @@ case "$command" in
 
         #dialogs
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_bpftool,$commit_name_libbpf)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (commit IDs for bpftool and libbpf: $commit_name_bpftool,$commit_name_libbpf)${normal}"
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_bpftool" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_bpftool" "${flags_array[@]}"
+
+        echo "I am here"
+        exit
   
         #run
         $CLI_PATH/new/xdp --commit $commit_name_bpftool $commit_name_libbpf --project $new_name --push $push_option
