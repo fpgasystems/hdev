@@ -310,6 +310,7 @@
         - gh_tag_check
         - git_clone_aved
         - git_clone_opennic
+        - git_clone_xdp
         - github_tag_dialog_check
         - iface_dialog_check
         - is_acap
