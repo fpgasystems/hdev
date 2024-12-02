@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
             ping_error = ping(interface_name, remote_server, num_pings);
 
             if (ping_error != 0) {
-                return ping_error;
+                return 1;
             }
         }
         
