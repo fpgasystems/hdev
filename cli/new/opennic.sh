@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new opennic --commit $comit_name_shell $comit_name_driver --project   $new_name --push $push_option
-#example: /opt/hdev/cli/hdev new opennic --commit            807775            1cf2578 --project hello_world --push            0
+#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --push $push_option
+#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -70,10 +70,6 @@ WORKFLOW="opennic"
 if [ -s "$DEVICES_LIST_NETWORKING" ]; then
   source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
 fi
-
-#get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$new_name"
