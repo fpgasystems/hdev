@@ -40,7 +40,7 @@
     reboot: false
     run: false
     set: false
-    templates: false
+    templates: true
     update: false
     validate: false
     vitis: false
@@ -249,6 +249,23 @@
             dest: "{{ hdev_base_path }}/templates"
             mode: "0755"
       when: all or (templates and opennic)
+    #xdp
+    - name: managing xdp template
+      block:
+        - name: managing xdp template
+          debug:
+            msg: ""
+        - name: deleting xdp template
+          file:
+            path: "{{ hdev_base_path }}/templates/xdp"
+            state: absent
+          register: xdp_templates
+        - name: copying xdp template
+          copy:
+            src: "../templates/xdp"
+            dest: "{{ hdev_base_path }}/templates"
+            mode: "0755"
+      when: all or (templates and xdp)
 
     #copying scripts 
     #build
