@@ -269,14 +269,11 @@ if [[ $connected = "1" ]]; then
     return_code=$?
 
     if [ $return_code -eq 0 ]; then
-        #get RS_FEC_ENABLED from .device_config
-        #fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
-
         #print
         echo -e "${COLOR_PASSED}OpenNIC validated on ${bold}$hostname (device $device_index)${normal}${COLOR_PASSED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
         echo ""
     else 
-        echo -e "${COLOR_PASSED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
+        echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
         echo ""
     fi
 else
