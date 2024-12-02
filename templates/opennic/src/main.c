@@ -6,6 +6,7 @@ int main(int argc, char *argv[]) {
     int flags_error = 0;
     int config_index = 0;
     int device_index = 0;
+    int ping_error = 0;
 
     // Check and process command-line flags
     flags_error = flags_check(argc, argv, &config_index, &device_index);
@@ -27,7 +28,11 @@ int main(int argc, char *argv[]) {
             char *interface_name = get_interface_name(device_ip);
             
             // Perform ping operation
-            ping(interface_name, remote_server, num_pings);
+            ping_error = ping(interface_name, remote_server, num_pings);
+
+            if (ping_error != 0) {
+                return ping_error;
+            }
         }
         
         return 0;
