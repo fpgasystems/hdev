@@ -63,7 +63,7 @@ fi
 sudo $CLI_PATH/common/rm $TMP_PATH/lstopo_output
 
 #create temporal output
-lstopo 2>/dev/null > $TMP_PATH/lstopo_output
+lstopo-no-graphics 2>/dev/null > $TMP_PATH/lstopo_output
 
 # Capture the number of NUMA nodes
 numa_nodes=$(lscpu | grep -i "NUMA node(s)" | awk '{print $NF}')
@@ -90,7 +90,7 @@ echo "Core(s) per socket: $cores_per_socket"
 for ((i=0; i<numa_nodes; i++)); do
     # Get the CPUs for the current NUMA node
     numa_cpus=$(lscpu | grep -i "NUMA node${i} CPU(s)" | awk -F: '{print $2}' | xargs)
-    memory=$(lstopo 2>/dev/null | grep -i "NUMANode L#$i" | awk -F'[()]' '{print $2}' | awk '{print $NF}')
+    memory=$(lstopo-no-graphics 2>/dev/null | grep -i "NUMANode L#$i" | awk -F'[()]' '{print $2}' | awk '{print $NF}')
 
     echo ""
     echo "${bold}NUMA node $i CPU(s): $numa_cpus${normal}"
