@@ -40,7 +40,7 @@
     reboot: false
     run: false
     set: false
-    templates: true
+    templates: false
     update: false
     validate: false
     vitis: false
@@ -423,6 +423,7 @@
         - build_c
         - build_hip
         - build_opennic
+        - build_xdp
         - build
         - enable_vitis
         - enable_vivado

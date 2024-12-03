@@ -11,8 +11,10 @@ is_asoc=$4
 is_build=$5
 is_fpga=$6
 is_gpu=$7
-is_gpu_developer=$8
-is_vivado_developer=$9
+is_nic=$8
+is_gpu_developer=$9
+is_vivado_developer=${10}
+is_network_developer=${11}
 
 #legend
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
@@ -40,6 +42,9 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
 fi
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."
+fi
+if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+    echo -e "   ${bold}xdp${normal}             - eBPF binaries for your Express Data Path (XDP) networking applications."
 fi
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."

@@ -1229,8 +1229,10 @@ build_help() {
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+    is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
     is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-    $CLI_PATH/help/build $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
+    is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+    $CLI_PATH/help/build $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_GPU_DEVELOPER $is_vivado_developer $is_network_developer
     exit
 }
 
@@ -1263,6 +1265,16 @@ build_opennic_help() {
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
     is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
     $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_vivado_developer
+    exit
+}
+
+build_xdp_help() {
+    #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    #is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+    #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+    is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+    is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+    $CLI_PATH/help/build_xdp $CLI_PATH $CLI_NAME $is_nic $is_network_developer
     exit
 }
 
@@ -2084,6 +2096,64 @@ case "$command" in
         
         #run
         $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_build
+        echo ""
+        ;;
+      xdp)
+        #early exit
+        if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+          exit 1
+        fi
+
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        #vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-c --commit --project -h --help" 
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        echo "HEY I am here"
+        exit
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks on command line
+        if [ ! "$flags_array" = "" ]; then
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        fi
+
+        #additional forbidden combination
+        if [ "$is_build" = "0" ] && [ "$platform_found" = "1" ]; then
+          build_opennic_help
+        fi
+
+        #dialogs
+        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        #we force the user to create a configuration
+        if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
+            #get current path
+            current_path=$(pwd)
+            cd "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
+            echo "${bold}Adding device and host configurations with ./config_add:${normal}"
+            ./config_add
+            cd "$current_path"
+        fi
+        commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
+        platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_build" "${flags_array[@]}"
+        
+        #run
+        $CLI_PATH/build/xdp --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_build
         echo ""
         ;;
       *)

@@ -41,6 +41,7 @@ PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
+XDP_BUILD_FLAGS=( "--commit" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 
 _hdev_completions()
@@ -98,7 +99,7 @@ _hdev_completions()
             if [ "$vivado_enabled" = "1" ]; then
                 commands="${commands} build new"
             fi
-            if [ "$is_network_developer" = "1" ]; then
+            if [ ! "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                 commands="${commands} new build run"
             fi
             if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
@@ -136,6 +137,9 @@ _hdev_completions()
                     fi
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
+                    fi
+                    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+                        commands="${commands} xdp"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -283,6 +287,9 @@ _hdev_completions()
                             elif [ "$is_vivado_developer" = "1" ]; then
                                 COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --platform --help" -- "${cur}"))
                             fi
+                            ;;
+                        xdp)
+                            COMPREPLY=($(compgen -W "${XDP_BUILD_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                     esac
                     ;;
@@ -468,6 +475,11 @@ _hdev_completions()
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
                                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             fi
+                            ;;
+                        xdp)
+                            #--commit --project
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
