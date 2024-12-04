@@ -26,13 +26,13 @@
     aved: false
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
     get: false
     hdev: true
-    help: false
+    help: true
     hip: false
     new: false
     opennic: false
@@ -360,6 +360,7 @@
         - value_dialog_check
         - version_dialog
         - version_dialog_check
+        - word_check
         - xclbin_dialog
         - xclbin_dialog_check
     #enable

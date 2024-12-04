@@ -1185,6 +1185,18 @@ vivado_developers_check() {
   fi
 }
 
+word_check() {
+  local CLI_PATH=$1
+  local word_1=$2
+  local word_2=$3
+  shift 3
+  local flags_array=("$@")
+
+  result="$("$CLI_PATH/common/word_check" "$word_1" "$word_2" "${flags_array[@]}")"
+  word_found=$(echo "$result" | sed -n '1p')
+  word_value=$(echo "$result" | sed -n '2p')
+}
+
 xrt_check() {
   local CLI_PATH=$1
   #check on valid XRT and Vivado version
@@ -2122,9 +2134,16 @@ case "$command" in
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
-          platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+          word_check "$CLI_PATH" "-d" "--driver" "${flags_array[@]}"
+
+          echo $word_found
+          echo $word_value
+
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         fi
+
+        echo "I am here"
+        exit
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
