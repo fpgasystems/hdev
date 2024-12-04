@@ -7,8 +7,8 @@
     #- versal_v80
     #- hacc_boxes
     #- alveo-u55c-01.inf.ethz.ch
-    #- versal-v80-04.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    - versal-v80-04.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -32,7 +32,7 @@
     examine: false
     get: false
     hdev: true
-    help: true
+    help: false
     hip: false
     new: false
     opennic: false
@@ -280,6 +280,7 @@
         - c
         - hip
         - opennic
+        - xdp
     #common
     - name: copying common scripts
       copy:
@@ -680,11 +681,11 @@
             src: "../cli/new/xdp.sh"
             dest: "{{ cli_path }}/new/xdp"
             mode: "0755"
-        #- name: build
-        #  copy:
-        #    src: "../cli/build/xdp.sh"
-        #    dest: "{{ cli_path }}/build/xdp"
-        #    mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/xdp.sh"
+            dest: "{{ cli_path }}/build/xdp"
+            mode: "0755"
         #- name: run
         #  copy:
         #    src: "../cli/run/xdp.sh"
