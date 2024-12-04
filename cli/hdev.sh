@@ -1187,14 +1187,22 @@ vivado_developers_check() {
 
 word_check() {
   local CLI_PATH=$1
-  local word_1=$2
-  local word_2=$3
+  local word_1=$2 #-d
+  local word_2=$3 #--driver
   shift 3
   local flags_array=("$@")
 
   result="$("$CLI_PATH/common/word_check" "$word_1" "$word_2" "${flags_array[@]}")"
   word_found=$(echo "$result" | sed -n '1p')
   word_value=$(echo "$result" | sed -n '2p')
+
+  #forbidden combinations
+  if [ "$word_found" = "1" ] && [ "$word_value" = "" ]; then
+    echo ""
+    echo "Please, choose a valid ${word_2#--} name."
+    echo ""
+    exit 1
+  fi
 }
 
 xrt_check() {
@@ -2134,16 +2142,9 @@ case "$command" in
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
-          word_check "$CLI_PATH" "-d" "--driver" "${flags_array[@]}"
-
-          echo $word_found
-          echo $word_value
-
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          word_check "$CLI_PATH" "-d" "--driver" "${flags_array[@]}"
         fi
-
-        echo "I am here"
-        exit
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
@@ -2160,10 +2161,20 @@ case "$command" in
         #    ./config_add
         #    cd "$current_path"
         #fi
+        #check on driver
+        if [ "$word_found" = "1" ] && [ ! "$word_value" = "" ]; then
+          if [ ! -d "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/drivers/$word_value" ]; then
+            echo $CHECK_ON_DRIVER_ERR_MSG
+            echo ""
+            exit 1
+          fi
+        fi
+
+        #get XDP_LIBBPF_COMMIT from project
         commit_name_libbpf=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/XDP_LIBBPF_COMMIT)
         
         #run
-        $CLI_PATH/build/xdp --commit $commit_name $commit_name_libbpf --project $project_name
+        $CLI_PATH/build/xdp --commit $commit_name $commit_name_libbpf --project $project_name --driver $word_value
         echo ""
         ;;
       *)
