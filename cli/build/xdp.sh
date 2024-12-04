@@ -4,41 +4,31 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev build opennic --commit $commit_name_shell $commit_name_driver --platform                      $platform_name --project $project_name --version $vivado_version --all $all 
-#example: /opt/hdev/cli/hdev build opennic --commit            8077751             1cf2578 --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project   hello_world --version          2022.2 --all    1 
+#usage:       $CLI_PATH/hdev build opennic --commit $commit_name_bpftool $commit_name_libbpf --project $project_name
+#example: /opt/hdev/cli/hdev build opennic --commit              687e7f0             20c0a9e --project   hello_world
 
 #early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
-if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
+is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
     exit 1
 fi
 
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
-fi
 
 #inputs
-commit_name=$2
-commit_name_driver=$3
-platform_name=$5
-project_name=$7
-vivado_version=$9
-all=${11}
+commit_name_bpftool=$2
+commit_name_libbpf=$3
+project_name=$5
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$commit_name_driver" = "" ] || [ "$platform_name" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
+if [ "$commit_name_bpftool" = "" ] || [ "$commit_name_libbpf" = "" ] || [ "$project_name" = "" ]; then
     exit
 fi
+
+echo "HEY I am here"
+exit
 
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
@@ -49,7 +39,7 @@ NUM_JOBS="8"
 WORKFLOW="opennic"
 
 #define directories
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_bpftool/$project_name"
 SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
 DRIVER_DIR="$DIR/open-nic-driver"
 
@@ -57,7 +47,7 @@ DRIVER_DIR="$DIR/open-nic-driver"
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
 #define shell
-#library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+#library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_bpftool/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #bitstream compilation is only allowed on CPU (build) servers
@@ -71,7 +61,7 @@ if [ "$all" = "1" ]; then
     compile="0"
     if [ ! -e "$project_shell" ]; then
         compile="1"
-    elif [ -e "$project_shell" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_opennic.$hostname.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
+    elif [ -e "$project_shell" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_opennic.$hostname.$commit_name_libbpf.$FDEV_NAME.$vivado_version" ]; then
         #echo ""
         echo "The shell ${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?"
         while true; do
@@ -94,7 +84,7 @@ if [ "$all" = "1" ]; then
     #launch vivado
     if [ "$compile" = "1" ]; then 
         #shell compilation
-        echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
+        echo "${bold}Shell compilation (commit ID: $commit_name_bpftool)${normal}"
         echo ""
 
         #read configuration
@@ -126,7 +116,7 @@ if [ "$all" = "1" ]; then
 fi
 
 #compile driver
-echo "${bold}Driver compilation (commit ID: $commit_name_driver)${normal}"
+echo "${bold}Driver compilation (commit ID: $commit_name_libbpf)${normal}"
 echo ""
 echo "cd $DRIVER_DIR && make"
 echo ""
