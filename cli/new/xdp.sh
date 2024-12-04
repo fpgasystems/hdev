@@ -67,6 +67,7 @@ cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
 cp $HDEV_PATH/templates/$WORKFLOW/apps.mk $DIR/lib/apps.mk
 cp $HDEV_PATH/templates/$WORKFLOW/helpers.bash $DIR/lib/helpers.bash
 cp $HDEV_PATH/templates/$WORKFLOW/vars.mk $DIR/lib/vars.mk
+cp -r $HDEV_PATH/templates/$WORKFLOW/drivers $DIR
 
 #compile files
 #chmod +x $DIR/config_add
