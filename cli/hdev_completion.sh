@@ -41,7 +41,7 @@ PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
-XDP_BUILD_FLAGS=( "--commit" "--project" )
+XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 
 _hdev_completions()

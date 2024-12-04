@@ -27,7 +27,7 @@ if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
     echo "FLAGS:"
     echo "   ${bold}-c, --commit${normal}    - GitHub commit ID for bpftool (default: ${bold}$XDP_BPFTOOL_COMMIT${normal})."
     echo "   ${bold}-d, --driver${normal}    - An XDP driver identifier to be compiled (${bold}$drivers${normal})."
-    echo "       ${bold}--project${normal}   - Specifies your xdp project name."
+    echo "   ${bold}-p, --project${normal}   - Specifies your xdp project name."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
