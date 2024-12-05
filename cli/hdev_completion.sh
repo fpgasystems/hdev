@@ -464,6 +464,7 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         aved)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
                             #--commit --platform --project
