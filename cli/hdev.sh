@@ -3063,7 +3063,8 @@ case "$command" in
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
         #fec_dialog
-        if [ "$fec_option_found" = "0" ]; then
+        fec_option="0"
+        if [ "$fec_option_found" = "0" ] && ! (lsmod | grep -q "${ONIC_DRIVER_NAME%.ko}" 2>/dev/null); then
           echo "${bold}Please, choose your encoding scheme:${normal}"
           echo ""
           echo "0) RS_FEC_ENABLED = 0"
