@@ -3562,6 +3562,9 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
+        #initialize
+        interface_found="0"
+
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
@@ -3572,20 +3575,6 @@ case "$command" in
 
         #check xdp capabilities
         if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
-          #get current interfaces
-          #interfaces=$($CLI_PATH/get/interface)
-
-          # Loop through each line of the interfaces
-          #xdp_interfaces=()
-          #while read -r line; do
-          #    # Check if the line contains (xdp)
-          #    if [[ $line == *"(xdp)"* ]]; then
-          #        # Extract the second column (interface name) and add to the array
-          #        interface=$(echo $line | awk '{print $2}')
-          #        xdp_interfaces+=("$interface")
-          #    fi
-          #done <<< "$interfaces"
-
           #get XDP interfaces
           xdp_interfaces=($(get_xdp_interfaces))
 
@@ -3613,9 +3602,29 @@ case "$command" in
         #    ./config_add
         #    cd "$current_path"
         #fi
-        #interface dialog
 
-
+        #XDP interfaces dialog
+        if [ "$interface_found" = "0" ]; then
+          #get XDP interfaces
+          xdp_interfaces=($(get_xdp_interfaces))
+          echo "${bold}Please, choose your XDP interface:${normal}"
+          echo ""
+          for i in "${!xdp_interfaces[@]}"; do
+            echo "$((i + 1))) ${xdp_interfaces[i]}"
+          done
+          while true; do
+            read -p "" choice
+            # Validate the input
+            if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#xdp_interfaces[@]})); then
+                selected_interface=${xdp_interfaces[choice-1]}
+                #echo "You selected: $selected_interface"
+                break
+            #else
+            #    echo "Invalid choice. Please try again."
+            fi
+          done
+        fi
+        
         echo "HEY I am here: $interface_name"
         exit
         
