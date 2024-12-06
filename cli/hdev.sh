@@ -193,6 +193,7 @@ command_run() {
 CHECK_ON_CONFIG_MSG="${bold}Please, choose your configuration:${normal}"
 CHECK_ON_DEVICE_MSG="${bold}Please, choose your device:${normal}"
 CHECK_ON_NEW_MSG="${bold}Please, type a non-existing name for your project:${normal}"
+CHECK_ON_IFACE_MSG="${bold}Please, choose your interface:${normal}"
 CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
 CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
 CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub account (y/n)?${normal}"
@@ -3547,6 +3548,14 @@ case "$command" in
           exit 1
         fi
 
+        #get XDP interfaces
+        #xdp_interfaces=($(get_xdp_interfaces))
+        
+        #we exit if there are no XDP interfaces ready
+        #if [ ${#xdp_interfaces[@]} -eq 0 ]; then
+        #  exit
+        #fi
+
         #check on groups
         vivado_developers_check "$USER"
         
@@ -3605,22 +3614,21 @@ case "$command" in
 
         #XDP interfaces dialog
         if [ "$interface_found" = "0" ]; then
-          #get XDP interfaces
-          xdp_interfaces=($(get_xdp_interfaces))
-          echo "${bold}Please, choose your XDP interface:${normal}"
+          #get interfaces
+          interfaces=($($CLI_PATH/get/interface | grep ":" | awk '{print $2}'))
+
+          echo $CHECK_ON_IFACE_MSG
           echo ""
-          for i in "${!xdp_interfaces[@]}"; do
-            echo "$((i + 1))) ${xdp_interfaces[i]}"
+          for i in "${!interfaces[@]}"; do
+            echo "$((i + 1))) ${interfaces[i]}"
           done
+
           while true; do
             read -p "" choice
             # Validate the input
-            if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#xdp_interfaces[@]})); then
-                selected_interface=${xdp_interfaces[choice-1]}
-                #echo "You selected: $selected_interface"
+            if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#interfaces[@]})); then
+                selected_interface=${interfaces[choice-1]}
                 break
-            #else
-            #    echo "Invalid choice. Please try again."
             fi
           done
         fi
