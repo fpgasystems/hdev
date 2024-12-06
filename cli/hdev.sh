@@ -618,6 +618,26 @@ fpga_check() {
   fi
 }
 
+get_xdp_interfaces() {
+    # Get current interfaces
+    interfaces=$($CLI_PATH/get/interface)
+
+    # Initialize an empty array
+    xdp_interfaces=()
+
+    # Loop through each line of the interfaces
+    while read -r line; do
+        if [[ $line == *"(xdp)"* ]]; then
+            # Extract the second column (interface name) and add to the array
+            interface=$(echo $line | awk '{print $2}')
+            xdp_interfaces+=("$interface")
+        fi
+    done <<< "$interfaces"
+
+    # Output the array as a space-separated string
+    echo "${xdp_interfaces[@]}"
+}
+
 gh_check() {
   local CLI_PATH=$1
   logged_in=$($CLI_PATH/common/gh_auth_status)
@@ -3553,18 +3573,21 @@ case "$command" in
         #check xdp capabilities
         if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
           #get current interfaces
-          interfaces=$($CLI_PATH/get/interface)
+          #interfaces=$($CLI_PATH/get/interface)
 
           # Loop through each line of the interfaces
-          xdp_interfaces=()
-          while read -r line; do
-              # Check if the line contains (xdp)
-              if [[ $line == *"(xdp)"* ]]; then
-                  # Extract the second column (interface name) and add to the array
-                  interface=$(echo $line | awk '{print $2}')
-                  xdp_interfaces+=("$interface")
-              fi
-          done <<< "$interfaces"
+          #xdp_interfaces=()
+          #while read -r line; do
+          #    # Check if the line contains (xdp)
+          #    if [[ $line == *"(xdp)"* ]]; then
+          #        # Extract the second column (interface name) and add to the array
+          #        interface=$(echo $line | awk '{print $2}')
+          #        xdp_interfaces+=("$interface")
+          #    fi
+          #done <<< "$interfaces"
+
+          #get XDP interfaces
+          xdp_interfaces=($(get_xdp_interfaces))
 
           #check if the interface is an xdp interface
           if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $interface_name " ]]; then
@@ -3590,7 +3613,6 @@ case "$command" in
         #    ./config_add
         #    cd "$current_path"
         #fi
-
         #interface dialog
 
 
