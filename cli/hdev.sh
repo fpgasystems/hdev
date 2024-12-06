@@ -1654,6 +1654,9 @@ run_help() {
     if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs OpenNIC on a given device."
     fi
+    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+      echo -e "   ${bold}xdp${normal}         - Runs your XDP/eBPF program on a given device."
+    fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
@@ -1696,6 +1699,15 @@ run_opennic_help() {
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
+  fi
+  exit
+}
+
+run_xdp_help() {
+  if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+    $CLI_PATH/help/run_xdp $CLI_PATH $CLI_NAME
+    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    #echo ""
   fi
   exit
 }
@@ -3485,6 +3497,70 @@ case "$command" in
 
         #run
         $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name 
+        ;;
+      xdp)
+        #early exit
+        if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+          exit 1
+        fi
+
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        #vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-c --commit -i --interface -p --project -h --help" 
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks on command line
+        if [ ! "$flags_array" = "" ]; then
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          #word_check "$CLI_PATH" "-d" "--driver" "${flags_array[@]}"
+          iface_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID for bpftool: $commit_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        #we force the user to create a configuration
+        #if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
+        #    #get current path
+        #    current_path=$(pwd)
+        #    cd "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
+        #    echo "${bold}Adding device and host configurations with ./config_add:${normal}"
+        #    ./config_add
+        #    cd "$current_path"
+        #fi
+
+        #interface dialog
+
+
+
+        #check xdp capabilities
+        if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
+          echo "Check XDP"
+        fi
+
+        #get XDP_LIBBPF_COMMIT from project
+        #commit_name_libbpf=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/XDP_LIBBPF_COMMIT)
+
+        echo "HEY I am here: $interface_name"
+        exit
+        
+        #run
+        $CLI_PATH/run/xdp --commit $commit_name --interface $interface_name --project $project_name --driver $word_value
+        echo ""
         ;;
       *)
         run_help

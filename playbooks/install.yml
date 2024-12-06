@@ -8,7 +8,7 @@
     #- hacc_boxes
     #- alveo-u55c-01.inf.ethz.ch
     - versal-v80-04.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -26,7 +26,7 @@
     aved: false
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
@@ -446,6 +446,7 @@
         - reboot
         - run_aved
         - run_opennic
+        - run_xdp
         - set_keys
         - validate_opennic
     #new
@@ -519,6 +520,7 @@
         - aved
         - hip
         - opennic
+        - xdp
     #set
     - name: copying set scripts
       copy:
@@ -687,11 +689,11 @@
             src: "../cli/build/xdp.sh"
             dest: "{{ cli_path }}/build/xdp"
             mode: "0755"
-        #- name: run
-        #  copy:
-        #    src: "../cli/run/xdp.sh"
-        #    dest: "{{ cli_path }}/run/xdp"
-        #    mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/xdp.sh"
+            dest: "{{ cli_path }}/run/xdp"
+            mode: "0755"
         #- name: validate
         #  copy:
         #    src: "../cli/validate/xdp.sh"
