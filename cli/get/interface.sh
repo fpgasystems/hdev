@@ -9,7 +9,7 @@ normal=$(tput sgr0)
 
 #constants
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
-COLOR_ON4=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FPGA)
+COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 DEVICES_LIST_NIC="$CLI_PATH/devices_network"
 DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
@@ -73,7 +73,7 @@ for device_index in $(seq 1 "$MAX_DEVICES_FPGA"); do
                 xdp_string=" (xdp)"
             fi
             # Append to the list of devices
-            fpga_devices+="${COLOR_ON4}${device_index}: $DEVICE_i_1$xdp_string${COLOR_OFF}\n"
+            fpga_devices+="${COLOR_ON2}${device_index}: $DEVICE_i_1$xdp_string${COLOR_OFF}\n"
         fi
         #port 2
         DEVICE_i_2=$(ifconfig | grep -B1 "$ip2" | awk '/^[a-zA-Z0-9]/ {print $1}' | sed 's/://')
@@ -85,13 +85,13 @@ for device_index in $(seq 1 "$MAX_DEVICES_FPGA"); do
                 xdp_string=" (xdp)"
             fi
             # Append to the list of devices
-            fpga_devices+="${COLOR_ON4}${device_index}: $DEVICE_i_2$xdp_string${COLOR_OFF}\n"
+            fpga_devices+="${COLOR_ON2}${device_index}: $DEVICE_i_2$xdp_string${COLOR_OFF}\n"
         fi
     fi
 done
 
 if [ -n "$fpga_devices" ]; then
-    legend_fpga="${bold}${COLOR_ON4}Adaptive Devices${COLOR_OFF}${normal}"
+    legend_fpga="${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
 fi
 
 #remove the trailing newline
