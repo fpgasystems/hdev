@@ -3548,20 +3548,10 @@ case "$command" in
           exit 1
         fi
 
-        #get XDP interfaces
-        #xdp_interfaces=($(get_xdp_interfaces))
-        
-        #we exit if there are no XDP interfaces ready
-        #if [ ${#xdp_interfaces[@]} -eq 0 ]; then
-        #  exit
-        #fi
-
         #check on groups
         vivado_developers_check "$USER"
         
         #check on software
-        #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-        #vivado_check "$VIVADO_PATH" "$vivado_version"
         gh_check "$CLI_PATH"
 
         #check on flags
@@ -3578,7 +3568,6 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          #word_check "$CLI_PATH" "-d" "--driver" "${flags_array[@]}"
           iface_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
