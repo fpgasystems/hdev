@@ -1346,13 +1346,6 @@ get_bdf_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-
-  echo $CLI_PATH
-  echo $CLI_NAME
-  echo $is_acap
-  echo $is_asoc
-  echo $is_fpga
-
   $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap $is_asoc "-" $is_fpga "-" "-" "-"
   exit
 }
