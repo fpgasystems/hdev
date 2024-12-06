@@ -31,7 +31,6 @@ AVED_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 AVED_RUN_FLAGS=( "--config" "--device" "--project" "--tag" )
 GET_IFCONFIG_FLAGS=( "--device" "--port" )
 GET_NETWORK_FLAGS=( "--device" "--port" )
-GET_INTERFACE_FLAGS=( "--device" )
 HIP_RUN_FLAGS=( "--device" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
@@ -330,9 +329,6 @@ _hdev_completions()
                             ;;
                         ifconfig) 
                             COMPREPLY=($(compgen -W "${GET_IFCONFIG_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
-                        interface) 
-                            COMPREPLY=($(compgen -W "${GET_INTERFACE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         network) 
                             COMPREPLY=($(compgen -W "${GET_NETWORK_FLAGS[*]} --help" -- "${cur}"))

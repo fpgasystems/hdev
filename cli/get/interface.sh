@@ -5,79 +5,39 @@ CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev get partitions --device $device_index --type $boot_type
-#example: /opt/hdev/cli/hdev get partitions --device             1 --type    primary
-
-#early exit
-url="${HOSTNAME}"
-hostname="${url%%.*}"
-is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-if [ "$is_asoc" = "0" ]; then
-    exit
-fi
-
-#inputs
-device_index=$2
-boot_type=$4
+#usage:       $CLI_PATH/hdev get interface
 
 #constants
-DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
+COLOR_ON4=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FPGA)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+DEVICES_LIST_NIC="$CLI_PATH/devices_network"
+DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 
-#check on DEVICES_LIST
-source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+#check on DEVICES_LIST_FPGA
+source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_FPGA"
+source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NIC"
 
-#get number of fpga and acap devices present
-MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
+#get number of devices
+MAX_DEVICES_NIC=$(grep -E "nic" $DEVICES_LIST_NIC | wc -l)
+MAX_DEVICES_FPGA=$(grep -E "fpga|acap|asoc" $DEVICES_LIST_FPGA | wc -l)
 
-#all inputs must be provided
-if [ "$device_index" = "none" ]; then
-    #echo ""
-    print_echo="0"
-    #print devices information
-    for device_index in $(seq 1 $MAX_DEVICES); do 
-        device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-        partitions=""
-        if [ "$device_type" = "asoc" ]; then
-            upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-            partitions=$(ami_tool cfgmem_info -d $upstream_port -t $boot_type | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
-            #check on partitions
-            if [ "$partitions" = "0" ]; then
-                partitions=""
-            else
-                partitions=$((partitions - 1))
-            fi
-            #print
-            if [ -n "$partitions" ]; then
-                print_echo="1"
-                if [ "$device_index" = "1" ]; then
-                    echo ""
-                fi
-                echo "$device_index: [0 ... $partitions]"
-            fi
-        #else
-        #    #print
-        #    echo "$device_index: "
+ifconfig_devices=""
+for device_index in $(seq 1 "$MAX_DEVICES_NIC"); do 
+    DEVICE_i=$($CLI_PATH/get/get_nic_config "$device_index" 1 DEVICE)
+    if [ -n "$DEVICE_i" ]; then  
+        # Check for XDP
+        output=$(ip link show "$DEVICE_i")
+        xdp_string=""
+        if echo "$output" | grep -q "xdp"; then
+            xdp_string=" (xdp)"
         fi
-    done
-    if [ "$print_echo" = "1" ]; then
-        echo ""
+        # Append to the list of devices
+        ifconfig_devices+="${COLOR_ON1}${device_index}: $DEVICE_i$xdp_string${COLOR_OFF}\n"
     fi
-else
-    upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-    partitions=$(ami_tool cfgmem_info -d $upstream_port -t $boot_type | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
-    #partitions=$((partitions - 1))
-    #check on partitions
-    if [ "$partitions" = "0" ]; then
-        partitions=""
-    else
-        partitions=$((partitions - 1))
-    fi
-    #print
-    if [ -n "$partitions" ]; then
-        echo ""
-        echo "$device_index: [0 ... $partitions]"
-        echo ""
-    fi
-fi
+done
+
+#print
+echo -e $ifconfig_devices
 
 #author: https://github.com/jmoya82
