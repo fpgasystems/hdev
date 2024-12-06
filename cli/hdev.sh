@@ -3627,7 +3627,7 @@ case "$command" in
             read -p "" choice
             # Validate the input
             if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#interfaces[@]})); then
-                selected_interface=${interfaces[choice-1]}
+                interface_name=${interfaces[choice-1]}
                 break
             fi
           done
