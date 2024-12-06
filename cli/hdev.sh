@@ -226,6 +226,7 @@ CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
+CHECK_ON_XDP_ERR_MSG="Please, choose a valid XDP interface."
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 
@@ -3549,6 +3550,31 @@ case "$command" in
           iface_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
+        #check xdp capabilities
+        if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
+          #get current interfaces
+          interfaces=$($CLI_PATH/get/interface)
+
+          # Loop through each line of the interfaces
+          xdp_interfaces=()
+          while read -r line; do
+              # Check if the line contains (xdp)
+              if [[ $line == *"(xdp)"* ]]; then
+                  # Extract the second column (interface name) and add to the array
+                  interface=$(echo $line | awk '{print $2}')
+                  xdp_interfaces+=("$interface")
+              fi
+          done <<< "$interfaces"
+
+          #check if the interface is an xdp interface
+          if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $interface_name " ]]; then
+              echo ""
+              echo $CHECK_ON_XDP_ERR_MSG
+              echo ""
+              exit
+          fi
+        fi
+
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
         echo ""
@@ -3567,15 +3593,6 @@ case "$command" in
 
         #interface dialog
 
-
-
-        #check xdp capabilities
-        if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
-          echo "Check XDP"
-        fi
-
-        #get XDP_LIBBPF_COMMIT from project
-        #commit_name_libbpf=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/XDP_LIBBPF_COMMIT)
 
         echo "HEY I am here: $interface_name"
         exit
