@@ -7,8 +7,8 @@
     #- versal_v80
     #- hacc_boxes
     #- alveo-u55c-01.inf.ethz.ch
-    - versal-v80-04.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- versal-v80-04.inf.ethz.ch
+    - hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -30,7 +30,7 @@
     directories: false
     enable: false
     examine: false
-    get: false
+    get: true
     hdev: true
     help: true
     hip: false
@@ -400,6 +400,7 @@
         - get_nic_config
         - get_nic_device_param
         - ifconfig
+        - interface
         - memory
         - name
         - network
@@ -786,12 +787,12 @@
     #    - new_opennic
     #    - program_vivado
     #get
-    #- name: deleting get scripts
-    #  file:
-    #    path: "{{ cli_path }}/get/{{ item }}"
-    #    state: absent
-    #  loop:
-    #    - partitions
+    - name: deleting get scripts
+      file:
+        path: "{{ cli_path }}/get/{{ item }}"
+        state: absent
+      loop:
+        - xdp
     #mpi
     #- name: deleting mpi workflow
     #  file:

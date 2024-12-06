@@ -1335,8 +1335,10 @@ get_help() {
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_vivado_developer
+  is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $is_vivado_developer $is_network_developer
   exit
 }
 
@@ -1351,32 +1353,39 @@ get_bdf_help() {
   echo $is_asoc
   echo $is_fpga
 
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap $is_asoc "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap $is_asoc "-" $is_fpga "-" "-" "-"
   exit
 }
 
 get_bus_help() {
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bus" "-" "-" "-" $is_gpu "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bus" "-" "-" "-" "-" $is_gpu "-" "-" "-"
   exit 
 }
 
 get_clock_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
   exit
 }
 
 get_ifconfig_help() {
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" "-" "-" "-" "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" "-" "-" "-" "-" "-" "-" "-"
   exit    
+}
+
+get_interface_help() {
+  is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+  is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "interface" "-" "-" "-" "-" "-" $is_nic "-" $is_network_developer
+  exit  
 }
 
 get_memory_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
   exit
 }
 
@@ -1384,7 +1393,7 @@ get_name_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap $is_asoc "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap $is_asoc "-" $is_fpga "-" "-" "-"
   exit  
 }
 
@@ -1403,14 +1412,14 @@ get_network_help() {
 get_platform_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "platform" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "platform" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
   exit 
 }
 
 get_resource_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
   exit    
 }
 
@@ -1418,26 +1427,26 @@ get_serial_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap $is_asoc "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap $is_asoc "-" $is_fpga "-" "-" "-"
   exit  
 }
 
 get_slr_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
   exit  
 }
 
 get_syslog_help() {
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "syslog" "-" $is_build "-" "-" $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "syslog" "-" "-" $is_build "-" "-" "-" $is_vivado_developer
   exit  
 }
 
 get_servers_help() {
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "servers" "-" "-" "-" "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "servers" "-" "-" "-" "-" "-" "-" "-"
   exit
 }
 
@@ -1448,7 +1457,7 @@ get_topo_help() {
 
 get_uuid_help() {
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "uuid" "-" "$is_asoc" "-" "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "uuid" "-" "$is_asoc" "-" "-" "-" "-" "-"
   exit 
 }
 
@@ -1456,7 +1465,7 @@ get_workflow_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap $is_asoc "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap $is_asoc "-" "-" $is_fpga "-" "-" "-"
   exit
 }
 
@@ -2279,6 +2288,34 @@ case "$command" in
       ifconfig)
         valid_flags="-d --device -p --port -h --help"
         command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      interface)
+        #early exit
+        if [ "$is_asoc" = "0" ]; then
+          exit
+        fi
+
+        #check on flags
+        valid_flags="-d --device --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line 2/2)
+        if [ ! "$flags_array" = "" ]; then
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+          if [ "$device_found" = "1" ] && [ ! "$device_type" = "asoc" ]; then
+            echo ""
+            echo "Sorry, this command is not available on device $device_index."
+            echo ""
+            exit
+          fi
+        fi
+
+        #run
+        $CLI_PATH/get/interface --device $device_index
         ;;
       memory)
         #early exit
