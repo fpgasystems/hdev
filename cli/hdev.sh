@@ -3093,26 +3093,30 @@ case "$command" in
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
         #fec_dialog
-        fec_option="0"
-        if [ "$fec_option_found" = "0" ] && ! (lsmod | grep -q "${ONIC_DRIVER_NAME%.ko}" 2>/dev/null); then
-          echo "${bold}Please, choose your encoding scheme:${normal}"
-          echo ""
-          echo "0) RS_FEC_ENABLED = 0"
-          echo "1) RS_FEC_ENABLED = 1"
-          while true; do
-              read -p "" choice
-              case $choice in
-                  "0")
-                      fec_option="0"
-                      break
-                      ;;
-                  "1")
-                      fec_option="1"
-                      break
-                      ;;
-              esac
-          done
-          echo ""
+        if ! (lsmod | grep -q "${ONIC_DRIVER_NAME%.ko}" 2>/dev/null); then
+          if [ "$fec_option_found" = "0" ]; then
+            echo "${bold}Please, choose your encoding scheme:${normal}"
+            echo ""
+            echo "0) RS_FEC_ENABLED = 0"
+            echo "1) RS_FEC_ENABLED = 1"
+            while true; do
+                read -p "" choice
+                case $choice in
+                    "0")
+                        fec_option="0"
+                        break
+                        ;;
+                    "1")
+                        fec_option="1"
+                        break
+                        ;;
+                esac
+            done
+            echo ""
+          fi
+        else
+          #when the driver is inserted fec_option is irrelevant
+          fec_option="-" 
         fi
         
         #bitstream check
