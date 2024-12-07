@@ -3601,25 +3601,29 @@ case "$command" in
         #    cd "$current_path"
         #fi
 
-        #XDP interfaces dialog
+        #XDP interfaces dialog ----------------------------------------------------------- add when there is only one interface
         if [ "$interface_found" = "0" ]; then
           #get interfaces
           interfaces=($($CLI_PATH/get/interface | grep ":" | awk '{print $2}'))
 
-          echo $CHECK_ON_IFACE_MSG
-          echo ""
-          for i in "${!interfaces[@]}"; do
-            echo "$((i + 1))) ${interfaces[i]}"
-          done
+          if [[ ${#interfaces[@]} -eq 1 ]]; then
+              interface_name=${interfaces[0]}
+          else
+            echo $CHECK_ON_IFACE_MSG
+            echo ""
+            for i in "${!interfaces[@]}"; do
+              echo "$((i + 1))) ${interfaces[i]}"
+            done
 
-          while true; do
-            read -p "" choice
-            # Validate the input
-            if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#interfaces[@]})); then
-                interface_name=${interfaces[choice-1]}
-                break
-            fi
-          done
+            while true; do
+              read -p "" choice
+              # Validate the input
+              if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#interfaces[@]})); then
+                  interface_name=${interfaces[choice-1]}
+                  break
+              fi
+            done
+          fi
         fi
         
         echo "HEY I am here: $interface_name"
