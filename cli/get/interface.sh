@@ -35,7 +35,7 @@ for device_index in $(seq 1 "$MAX_DEVICES_NIC"); do
             xdp_string=" (xdp)"
         fi
         # Append to the list of devices (add to array as a single element)
-        nic_devices+=("${COLOR_ON1}${device_index}: $DEVICE_i_1$xdp_string${COLOR_OFF}")
+        nic_devices+=("${COLOR_ON1}$DEVICE_i_1$xdp_string${COLOR_OFF}") #${device_index}: 
     fi
     
     # Port 2
@@ -48,7 +48,7 @@ for device_index in $(seq 1 "$MAX_DEVICES_NIC"); do
             xdp_string=" (xdp)"
         fi
         # Append to the list of devices (add to array as a single element)
-        nic_devices+=("${COLOR_ON1}   $DEVICE_i_2$xdp_string${COLOR_OFF}")
+        nic_devices+=("${COLOR_ON1}$DEVICE_i_2$xdp_string${COLOR_OFF}")
     fi
 done
 
@@ -76,7 +76,7 @@ for device_index in $(seq 1 "$MAX_DEVICES_FPGA"); do
                 xdp_string=" (xdp)"
             fi
             # Append to the list of devices (add to array as a single element)
-            fpga_devices+=("${COLOR_ON2}${device_index}: $DEVICE_i_1$xdp_string${COLOR_OFF}")
+            fpga_devices+=("${COLOR_ON2}$DEVICE_i_1$xdp_string${COLOR_OFF}") #${device_index}: 
         fi
         
         # Port 2
@@ -89,7 +89,7 @@ for device_index in $(seq 1 "$MAX_DEVICES_FPGA"); do
                 xdp_string=" (xdp)"
             fi
             # Append to the list of devices (add to array as a single element)
-            fpga_devices+=("${COLOR_ON2}${device_index}: $DEVICE_i_2$xdp_string${COLOR_OFF}")
+            fpga_devices+=("${COLOR_ON2}$DEVICE_i_2$xdp_string${COLOR_OFF}") #${device_index}: 
         fi
     fi
 done

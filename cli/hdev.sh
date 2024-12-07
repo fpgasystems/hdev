@@ -3601,10 +3601,12 @@ case "$command" in
         #    cd "$current_path"
         #fi
 
-        #XDP interfaces dialog ----------------------------------------------------------- add when there is only one interface
+        #XDP interfaces dialog
         if [ "$interface_found" = "0" ]; then
           #get interfaces
-          interfaces=($($CLI_PATH/get/interface | grep ":" | awk '{print $2}'))
+          #interfaces=($($CLI_PATH/get/interface | grep ":" | awk '{print $2}'))
+          #interfaces=($($CLI_PATH/get/interface))
+          interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$'))
 
           if [[ ${#interfaces[@]} -eq 1 ]]; then
               interface_name=${interfaces[0]}
