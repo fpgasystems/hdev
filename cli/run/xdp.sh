@@ -43,10 +43,6 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-#echo "HEY I am here: $interface_name"
-#echo "sudo ./pass_drop $interface_name &>/dev/null &"
-#exit
-
 function_name="pass_drop"
 
 #run application
@@ -58,11 +54,9 @@ sudo ./$function_name $interface_name &>/dev/null &
 pid=$!  # Capture the PID of the background process
 return_code=$?
 
-# Wait for the process to finish and capture the return code
-#wait $pid
-
 #Loop for countdown
-for i in {15..0}; do
+countdown=$((RANDOM % 6 + 10))
+for i in $(seq $countdown -1 0); do
     echo -n "."
     sleep 0.5
 done
@@ -78,14 +72,6 @@ else
     echo -e "${COLOR_FAILED}Error while attaching ${bold}$function_name${normal}${COLOR_FAILED}!${COLOR_OFF}"
     echo ""
 fi
-
-
-# Check if the program ran successfully
-#if [[ $return_code -eq 0 ]]; then
-#    echo "Program inserted successfully (PID $pid)."
-#else
-#    echo "Error occurred. Exit code: $return_code"
-#fi
 
 #exit with return code
 exit $return_code
