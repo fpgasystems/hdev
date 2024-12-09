@@ -675,7 +675,7 @@ iface_check() {
   interface_found=$(echo "$result" | sed -n '1p')
   interface_name=$(echo "$result" | sed -n '2p')
   #forbidden combinations
-  if [ "$interface_found" = "0" ] || ([ "$interface_found" = "1" ] && [ "$interface_name" = "" ]); then
+  if [ "$interface_found" = "1" ] && [ "$interface_name" = "" ]; then #[ "$interface_found" = "0" ] || 
       echo ""
       echo $CHECK_ON_IFACE_ERR_MSG
       echo ""
@@ -3572,17 +3572,12 @@ case "$command" in
           exit 1
         fi
 
-        #loop through each interface and remove the color codes
-        #for i in "${!interfaces[@]}"; do
-        #    interfaces[$i]=$(echo "${interfaces[$i]}" | sed 's/\x1b\[[0-9;]*m//g')
-        #done
-
         #initialize
         interface_found="0"
 
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
-          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"          
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           iface_check "$CLI_PATH" "${flags_array[@]}"
         fi
@@ -3619,18 +3614,8 @@ case "$command" in
 
         #XDP interfaces dialog
         if [ "$interface_found" = "0" ]; then
-          #get interfaces
-          #interfaces=($($CLI_PATH/get/interface | grep ":" | awk '{print $2}'))
-          #interfaces=($($CLI_PATH/get/interface))
-          #interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$'))
-          #interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$' | grep -v "(xdp)"))
-
-          #interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$' | sed 's/\x1b\[[0-9;]*m//g' | awk '{ $1=""; $NF=""; print $0 }' | sed 's/^[[:space:]]*//g' | sed 's/[[:space:]]*$//g'))
-
-          #if [[ ${#interfaces[@]} -eq 0 ]]; then
-          #  echo "No interfaces found."
-          #  exit 1
-          #fi
+          
+          echo "I am here 2"
 
           #loop through each interface and remove the color codes
           for i in "${!interfaces[@]}"; do
