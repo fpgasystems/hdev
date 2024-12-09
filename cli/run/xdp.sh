@@ -4,51 +4,34 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev run opennic --commit $commit_name --config $config_index --device $device_index --project $project_name
-#example: /opt/hdev/cli/hdev run opennic --commit      8077751 --config             1 --device             1 --project   hello_world
+#usage:       $CLI_PATH/hdev run xdp --commit $commit_name --interface $interface_name --project $project_name
+#example: /opt/hdev/cli/hdev run xdp --commit      8077751 --interface    enp35s0f0np0 --project   hello_world
 
 #early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
-if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-    exit
-fi
-
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
+is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+    exit 1
 fi
 
 #inputs
 commit_name=$2
-config_index=$4
-device_index=$6
-project_name=$8
+interface_name=$4
+project_name=$6
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$config_index" = "" ] || [ "$device_index" = "" ] || [ "$project_name" = "" ]; then
+if [ "$commit_name" = "" ] || [ "$interface_name" = "" ] || [ "$project_name" = "" ]; then
     exit
 fi
 
 #constants
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-WORKFLOW="opennic"
+WORKFLOW="xdp"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
-
-#get FDEV_NAME
-platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #change directory
 echo "${bold}Changing directory:${normal}"
@@ -57,28 +40,32 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-#display configuration
-echo "${bold}Device parameters:${normal}"
-echo ""
-cat $DIR/.device_config
-echo ""
-
-#get config name
-config_string=$($CLI_PATH/common/get_config_string $config_index)
-config_name="host_config_$config_string"
-
-echo "${bold}You are running $config_name:${normal}"
-echo ""
-cat $DIR/configs/$config_name
-echo ""
+#echo "HEY I am here: $interface_name"
+#echo "sudo ./pass_drop $interface_name &>/dev/null &"
+#exit
 
 #run application
-echo "${bold}Running your OpenNIC application:${normal}"
+echo "${bold}Running your XDP/eBPF function:${normal}"
 echo ""
-echo "./onic --config $config_index --device $device_index "
+echo "sudo ./pass_drop $interface_name &>/dev/null &"
 echo ""
-./onic --config "$config_index" --device "$device_index"
-return_code=$?
+sudo ./pass_drop $interface_name &>/dev/null &
+pid=$!  # Capture the PID of the background process
+
+# Wait for the process to finish and capture the return code
+#wait $pid
+#return_code=$?
+
+sleep 2
+
+echo "El PID es $pid"
+
+# Check if the program ran successfully
+#if [[ $return_code -eq 0 ]]; then
+#    echo "Program inserted successfully (PID $pid)."
+#else
+#    echo "Error occurred. Exit code: $return_code"
+#fi
 
 echo ""
 

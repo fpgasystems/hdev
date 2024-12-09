@@ -3561,6 +3561,22 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
+        #get available interfaces
+        interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$' | grep -v "(xdp)"))
+
+        #at least one non-xdp interface should be avalable
+        if [[ ${#interfaces[@]} -eq 0 ]]; then
+          echo ""
+          echo "Sorry, there are no more XDP interfaces available."
+          echo ""
+          exit 1
+        fi
+
+        #loop through each interface and remove the color codes
+        #for i in "${!interfaces[@]}"; do
+        #    interfaces[$i]=$(echo "${interfaces[$i]}" | sed 's/\x1b\[[0-9;]*m//g')
+        #done
+
         #initialize
         interface_found="0"
 
@@ -3606,7 +3622,20 @@ case "$command" in
           #get interfaces
           #interfaces=($($CLI_PATH/get/interface | grep ":" | awk '{print $2}'))
           #interfaces=($($CLI_PATH/get/interface))
-          interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$'))
+          #interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$'))
+          #interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$' | grep -v "(xdp)"))
+
+          #interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$' | sed 's/\x1b\[[0-9;]*m//g' | awk '{ $1=""; $NF=""; print $0 }' | sed 's/^[[:space:]]*//g' | sed 's/[[:space:]]*$//g'))
+
+          #if [[ ${#interfaces[@]} -eq 0 ]]; then
+          #  echo "No interfaces found."
+          #  exit 1
+          #fi
+
+          #loop through each interface and remove the color codes
+          for i in "${!interfaces[@]}"; do
+              interfaces[$i]=$(echo "${interfaces[$i]}" | sed 's/\x1b\[[0-9;]*m//g')
+          done
 
           if [[ ${#interfaces[@]} -eq 1 ]]; then
               interface_name=${interfaces[0]}
@@ -3628,11 +3657,8 @@ case "$command" in
           fi
         fi
         
-        echo "HEY I am here: $interface_name"
-        exit
-        
         #run
-        $CLI_PATH/run/xdp --commit $commit_name --interface $interface_name --project $project_name --driver $word_value
+        $CLI_PATH/run/xdp --commit $commit_name --interface $interface_name --project $project_name
         echo ""
         ;;
       *)
