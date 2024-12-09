@@ -330,6 +330,9 @@ _hdev_completions()
                         ifconfig) 
                             COMPREPLY=($(compgen -W "${GET_IFCONFIG_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        interface)
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            ;;
                         network) 
                             COMPREPLY=($(compgen -W "${GET_NETWORK_FLAGS[*]} --help" -- "${cur}"))
                             ;;
