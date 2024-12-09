@@ -3659,7 +3659,6 @@ case "$command" in
         
         #run
         $CLI_PATH/run/xdp --commit $commit_name --interface $interface_name --project $project_name
-        echo ""
         ;;
       *)
         run_help

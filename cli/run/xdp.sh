@@ -27,6 +27,9 @@ if [ "$commit_name" = "" ] || [ "$interface_name" = "" ] || [ "$project_name" = 
 fi
 
 #constants
+COLOR_FAILED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FAILED)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="xdp"
 
@@ -44,21 +47,38 @@ cd $DIR
 #echo "sudo ./pass_drop $interface_name &>/dev/null &"
 #exit
 
+function_name="pass_drop"
+
 #run application
-echo "${bold}Running your XDP/eBPF function:${normal}"
+echo "${bold}Attaching your XDP/eBPF function:${normal}"
 echo ""
-echo "sudo ./pass_drop $interface_name &>/dev/null &"
+echo "sudo ./$function_name $interface_name &>/dev/null &"
 echo ""
-sudo ./pass_drop $interface_name &>/dev/null &
+sudo ./$function_name $interface_name &>/dev/null &
 pid=$!  # Capture the PID of the background process
+return_code=$?
 
 # Wait for the process to finish and capture the return code
 #wait $pid
-#return_code=$?
 
-sleep 2
+#Loop for countdown
+for i in {15..0}; do
+    echo -n "."
+    sleep 0.5
+done
 
-echo "El PID es $pid"
+echo ""
+
+if [ ! "$pid" = "" ]; then
+    echo ""
+    echo -e "${COLOR_PASSED}${bold}$function_name (pid $pid)${normal} ${COLOR_PASSED}successfully attached!${COLOR_OFF}"
+    echo ""
+else
+    echo ""
+    echo -e "${COLOR_FAILED}Error while attaching ${bold}$function_name${normal}${COLOR_FAILED}!${COLOR_OFF}"
+    echo ""
+fi
+
 
 # Check if the program ran successfully
 #if [[ $return_code -eq 0 ]]; then
@@ -66,8 +86,6 @@ echo "El PID es $pid"
 #else
 #    echo "Error occurred. Exit code: $return_code"
 #fi
-
-echo ""
 
 #exit with return code
 exit $return_code
