@@ -27,10 +27,11 @@ INC_STEPS=2
 INC_DECIMALS=2
 
 #derived
-BUILD_DIRECTORY="$MY_PROJECT_PATH/dma_ip_drivers/QDMA/linux-kernel/driver"
+#BUILD_DIRECTORY="$MY_PROJECT_PATH/dma_ip_drivers/QDMA/linux-kernel/driver"
+BUILD_DIRECTORY="$MY_PROJECT_PATH/dma_ip_drivers/QDMA/linux-kernel"
 
 #save original pci_ids.h
-cp $BUILD_DIRECTORY/src/pci_ids.h $BUILD_DIRECTORY/src/pci_ids.h.backup
+cp $BUILD_DIRECTORY/driver/src/pci_ids.h $BUILD_DIRECTORY/driver/src/pci_ids.h.backup
 
 #get PCIe identifier
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
@@ -40,15 +41,10 @@ pci_id=$(lspci | grep Xilinx | grep $bdf | awk '{print $NF}')
 # Define the line to insert
 new_line="\t{ PCI_DEVICE(0x10ee, 0x$pci_id), },        /** V80 */"
 
-# Use sed to insert the new line before #endif
-#sed -i "/#endif/i \\$new_line" "$BUILD_DIRECTORY/src/pci_ids.h"
-
-# Define the line to insert
-
 # Safely insert the line before the first occurrence of #endif
 sed -i "0,/#endif/{/#endif/i\\
 $new_line
-}" "$BUILD_DIRECTORY/src/pci_ids.h"
+}" "$BUILD_DIRECTORY/driver/src/pci_ids.h"
 
 #build the driver
 echo "${bold}Driver compilation (PCIe ID: $pci_id)${normal}"
