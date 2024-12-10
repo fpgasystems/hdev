@@ -80,6 +80,7 @@ cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$a
 #add template files
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+cp $HDEV_PATH/templates/$WORKFLOW/qdma_add.sh $DIR/qdma_add
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 #cp $HDEV_PATH/templates/$WORKFLOW/get_incoming_uuid.c $DIR/sw/AMI/app/cmd_handlers/get_incoming_uuid.c
 #adds the flag -n to cmd_cfgmem_program.c (Quit after returning new_uuid)
@@ -91,6 +92,7 @@ cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 #compile files
 chmod +x $DIR/config_add
 chmod +x $DIR/config_delete
+chmod +x $DIR/qdma_add
 
 #push files
 if [ "$push_option" = "1" ]; then 
