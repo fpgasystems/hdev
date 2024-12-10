@@ -8,7 +8,7 @@
     #- hacc_boxes
     #- alveo-u55c-01.inf.ethz.ch
     #- versal-v80-04.inf.ethz.ch
-    - hacc-box-02.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -32,7 +32,7 @@
     examine: false
     get: true
     hdev: true
-    help: true
+    help: false
     hip: false
     new: false
     opennic: false
@@ -118,6 +118,7 @@
         - ASOC_SERVERS_LIST
         - AVED_DRIVER_NAME
         - AVED_PATH
+        - AVED_QDMA_REPO
         - AVED_REPO
         - AVED_SMBUS_IP
         - AVED_TAG
