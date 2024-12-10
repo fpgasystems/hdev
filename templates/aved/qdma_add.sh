@@ -43,7 +43,14 @@ echo "HEY $pci_id"
 new_line="\t{ PCI_DEVICE(0x10ee, 0x$pci_id), },        /** V80 */"
 
 # Use sed to insert the new line before #endif
-sed -i "/#endif/i \\$new_line" "$BUILD_DIRECTORY/src/pci_ids.h"
+#sed -i "/#endif/i \\$new_line" "$BUILD_DIRECTORY/src/pci_ids.h"
+
+# Define the line to insert
+
+# Safely insert the line before the first occurrence of #endif
+sed -i "0,/#endif/{/#endif/i\\
+$new_line
+}" "$BUILD_DIRECTORY/src/pci_ids.h"
 
 echo "Line added successfully!"
 
