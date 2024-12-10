@@ -39,4 +39,12 @@ pci_id=$(lspci | grep Xilinx | grep $bdf | awk '{print $NF}')
 
 echo "HEY $pci_id"
 
+# Define the line to insert
+new_line="\t{ PCI_DEVICE(0x10ee, 0x$pci_id), },    /** V80 */"
+
+# Use sed to insert the new line before #endif
+sed -i "/#endif/i \\$new_line" "$BUILD_DIRECTORY/src/pci_ids.h"
+
+echo "Line added successfully!"
+
 #author: https://github.com/jmoya82
