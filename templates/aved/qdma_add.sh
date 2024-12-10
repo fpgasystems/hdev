@@ -37,8 +37,6 @@ upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 bdf="${upstream_port%?}1"
 pci_id=$(lspci | grep Xilinx | grep $bdf | awk '{print $NF}')
 
-echo "HEY $pci_id"
-
 # Define the line to insert
 new_line="\t{ PCI_DEVICE(0x10ee, 0x$pci_id), },        /** V80 */"
 
@@ -51,6 +49,16 @@ new_line="\t{ PCI_DEVICE(0x10ee, 0x$pci_id), },        /** V80 */"
 sed -i "0,/#endif/{/#endif/i\\
 $new_line
 }" "$BUILD_DIRECTORY/src/pci_ids.h"
+
+#build the driver
+echo "${bold}Driver compilation (PCIe ID: $pci_id)${normal}"
+echo ""
+echo "cd $BUILD_DIRECTORY && make"
+echo ""
+cd $BUILD_DIRECTORY && make
+echo ""
+
+#restore file
 
 echo "Line added successfully!"
 
