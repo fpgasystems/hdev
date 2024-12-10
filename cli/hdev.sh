@@ -3614,9 +3614,6 @@ case "$command" in
 
         #XDP interfaces dialog
         if [ "$interface_found" = "0" ]; then
-          
-          echo "I am here 2"
-
           #loop through each interface and remove the color codes
           for i in "${!interfaces[@]}"; do
               interfaces[$i]=$(echo "${interfaces[$i]}" | sed 's/\x1b\[[0-9;]*m//g')
@@ -3639,6 +3636,9 @@ case "$command" in
                   break
               fi
             done
+
+            echo ""
+
           fi
         fi
         
