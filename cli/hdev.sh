@@ -3636,9 +3636,7 @@ case "$command" in
                   break
               fi
             done
-
             echo ""
-
           fi
         fi
         

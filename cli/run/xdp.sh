@@ -45,47 +45,19 @@ cd $DIR
 
 function_name="pass_drop"
 
+# Define a temporary file in the specified directory
+temp_output="$DIR/temp_output"
+touch "$temp_output"
+
 #run application
 echo "${bold}Attaching your XDP/eBPF function:${normal}"
 echo ""
 echo "sudo ./$function_name $interface_name &>/dev/null &"
 echo ""
-#sudo ./$function_name $interface_name &>/dev/null &
-#pid=$!  # Capture the PID of the background process
-#return_code=$?
-
-
-#temp_output=$(mktemp)
-
-# Define a temporary file in the specified directory
-temp_output="$DIR/temp_output"
-touch "$temp_output"
-
-#run command
 sudo ./$function_name $interface_name >"$temp_output" 2>&1 &
 
 # Get the PID of the background process
 pid=$!
-
-# Read the captured output
-#output=$(cat "$temp_output")
-#echo "$output"
-
-# Synchronize to ensure all writes are flushed
-#sync
-
-# Display the content of the file (optional)
-#echo "Jola" 
-#cat "$temp_output"
-#cat $DIR/temp_output
-
-#rm -f "$temp_output"  # Clean up the temporary file
-
-# Run the command and capture the output
-#output=$(sudo ./$function_name $interface_name 2>&1)
-
-# Print the output to the terminal
-#echo "$output"
 
 #Loop for countdown
 countdown=$((RANDOM % 6 + 10))
@@ -113,16 +85,6 @@ fi
 
 # Clean up the temporary file
 rm -f "$temp_output"
-
-#if [ ! "$pid" = "" ]; then
-#    echo ""
-#    echo -e "${COLOR_PASSED}${bold}$function_name (pid $pid)${normal} ${COLOR_PASSED}successfully attached!${COLOR_OFF}"
-#    echo ""
-#else
-#    echo ""
-#    echo -e "${COLOR_FAILED}Error while attaching ${bold}$function_name${normal}${COLOR_FAILED}!${COLOR_OFF}"
-#    echo ""
-#fi
 
 #exit with return code
 exit $return_code
