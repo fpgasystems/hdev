@@ -9,9 +9,11 @@ AVED_TAG=$2
 
 #constants
 AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
+AVED_QDMA_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_QDMA_REPO)
 
 #derived
 AVED_REPO="https://github.com/$AVED_REPO.git"
+AVED_QDMA_REPO="https://github.com/$AVED_QDMA_REPO.git"
 
 #print
 echo "${bold}Checking out AVED:${normal}"
@@ -30,6 +32,20 @@ cd $DIR/AVED
 git checkout tags/$AVED_TAG > /dev/null 2>&1
 
 #remove the repository (in case we add it later to our own repository)
+rm -rf .git
+
+echo ""
+echo "${bold}Checking out dma_ip_drivers:${normal}"
+echo ""
+
+#change directory
+cd $DIR
+
+#clone AVED_QDMA_REPO
+git clone $AVED_QDMA_REPO
+
+#remove the repository (in case we add it later to our own repository)
+cd $DIR/dma_ip_drivers
 rm -rf .git
 
 echo ""
