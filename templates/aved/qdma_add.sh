@@ -4,6 +4,9 @@ MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#inputs
+device_index=$1
+
 #constants
 MAX_PROMPT_ELEMENTS=10
 INC_STEPS=2
@@ -21,8 +24,5 @@ upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 bdf="${upstream_port%?}1"
 
 echo "HEY $bdf"
-
-
-
 
 #author: https://github.com/jmoya82
