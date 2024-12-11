@@ -6,9 +6,10 @@
     #- alveo_u55c
     #- versal_v80
     #- hacc_boxes
-    #- alveo-u55c-01.inf.ethz.ch
+    - alveo-u55c-03.inf.ethz.ch
+    - alveo-u55c-04.inf.ethz.ch
     #- versal-v80-04.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -21,16 +22,16 @@
     cli_name: hdev
     templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #cli installation
-    aved: false
+    aved: true
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
-    get: true
+    get: false
     hdev: true
     help: false
     hip: false
@@ -40,11 +41,11 @@
     reboot: false
     run: false
     set: false
-    templates: false
+    templates: true
     update: false
     validate: false
     vitis: false
-    xdp: true
+    xdp: false
     #release
     #    1. Merge a development branch into main.
     #    2. Login to a server (i.e., hacc-box-01), run "hdev update," and capture COMMIT and COMMIT_DATE. Remeber that "hdev update" is only for sudo users.
@@ -118,7 +119,6 @@
         - ASOC_SERVERS_LIST
         - AVED_DRIVER_NAME
         - AVED_PATH
-        - AVED_QDMA_REPO
         - AVED_REPO
         - AVED_SMBUS_IP
         - AVED_TAG
@@ -741,11 +741,12 @@
     #    - enable_integrations
     #    - get_email
     #constants
-    #- name: deleting constants
-    #  file:
-    #    path: "{{ cli_path }}/constants/{{ item }}"
-    #    state: absent
-    #  loop:
+    - name: deleting constants
+      file:
+        path: "{{ cli_path }}/constants/{{ item }}"
+        state: absent
+      loop:
+        - AVED_QDMA_REPO
     #    - ONIC_COMMIT
     #    - BITSTREAM_PATH
     #    - BITSTREAMS_PATH
