@@ -620,8 +620,8 @@ fpga_check() {
 }
 
 get_xdp_interfaces() {
-    # Get current interfaces
-    interfaces=$($CLI_PATH/get/interface)
+    # Get current interfaces and strip color codes
+    interfaces=$($CLI_PATH/get/interface | sed -r "s/\x1B\[[0-9;]*m//g")
 
     # Initialize an empty array
     xdp_interfaces=()
@@ -629,8 +629,8 @@ get_xdp_interfaces() {
     # Loop through each line of the interfaces
     while read -r line; do
         if [[ $line == *"(xdp)"* ]]; then
-            # Extract the second column (interface name) and add to the array
-            interface=$(echo $line | awk '{print $2}')
+            # Extract the first column (interface name) and add to the array
+            interface=$(echo "$line" | awk '{print $1}')
             xdp_interfaces+=("$interface")
         fi
     done <<< "$interfaces"
@@ -3555,7 +3555,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit -i --interface -p --project -h --help" 
+        valid_flags="-c --commit -i --interface -f --function -p --project --start --stop -h --help" #-i --interface
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -3577,24 +3577,72 @@ case "$command" in
 
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
-          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"          
-          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          iface_check "$CLI_PATH" "${flags_array[@]}"
+          #check on start/stop
+          word_check "$CLI_PATH" "--start" "--start" "${flags_array[@]}"
+          start_found=$word_found
+          start_name=$word_value
+          word_check "$CLI_PATH" "--stop" "--stop" "${flags_array[@]}"
+          stop_found=$word_found
+          stop_name=$word_value
+
+          echo "hola 1"
+
+          if [ "$stop_found" = "1" ] && [ "${#flags_array[@]}" -gt 2 ]; then
+            exit
+          elif [ "$stop_found" = "0" ]; then
+
+            echo "hola 2"
+
+            commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"          
+            project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+            iface_check "$CLI_PATH" "${flags_array[@]}"
+            #xdp_program_check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          fi
         fi
 
-        #check xdp capabilities
-        if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
+
+        echo "hola 3"
+
+        #check on stop_found and interface
+        if [ "$stop_found" = "1" ]; then
+          echo "We need to take action"
+          #check if the provided interface is already (xdp) otherwise error and then stop it by killing the pid
+
           #get XDP interfaces
           xdp_interfaces=($(get_xdp_interfaces))
 
+          echo "HEY"
+          echo "XDP Interfaces: ${xdp_interfaces[@]}"
+
           #check if the interface is an xdp interface
-          if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $interface_name " ]]; then
+          if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $stop_name " ]]; then
               echo ""
               echo $CHECK_ON_XDP_ERR_MSG
               echo ""
               exit
           fi
+
+          #kill xdp propgram
+          echo "kill bill"
+
         fi
+
+        #check xdp capabilities
+        #if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
+        #  #get XDP interfaces
+        #  xdp_interfaces=($(get_xdp_interfaces))
+        #
+        #  echo "HEY"
+        #  echo "XDP Interfaces: ${xdp_interfaces[@]}"
+        #
+        #  #check if the interface is an xdp interface
+        #  if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $interface_name " ]]; then
+        #      echo ""
+        #      echo $CHECK_ON_XDP_ERR_MSG
+        #      echo ""
+        #      exit
+        #  fi
+        #fi
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
@@ -3639,7 +3687,10 @@ case "$command" in
             echo ""
           fi
         fi
-        
+
+        #XDP program dialog!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #we have --program = $start_name
+
         #run
         $CLI_PATH/run/xdp --commit $commit_name --interface $interface_name --project $project_name
         ;;
