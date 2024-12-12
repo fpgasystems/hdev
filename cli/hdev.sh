@@ -3624,25 +3624,8 @@ case "$command" in
 
           #kill xdp propgram
           echo "kill bill"
-
+          exit
         fi
-
-        #check xdp capabilities
-        #if [ "$interface_found" = "1" ] && [ ! "$interface_name" = "" ]; then
-        #  #get XDP interfaces
-        #  xdp_interfaces=($(get_xdp_interfaces))
-        #
-        #  echo "HEY"
-        #  echo "XDP Interfaces: ${xdp_interfaces[@]}"
-        #
-        #  #check if the interface is an xdp interface
-        #  if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $interface_name " ]]; then
-        #      echo ""
-        #      echo $CHECK_ON_XDP_ERR_MSG
-        #      echo ""
-        #      exit
-        #  fi
-        #fi
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
