@@ -3585,23 +3585,15 @@ case "$command" in
           stop_found=$word_found
           stop_name=$word_value
 
-          echo "hola 1"
-
           if [ "$stop_found" = "1" ] && [ "${#flags_array[@]}" -gt 2 ]; then
             exit
           elif [ "$stop_found" = "0" ]; then
-
-            echo "hola 2"
-
             commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"          
             project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
             iface_check "$CLI_PATH" "${flags_array[@]}"
             #xdp_program_check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           fi
         fi
-
-
-        echo "hola 3"
 
         #check on stop_found and interface
         if [ "$stop_found" = "1" ]; then
@@ -3610,9 +3602,6 @@ case "$command" in
 
           #get XDP interfaces
           xdp_interfaces=($(get_xdp_interfaces))
-
-          echo "HEY"
-          echo "XDP Interfaces: ${xdp_interfaces[@]}"
 
           #check if the interface is an xdp interface
           if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $stop_name " ]]; then
