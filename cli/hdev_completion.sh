@@ -43,7 +43,7 @@ PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
-XDP_RUN_FLAGS=( "--commit" "--interface" "--function" "--project" "--start" ) #"--stop"
+XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--function" "--project" "--start" ) #"--stop"
 
 _hdev_completions()
 {
@@ -208,6 +208,9 @@ _hdev_completions()
                     if [ "$vivado_enabled_asoc" = "1" ]; then
                         commands="${commands} image aved"
                     fi
+                    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+                        commands="${commands} xdp"
+                    fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
@@ -226,9 +229,6 @@ _hdev_completions()
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
-                    fi
-                    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-                        commands="${commands} xdp"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -404,6 +404,9 @@ _hdev_completions()
                         revert)
                             COMPREPLY=($(compgen -W "${PROGRAM_REVERT_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        xdp)
+                            COMPREPLY=($(compgen -W "${XDP_PROGRAM_FLAGS[*]} --stop --help" -- "${cur}"))
+                            ;;
                     esac
                     ;;
                 run)
@@ -416,9 +419,6 @@ _hdev_completions()
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
-                        xdp)
-                            COMPREPLY=($(compgen -W "${XDP_RUN_FLAGS[*]} --stop --help" -- "${cur}"))
                             ;;
                     esac
                     ;;
@@ -556,6 +556,14 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_REVERT_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        xdp)
+                            if [ "${previous_flags[0]}" = "--stop" ]; then
+                                remaining_flags=""
+                            else
+                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_PROGRAM_FLAGS[*]}")
+                            fi
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                     esac
                     ;;
                 run)
@@ -570,14 +578,6 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                        xdp)
-                            if [ "${previous_flags[0]}" = "--stop" ]; then
-                                remaining_flags=""
-                            else
-                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_RUN_FLAGS[*]}")
-                            fi
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -661,6 +661,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        xdp)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                     esac
                     ;;
                 run)
@@ -671,10 +675,6 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                        xdp)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -722,6 +722,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        xdp)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                     esac
                     ;;
                 run)
@@ -732,10 +736,6 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                        xdp)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -765,12 +765,8 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
-                    esac
-                    ;;
-                run)
-                    case "${COMP_WORDS[COMP_CWORD-9]}" in
                         xdp)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_RUN_FLAGS[*]}")
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -802,12 +798,8 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
-                    esac
-                    ;;
-                run)
-                    case "${COMP_WORDS[COMP_CWORD-11]}" in
                         xdp)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_RUN_FLAGS[*]}")
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac

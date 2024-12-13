@@ -227,7 +227,7 @@ CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
-CHECK_ON_XDP_ERR_MSG="Please, choose a valid XDP interface."
+#CHECK_ON_XDP_ERR_MSG="Please, choose a valid XDP interface."
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 
@@ -407,7 +407,6 @@ config_check() {
       echo ""
       exit 1
   elif [ "$config_found" = "1" ] && ([ "$config_index" = "" ] || [ "$config_index" = "0" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$config_name" ]); then #implies that --project must be specified
-      #echo "HEY, project_name: $project_name"
       if [ "$add_echo" = "yes" ]; then
         echo ""
       fi
@@ -659,6 +658,53 @@ gpu_check() {
       echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
       exit 1
+  fi
+}
+
+iface_dialog() {
+  local CLI_PATH=$1
+  local CLI_NAME=$2
+  #local MAX_DEVICES_NIC=$3
+  #local MAX_DEVICES_FPGA=$4
+  #local multiple_devices=$3
+  #local MAX_DEVICES=$4
+  shift 2
+  local flags_array=("$@")
+  
+  echo "Hey I am here too"
+
+  #get interfaces
+  interfaces=($($CLI_PATH/common/get_interfaces $CLI_PATH))
+  
+  interface_found=""
+  interface_name=""
+
+  if [[ ${#interfaces[@]} -eq 1 ]]; then
+    interface_found="1"
+    interface_name=${interfaces[0]}
+
+    echo "Hey I am here too 2"
+  else
+    if [ "$flags_array" = "" ]; then
+      #device_dialog
+      echo $CHECK_ON_DEVICE_MSG
+      echo ""
+      result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+      interface_found=$(echo "$result" | sed -n '1p')
+      interface_name=$(echo "$result" | sed -n '2p')
+      echo ""
+    else
+      #forgotten mandatory
+      device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+      if [[ $interface_found = "0" ]]; then
+        echo $CHECK_ON_DEVICE_MSG
+        echo ""
+        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+        interface_found=$(echo "$result" | sed -n '1p')
+        interface_name=$(echo "$result" | sed -n '2p')
+        echo ""
+      fi
+    fi
   fi
 }
 
@@ -1566,6 +1612,9 @@ program_help() {
     if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
       echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
     fi
+    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+      echo "   ${bold}xdp${normal}             - Programs your XDP/eBPF program on a given device."
+    fi
     #if [ "$is_vivado_developer" = "1" ]; then
     #echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          - Programs a Vivado bitstream to a given device."
     #fi
@@ -1649,6 +1698,15 @@ program_vivado_help() {
   exit
 }
 
+program_xdp_help() {
+  if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+    $CLI_PATH/help/program_xdp $CLI_PATH $CLI_NAME
+    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    #echo ""
+  fi
+  exit
+}
+
 # reboot -------------------------------------------------------------------------------------------------------
 
 reboot_help() {
@@ -1677,9 +1735,6 @@ run_help() {
     fi
     if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs OpenNIC on a given device."
-    fi
-    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-      echo -e "   ${bold}xdp${normal}         - Runs your XDP/eBPF program on a given device."
     fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -1723,15 +1778,6 @@ run_opennic_help() {
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
-  fi
-  exit
-}
-
-run_xdp_help() {
-  if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-    $CLI_PATH/help/run_xdp $CLI_PATH $CLI_NAME
-    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
-    #echo ""
   fi
   exit
 }
@@ -3316,6 +3362,102 @@ case "$command" in
         #run
         $CLI_PATH/program/revert --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
         ;;
+      xdp)
+        #early exit
+        if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+          exit 1
+        fi
+
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-c --commit -i --interface -f --function -p --project --start --stop -h --help" #-i --interface
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #initialize
+        fec_option_found="0"
+        fec_option=""
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          iface_check "$CLI_PATH" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          #remote_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        echo "Hey I am here 1"
+
+        #dialogs
+        commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
+
+        echo "After all"
+        echo $interface_name
+        exit
+
+        #fec_dialog
+        if ! (lsmod | grep -q "${ONIC_DRIVER_NAME%.ko}" 2>/dev/null); then
+          if [ "$fec_option_found" = "0" ]; then
+            echo "${bold}Please, choose your encoding scheme:${normal}"
+            echo ""
+            echo "0) RS_FEC_ENABLED = 0"
+            echo "1) RS_FEC_ENABLED = 1"
+            while true; do
+                read -p "" choice
+                case $choice in
+                    "0")
+                        fec_option="0"
+                        break
+                        ;;
+                    "1")
+                        fec_option="1"
+                        break
+                        ;;
+                esac
+            done
+            echo ""
+          fi
+        else
+          #when the driver is inserted fec_option is irrelevant
+          fec_option="-" 
+        fi
+        
+        #bitstream check
+        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+        bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        if ! [ -e "$bitstream_path" ]; then
+          echo "$CHECK_ON_BITSTREAM_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
+
+        #driver check
+        driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
+        if ! [ -e "$driver_path" ]; then
+          echo "Your targeted driver is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
+
+        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
+        #run
+        $CLI_PATH/program/xdp --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        ;;
       *)
         program_help
       ;;
@@ -3589,10 +3731,9 @@ case "$command" in
             exit
           elif [ "$stop_found" = "0" ]; then
             commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"          
-            project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
             iface_check "$CLI_PATH" "${flags_array[@]}"
+            #early check (if interface is already XDP)
             if [ "$interface_found" = "1" ]; then
-              #check for XDP
               if ip link show "$interface_name" | grep -q "xdp"; then
                 echo ""
                 echo "$CHECK_ON_IFACE_ERR_MSG"
@@ -3600,7 +3741,32 @@ case "$command" in
                 exit
               fi
             fi
-            #xdp_program_check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+            
+            
+            echo "Hey I am here"
+            echo "commit_name: $commit_name"
+            echo "project_name: $project_name"
+            echo "start_name: $start_name"
+            
+            if [ "$project_found" = "1" ]; then
+              #xdp_program_check
+              if [ "$project_name" = "" ]; then
+                echo ""
+                echo $CHECK_ON_PROJECT_ERR_MSG
+                echo ""
+                exit 1
+              elif [ "$start_found" = "1" ] && ([ "$start_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/xdp/$commit_name/$project_name/$start_name" ]); then
+                echo ""
+                echo "Please, choose a valid XDP program."
+                echo ""
+                exit
+              fi
+
+              
+
+
+            fi
           fi
         fi
 
@@ -3615,7 +3781,8 @@ case "$command" in
           #check if the interface is an xdp interface
           if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $stop_name " ]]; then
               echo ""
-              echo $CHECK_ON_XDP_ERR_MSG
+              #echo $CHECK_ON_XDP_ERR_MSG
+              echo $CHECK_ON_IFACE_ERR_MSG
               echo ""
               exit
           fi
