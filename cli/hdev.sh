@@ -671,8 +671,6 @@ iface_dialog() {
   shift 2
   local flags_array=("$@")
   
-  echo "Hey I am here too"
-
   #get interfaces
   interfaces=($($CLI_PATH/common/get_interfaces $CLI_PATH))
   
@@ -680,28 +678,54 @@ iface_dialog() {
   interface_name=""
 
   if [[ ${#interfaces[@]} -eq 1 ]]; then
+    echo $CHECK_ON_IFACE_MSG
+    echo ""
+    sleep 1
     interface_found="1"
     interface_name=${interfaces[0]}
-
-    echo "Hey I am here too 2"
+    echo "$interface_name"
+    echo ""
+    sleep 2
   else
     if [ "$flags_array" = "" ]; then
-      #device_dialog
-      echo $CHECK_ON_DEVICE_MSG
+      #interface_dialog
+      echo $CHECK_ON_IFACE_MSG
       echo ""
-      result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-      interface_found=$(echo "$result" | sed -n '1p')
-      interface_name=$(echo "$result" | sed -n '2p')
+      for i in "${!interfaces[@]}"; do
+        echo "$((i + 1))) ${interfaces[i]}"
+      done
+
+      while true; do
+        read -p "" choice
+        # Validate the input
+        if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#interfaces[@]})); then
+            interface_found="1"
+            interface_name=${interfaces[choice-1]}
+            break
+        fi
+      done
       echo ""
     else
       #forgotten mandatory
-      device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+      #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+      iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
       if [[ $interface_found = "0" ]]; then
-        echo $CHECK_ON_DEVICE_MSG
+        #interface_dialog
+        echo $CHECK_ON_IFACE_MSG
         echo ""
-        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-        interface_found=$(echo "$result" | sed -n '1p')
-        interface_name=$(echo "$result" | sed -n '2p')
+        for i in "${!interfaces[@]}"; do
+          echo "$((i + 1))) ${interfaces[i]}"
+        done
+
+        while true; do
+          read -p "" choice
+          # Validate the input
+          if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#interfaces[@]})); then
+              interface_found="1"
+              interface_name=${interfaces[choice-1]}
+              break
+          fi
+        done
         echo ""
       fi
     fi
@@ -3382,8 +3406,8 @@ case "$command" in
         read -r -a flags_array <<< "$flags"
 
         #initialize
-        fec_option_found="0"
-        fec_option=""
+        #interface_found="0"
+        #interface_name=""
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
@@ -3393,8 +3417,6 @@ case "$command" in
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           #remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
-
-        echo "Hey I am here 1"
 
         #dialogs
         commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
@@ -3406,6 +3428,7 @@ case "$command" in
         iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
 
         echo "After all"
+        echo $found
         echo $interface_name
         exit
 
