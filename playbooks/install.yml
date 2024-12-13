@@ -8,8 +8,8 @@
     #- hacc_boxes
     #- alveo-u55c-03.inf.ethz.ch
     #- alveo-u55c-04.inf.ethz.ch
-    - versal-v80-04.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    #- versal-v80-03.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -24,7 +24,7 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #cli installation
-    aved: true
+    aved: false
     bitstreams: false
     build: false
     common: true
@@ -41,7 +41,7 @@
     reboot: false
     run: false
     set: false
-    templates: true
+    templates: false
     update: false
     validate: false
     vitis: false
@@ -315,6 +315,7 @@
         - get_constant
         - get_FDEV_NAME
         - get_files
+        - get_interfaces
         - get_max_devices
         - get_multiple_devices
         - get_remaining_flags
@@ -445,10 +446,10 @@
         - program_opennic
         - program_reset
         - program_revert
+        - program_xdp
         - reboot
         - run_aved
         - run_opennic
-        - run_xdp
         - set_keys
         - validate_opennic
     #new
@@ -484,6 +485,7 @@
         - reset
         - revert
         - vivado #program bitstream should be used, but we keep it for backward compatibility
+        - xdp
     - name: copying program tcl
       copy:
         src: "../cli/program/{{ item }}"
@@ -523,7 +525,6 @@
         - aved
         - hip
         - opennic
-        - xdp
     #set
     - name: copying set scripts
       copy:
@@ -692,10 +693,10 @@
             src: "../cli/build/xdp.sh"
             dest: "{{ cli_path }}/build/xdp"
             mode: "0755"
-        - name: run
+        - name: program
           copy:
-            src: "../cli/run/xdp.sh"
-            dest: "{{ cli_path }}/run/xdp"
+            src: "../cli/program/xdp.sh"
+            dest: "{{ cli_path }}/program/xdp"
             mode: "0755"
         #- name: validate
         #  copy:
@@ -780,15 +781,12 @@
     #    path: "{{ cli_path }}/validate/iperf"
     #    state: absent
     #help
-    #- name: deleting help scripts
-    #  file:
-    #    path: "{{ cli_path }}/help/{{ item }}"
-    #    state: absent
-    #  loop:
-    #    - opennic_validate
-    #    - update
-    #    - new_opennic
-    #    - program_vivado
+    - name: deleting help scripts
+      file:
+        path: "{{ cli_path }}/help/{{ item }}"
+        state: absent
+      loop:
+        - run_xdp
     #get
     - name: deleting get scripts
       file:
@@ -816,6 +814,13 @@
     #    - enable_regions
     #    - get_bus_device
     #    - opennic_setpci
+    #run
+    - name: deleting run scripts
+      file:
+        path: "{{ cli_path }}/run/{{ item }}"
+        state: absent
+      loop:
+        - xdp
     #update
     #- name: deleting update (from cli_path)
     #  file:
