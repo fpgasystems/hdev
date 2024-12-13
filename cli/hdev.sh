@@ -3425,8 +3425,10 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
-
+        if [ "$interface_found" = "0" ]; then
+          iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
+        fi
+        
         echo "After all"
         echo $found
         echo $interface_name
