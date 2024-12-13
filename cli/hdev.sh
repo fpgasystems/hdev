@@ -3564,19 +3564,19 @@ case "$command" in
         #get available interfaces
         interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$' | grep -v "(xdp)"))
 
-        #at least one non-xdp interface should be avalable
-        if [[ ${#interfaces[@]} -eq 0 ]]; then
-          echo ""
-          echo "Sorry, there are no more XDP interfaces available."
-          echo ""
-          exit 1
-        fi
-
         #initialize
         interface_found="0"
 
         #checks on command line
-        if [ ! "$flags_array" = "" ]; then
+        if [ "$flags_array" = "" ]; then
+          #at least one non-xdp interface should be avalable
+          if [[ ${#interfaces[@]} -eq 0 ]]; then
+            echo ""
+            echo "Sorry, there are no more XDP interfaces available."
+            echo ""
+            exit 1
+          fi
+        else
           #check on start/stop
           word_check "$CLI_PATH" "--start" "--start" "${flags_array[@]}"
           start_found=$word_found
@@ -3591,6 +3591,15 @@ case "$command" in
             commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"          
             project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
             iface_check "$CLI_PATH" "${flags_array[@]}"
+            if [ "$interface_found" = "1" ]; then
+              #check for XDP
+              if ip link show "$interface_name" | grep -q "xdp"; then
+                echo ""
+                echo "$CHECK_ON_IFACE_ERR_MSG"
+                echo ""
+                exit
+              fi
+            fi
             #xdp_program_check !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           fi
         fi
@@ -3640,7 +3649,13 @@ case "$command" in
           done
 
           if [[ ${#interfaces[@]} -eq 1 ]]; then
+              echo $CHECK_ON_IFACE_MSG
+              echo ""
+              sleep 1
               interface_name=${interfaces[0]}
+              echo "$interface_name"
+              echo ""
+              sleep 2
           else
             echo $CHECK_ON_IFACE_MSG
             echo ""
