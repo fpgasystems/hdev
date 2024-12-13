@@ -8,9 +8,9 @@ CLI_NAME=$2
 XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
 
 echo ""
-echo "${bold}$CLI_NAME run xdp [flags] [--help]${normal}"
+echo "${bold}$CLI_NAME program xdp [flags] [--help]${normal}"
 echo ""
-echo "Runs your XDP/eBPF program on a given device."
+echo "Programs your XDP/eBPF application on a given device."
 echo ""
 echo "FLAGS:"
 echo "   ${bold}-c, --commit${normal}    - GitHub commit ID for bpftool (default: ${bold}$XDP_BPFTOOL_COMMIT${normal})."
