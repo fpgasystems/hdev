@@ -44,8 +44,6 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-#function_name="pass_drop"
-
 # Define a temporary file in the specified directory
 temp_output="$DIR/temp_output"
 touch "$temp_output"
