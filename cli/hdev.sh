@@ -3406,7 +3406,7 @@ case "$command" in
         read -r -a flags_array <<< "$flags"
 
         #initialize
-        #interface_found="0"
+        interface_found="0"
         #interface_name=""
 
         #checks (command line)
