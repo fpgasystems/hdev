@@ -3469,8 +3469,6 @@ case "$command" in
           exit
         fi
 
-        echo "HEY"
-
         #XDP application check
         if [ "$start_found" = "1" ] && ([ "$start_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/xdp/$commit_name/$project_name/$start_name" ]); then
           echo ""
@@ -3481,7 +3479,7 @@ case "$command" in
         
         #run
         #$CLI_PATH/program/xdp --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
-        $CLI_PATH/program/xdp --commit $commit_name --interface $interface_name --project $project_name
+        $CLI_PATH/program/xdp --commit $commit_name --interface $interface_name --project $project_name --start $start_name
         ;;
       *)
         program_help

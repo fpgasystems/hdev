@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev program xdp --commit $commit_name --interface $interface_name --project $project_name
-#example: /opt/hdev/cli/hdev program xdp --commit      8077751 --interface    enp35s0f0np0 --project   hello_world
+#usage:       $CLI_PATH/hdev program xdp --commit $commit_name --interface $interface_name --project $project_name --start $function_name
+#example: /opt/hdev/cli/hdev program xdp --commit      8077751 --interface    enp35s0f0np0 --project   hello_world --start   pass_drop
 
 #early exit
 url="${HOSTNAME}"
@@ -20,9 +20,10 @@ fi
 commit_name=$2
 interface_name=$4
 project_name=$6
+function_name=$8
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$interface_name" = "" ] || [ "$project_name" = "" ]; then
+if [ "$commit_name" = "" ] || [ "$interface_name" = "" ] || [ "$project_name" = "" ] || [ "$function_name" = "" ]; then
     exit
 fi
 
@@ -43,7 +44,7 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-function_name="pass_drop"
+#function_name="pass_drop"
 
 # Define a temporary file in the specified directory
 temp_output="$DIR/temp_output"
