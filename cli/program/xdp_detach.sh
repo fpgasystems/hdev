@@ -15,3 +15,6 @@ for i in $(seq $countdown -1 0); do
     echo -n "."
     sleep 0.5
 done
+
+echo ""
+echo ""
