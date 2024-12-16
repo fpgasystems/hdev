@@ -3427,9 +3427,12 @@ case "$command" in
             echo ""
             echo "${bold}Detaching your XDP/eBPF function:${normal}"
             echo ""
-            echo "sudo ip link set dev $stop_name xdp off"
+            #echo "sudo ip link set dev $stop_name xdp off"
+            #echo ""            
+            #sudo ip link set dev $stop_name xdp off
+            echo "sudo $CLI_PATH/program/xdp_detach $stop_name"
             echo ""            
-            sudo ip link set dev $stop_name xdp off
+            sudo $CLI_PATH/program/xdp_detach $stop_name
             exit
           elif [ "$stop_found" = "0" ]; then
             commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"

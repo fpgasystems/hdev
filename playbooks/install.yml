@@ -27,7 +27,7 @@
     aved: false
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
@@ -45,7 +45,7 @@
     update: false
     validate: false
     vitis: false
-    xdp: false
+    xdp: true
     #release
     #    1. Merge a development branch into main.
     #    2. Login to a server (i.e., hacc-box-01), run "hdev update," and capture COMMIT and COMMIT_DATE. Remeber that "hdev update" is only for sudo users.
@@ -485,6 +485,7 @@
         - reset
         - revert
         - vivado #program bitstream should be used, but we keep it for backward compatibility
+        - xdp_detach
         - xdp
     - name: copying program tcl
       copy:
@@ -693,10 +694,15 @@
             src: "../cli/build/xdp.sh"
             dest: "{{ cli_path }}/build/xdp"
             mode: "0755"
-        - name: program
+        - name: program (1/2)
           copy:
             src: "../cli/program/xdp.sh"
             dest: "{{ cli_path }}/program/xdp"
+            mode: "0755"
+        - name: program (2/2)
+          copy:
+            src: "../cli/program/xdp_detach.sh"
+            dest: "{{ cli_path }}/program/xdp_detach"
             mode: "0755"
         #- name: validate
         #  copy:
