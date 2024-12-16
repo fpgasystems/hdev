@@ -618,26 +618,6 @@ fpga_check() {
   fi
 }
 
-get_xdp_interfaces() {
-    # Get current interfaces and strip color codes
-    interfaces=$($CLI_PATH/get/interface | sed -r "s/\x1B\[[0-9;]*m//g")
-
-    # Initialize an empty array
-    xdp_interfaces=()
-
-    # Loop through each line of the interfaces
-    while read -r line; do
-        if [[ $line == *"(xdp)"* ]]; then
-            # Extract the first column (interface name) and add to the array
-            interface=$(echo "$line" | awk '{print $1}')
-            xdp_interfaces+=("$interface")
-        fi
-    done <<< "$interfaces"
-
-    # Output the array as a space-separated string
-    echo "${xdp_interfaces[@]}"
-}
-
 gh_check() {
   local CLI_PATH=$1
   logged_in=$($CLI_PATH/common/gh_auth_status)
@@ -3427,8 +3407,6 @@ case "$command" in
             #check if the provided interface is already (xdp) otherwise error and then stop it by killing the pid
 
             #get XDP interfaces
-            #xdp_interfaces=($(get_xdp_interfaces)) # we need to change this
-
             interfaces=($($CLI_PATH/common/get_interfaces $CLI_PATH))
             xdp_interfaces=()
             for i in "${interfaces[@]}"; do
@@ -3761,147 +3739,8 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #get available interfaces
-        interfaces=($($CLI_PATH/get/interface | head -n -2 | grep -v '^[[:space:]]*$' | grep -v "(xdp)"))
-
-        #initialize
-        interface_found="0"
-
-        #checks on command line
-        if [ "$flags_array" = "" ]; then
-          #at least one non-xdp interface should be avalable
-          if [[ ${#interfaces[@]} -eq 0 ]]; then
-            echo ""
-            echo "Sorry, there are no more XDP interfaces available."
-            echo ""
-            exit 1
-          fi
-        else
-          #check on start/stop
-          word_check "$CLI_PATH" "--start" "--start" "${flags_array[@]}"
-          start_found=$word_found
-          start_name=$word_value
-          word_check "$CLI_PATH" "--stop" "--stop" "${flags_array[@]}"
-          stop_found=$word_found
-          stop_name=$word_value
-
-          if [ "$stop_found" = "1" ] && [ "${#flags_array[@]}" -gt 2 ]; then
-            exit
-          elif [ "$stop_found" = "0" ]; then
-            commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"          
-            iface_check "$CLI_PATH" "${flags_array[@]}"
-            #early check (if interface is already XDP)
-            if [ "$interface_found" = "1" ]; then
-              if ip link show "$interface_name" | grep -q "xdp"; then
-                echo ""
-                echo "$CHECK_ON_IFACE_ERR_MSG"
-                echo ""
-                exit
-              fi
-            fi
-            project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-            
-            
-            echo "Hey I am here"
-            echo "commit_name: $commit_name"
-            echo "project_name: $project_name"
-            echo "start_name: $start_name"
-            
-            if [ "$project_found" = "1" ]; then
-              #xdp_program_check
-              if [ "$project_name" = "" ]; then
-                echo ""
-                echo $CHECK_ON_PROJECT_ERR_MSG
-                echo ""
-                exit 1
-              elif [ "$start_found" = "1" ] && ([ "$start_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/xdp/$commit_name/$project_name/$start_name" ]); then
-                echo ""
-                echo "Please, choose a valid XDP program."
-                echo ""
-                exit
-              fi
-
-              
-
-
-            fi
-          fi
-        fi
-
-        #check on stop_found and interface
-        if [ "$stop_found" = "1" ]; then
-          echo "We need to take action"
-          #check if the provided interface is already (xdp) otherwise error and then stop it by killing the pid
-
-          #get XDP interfaces
-          xdp_interfaces=($(get_xdp_interfaces))
-
-          #check if the interface is an xdp interface
-          if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $stop_name " ]]; then
-              echo ""
-              #echo $CHECK_ON_XDP_ERR_MSG
-              echo $CHECK_ON_IFACE_ERR_MSG
-              echo ""
-              exit
-          fi
-
-          #kill xdp propgram
-          echo "kill bill"
-          exit
-        fi
-
-        #dialogs
-        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID for bpftool: $commit_name)${normal}"
-        echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        #we force the user to create a configuration
-        #if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
-        #    #get current path
-        #    current_path=$(pwd)
-        #    cd "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
-        #    echo "${bold}Adding device and host configurations with ./config_add:${normal}"
-        #    ./config_add
-        #    cd "$current_path"
-        #fi
-
-        #XDP interfaces dialog
-        if [ "$interface_found" = "0" ]; then
-          #loop through each interface and remove the color codes
-          for i in "${!interfaces[@]}"; do
-              interfaces[$i]=$(echo "${interfaces[$i]}" | sed 's/\x1b\[[0-9;]*m//g')
-          done
-
-          if [[ ${#interfaces[@]} -eq 1 ]]; then
-              echo $CHECK_ON_IFACE_MSG
-              echo ""
-              sleep 1
-              interface_name=${interfaces[0]}
-              echo "$interface_name"
-              echo ""
-              sleep 2
-          else
-            echo $CHECK_ON_IFACE_MSG
-            echo ""
-            for i in "${!interfaces[@]}"; do
-              echo "$((i + 1))) ${interfaces[i]}"
-            done
-
-            while true; do
-              read -p "" choice
-              # Validate the input
-              if [[ $choice =~ ^[1-9][0-9]*$ ]] && ((choice >= 1 && choice <= ${#interfaces[@]})); then
-                  interface_name=${interfaces[choice-1]}
-                  break
-              fi
-            done
-            echo ""
-          fi
-        fi
-
-        #XDP program dialog!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        #we have --program = $start_name
+        #continue here
+        exit
 
         #run
         $CLI_PATH/run/xdp --commit $commit_name --interface $interface_name --project $project_name
