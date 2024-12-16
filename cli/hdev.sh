@@ -3423,23 +3423,35 @@ case "$command" in
           if [ "$stop_found" = "1" ] && [ "${#flags_array[@]}" -gt 2 ]; then
             exit
           elif [ "$stop_found" = "1" ]; then
-            echo "We need to take action"
+            #echo "We need to take action"
             #check if the provided interface is already (xdp) otherwise error and then stop it by killing the pid
 
             #get XDP interfaces
-            xdp_interfaces=($(get_xdp_interfaces))
+            #xdp_interfaces=($(get_xdp_interfaces)) # we need to change this
+
+            interfaces=($($CLI_PATH/common/get_interfaces $CLI_PATH))
+            xdp_interfaces=()
+            for i in "${interfaces[@]}"; do
+              if ip link show "$i" | grep -q "xdp"; then
+                xdp_interfaces+=("$i")
+              fi
+            done
 
             #check if the interface is an xdp interface
             if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $stop_name " ]]; then
                 echo ""
-                #echo $CHECK_ON_XDP_ERR_MSG
                 echo $CHECK_ON_IFACE_ERR_MSG
                 echo ""
                 exit
             fi
 
             #kill xdp propgram
-            echo "kill bill"
+            echo ""
+            echo "${bold}Detaching your XDP/eBPF function:${normal}"
+            echo ""
+            echo "sudo ip link set dev $stop_name xdp off"
+            echo ""            
+            sudo ip link set dev $stop_name xdp off
             exit
           elif [ "$stop_found" = "0" ]; then
             commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
