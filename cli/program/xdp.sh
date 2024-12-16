@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev run xdp --commit $commit_name --interface $interface_name --project $project_name
-#example: /opt/hdev/cli/hdev run xdp --commit      8077751 --interface    enp35s0f0np0 --project   hello_world
+#usage:       $CLI_PATH/hdev program xdp --commit $commit_name --interface $interface_name --project $project_name
+#example: /opt/hdev/cli/hdev program xdp --commit      8077751 --interface    enp35s0f0np0 --project   hello_world
 
 #early exit
 url="${HOSTNAME}"
@@ -49,7 +49,7 @@ function_name="pass_drop"
 temp_output="$DIR/temp_output"
 touch "$temp_output"
 
-#run application
+#program application
 echo "${bold}Attaching your XDP/eBPF function:${normal}"
 echo ""
 echo "sudo ./$function_name $interface_name &>/dev/null &"

@@ -3418,6 +3418,16 @@ case "$command" in
           #remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
+        #early interface check (already XDP)
+        if [ "$interface_found" = "1" ]; then
+          if ip link show "$interface_name" | grep -q "xdp"; then
+            echo ""
+            echo "$CHECK_ON_IFACE_ERR_MSG"
+            echo ""
+            exit
+          fi
+        fi
+
         #dialogs
         commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
         echo ""
@@ -3429,59 +3439,11 @@ case "$command" in
           iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
         fi
         
-        echo "After all"
-        echo $found
-        echo $interface_name
-        exit
-
-        #fec_dialog
-        if ! (lsmod | grep -q "${ONIC_DRIVER_NAME%.ko}" 2>/dev/null); then
-          if [ "$fec_option_found" = "0" ]; then
-            echo "${bold}Please, choose your encoding scheme:${normal}"
-            echo ""
-            echo "0) RS_FEC_ENABLED = 0"
-            echo "1) RS_FEC_ENABLED = 1"
-            while true; do
-                read -p "" choice
-                case $choice in
-                    "0")
-                        fec_option="0"
-                        break
-                        ;;
-                    "1")
-                        fec_option="1"
-                        break
-                        ;;
-                esac
-            done
-            echo ""
-          fi
-        else
-          #when the driver is inserted fec_option is irrelevant
-          fec_option="-" 
-        fi
         
-        #bitstream check
-        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
-        bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        if ! [ -e "$bitstream_path" ]; then
-          echo "$CHECK_ON_BITSTREAM_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-          echo ""
-          exit 1
-        fi
-
-        #driver check
-        driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
-        if ! [ -e "$driver_path" ]; then
-          echo "Your targeted driver is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-          echo ""
-          exit 1
-        fi
-
-        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/program/xdp --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        #$CLI_PATH/program/xdp --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        $CLI_PATH/program/xdp --commit $commit_name --interface $interface_name --project $project_name
         ;;
       *)
         program_help
