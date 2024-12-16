@@ -3411,11 +3411,23 @@ case "$command" in
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
-          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
-          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          iface_check "$CLI_PATH" "${flags_array[@]}"
-          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          #remote_check "$CLI_PATH" "${flags_array[@]}"
+          #check on start/stop
+          word_check "$CLI_PATH" "--start" "--start" "${flags_array[@]}"
+          start_found=$word_found
+          start_name=$word_value
+          word_check "$CLI_PATH" "--stop" "--stop" "${flags_array[@]}"
+          stop_found=$word_found
+          stop_name=$word_value
+
+          if [ "$stop_found" = "1" ] && [ "${#flags_array[@]}" -gt 2 ]; then
+            exit
+          elif [ "$stop_found" = "0" ]; then
+            commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+            #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+            iface_check "$CLI_PATH" "${flags_array[@]}"
+            project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+            #remote_check "$CLI_PATH" "${flags_array[@]}"
+          fi
         fi
 
         #early interface check (already XDP)
@@ -3423,6 +3435,16 @@ case "$command" in
           if ip link show "$interface_name" | grep -q "xdp"; then
             echo ""
             echo "$CHECK_ON_IFACE_ERR_MSG"
+            echo ""
+            exit
+          fi
+        fi
+
+        #early XDP application check (already XDP)
+        if [ "$project_found" = "1" ]; then
+          if [ "$start_found" = "1" ] && ([ "$start_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/xdp/$commit_name/$project_name/$start_name" ]); then
+            echo ""
+            echo "Please, choose a valid XDP program."
             echo ""
             exit
           fi
@@ -3438,9 +3460,24 @@ case "$command" in
         if [ "$interface_found" = "0" ]; then
           iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
         fi
-        
-        
 
+        #interface check (already XDP)
+        if ip link show "$interface_name" | grep -q "xdp"; then
+          echo "$CHECK_ON_IFACE_ERR_MSG"
+          echo ""
+          exit
+        fi
+
+        echo "HEY"
+
+        #XDP application check
+        if [ "$start_found" = "1" ] && ([ "$start_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/xdp/$commit_name/$project_name/$start_name" ]); then
+          echo ""
+          echo "Please, choose a valid XDP program."
+          echo ""
+          exit
+        fi
+        
         #run
         #$CLI_PATH/program/xdp --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         $CLI_PATH/program/xdp --commit $commit_name --interface $interface_name --project $project_name
