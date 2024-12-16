@@ -3408,7 +3408,7 @@ case "$command" in
 
         #initialize
         interface_found="0"
-        #interface_name=""
+        start_found="0"
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
@@ -3421,6 +3421,25 @@ case "$command" in
           stop_name=$word_value
 
           if [ "$stop_found" = "1" ] && [ "${#flags_array[@]}" -gt 2 ]; then
+            exit
+          elif [ "$stop_found" = "1" ]; then
+            echo "We need to take action"
+            #check if the provided interface is already (xdp) otherwise error and then stop it by killing the pid
+
+            #get XDP interfaces
+            xdp_interfaces=($(get_xdp_interfaces))
+
+            #check if the interface is an xdp interface
+            if [ ${#xdp_interfaces[@]} -eq 0 ] || ! [[ " ${xdp_interfaces[@]} " =~ " $stop_name " ]]; then
+                echo ""
+                #echo $CHECK_ON_XDP_ERR_MSG
+                echo $CHECK_ON_IFACE_ERR_MSG
+                echo ""
+                exit
+            fi
+
+            #kill xdp propgram
+            echo "kill bill"
             exit
           elif [ "$stop_found" = "0" ]; then
             commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
@@ -3462,6 +3481,11 @@ case "$command" in
           iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
         fi
 
+        #start_name dialog
+        if [ "$start_found" = "0" ]; then
+          start_name="simple"
+        fi
+
         #interface check (already XDP)
         if ip link show "$interface_name" | grep -q "xdp"; then
           echo "$CHECK_ON_IFACE_ERR_MSG"
@@ -3478,7 +3502,6 @@ case "$command" in
         fi
         
         #run
-        #$CLI_PATH/program/xdp --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         $CLI_PATH/program/xdp --commit $commit_name --interface $interface_name --project $project_name --start $start_name
         ;;
       *)
