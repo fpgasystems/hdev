@@ -43,7 +43,7 @@ PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
-XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--function" "--project" "--start" ) #"--stop"
+XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--project" "--start" ) #"--stop"
 
 _hdev_completions()
 {
