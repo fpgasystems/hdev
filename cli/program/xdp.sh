@@ -56,11 +56,13 @@ touch "$DIR/temp_output"
 #program application
 echo "${bold}Attaching your XDP/eBPF function:${normal}"
 echo ""
-echo "sudo ./$function_name $interface_name &>/dev/null &"
+#echo "sudo ./$function_name $interface_name &>/dev/null &"
 #echo "$CLI_PATH/program/xdp_attach $interface_name $function_name $DIR/temp_output"
+echo "sudo $CLI_PATH/program/xdp_attach $function_name $interface_name"
 echo ""
 #sudo ./$function_name $interface_name >"$DIR/temp_output" 2>&1 &
-sudo ./$function_name $interface_name &
+#sudo ./$function_name $interface_name &
+sudo $CLI_PATH/program/xdp_attach $function_name $interface_name
 #temp_output=$(sudo $CLI_PATH/program/xdp_attach "$interface_name" "$function_name" "$DIR/temp_output")
 
 sleep 5

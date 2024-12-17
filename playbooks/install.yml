@@ -485,6 +485,7 @@
         - reset
         - revert
         - vivado #program bitstream should be used, but we keep it for backward compatibility
+        - xdp_attach
         - xdp_detach
         - xdp
     - name: copying program tcl
@@ -694,12 +695,17 @@
             src: "../cli/build/xdp.sh"
             dest: "{{ cli_path }}/build/xdp"
             mode: "0755"
-        - name: program (1/2)
+        - name: program (1/3)
           copy:
             src: "../cli/program/xdp.sh"
             dest: "{{ cli_path }}/program/xdp"
             mode: "0755"
-        - name: program (2/2)
+        - name: program (2/3)
+          copy:
+            src: "../cli/program/xdp_attach.sh"
+            dest: "{{ cli_path }}/program/xdp_attach"
+            mode: "0755"
+        - name: program (3/3)
           copy:
             src: "../cli/program/xdp_detach.sh"
             dest: "{{ cli_path }}/program/xdp_detach"
