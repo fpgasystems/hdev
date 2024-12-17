@@ -56,7 +56,7 @@ echo ""
 sudo ./$function_name $interface_name >"$temp_output" 2>&1 &
 
 # Get the PID of the background process
-pid=$!
+#pid=$!
 
 #Loop for countdown
 countdown=$((RANDOM % 6 + 10))
@@ -78,7 +78,8 @@ else
     return_code=0
     #echo "XDP program attached successfully."
     echo ""
-    echo -e "${COLOR_PASSED}${bold}$function_name (pid $pid)${normal} ${COLOR_PASSED}successfully attached!${COLOR_OFF}"
+    #echo -e "${COLOR_PASSED}${bold}$function_name (pid $pid)${normal} ${COLOR_PASSED}successfully attached!${COLOR_OFF}"
+    echo -e "${COLOR_PASSED}The function ${bold}$function_name${normal} ${COLOR_PASSED}was successfully attached to ${bold}$interface_name!${normal}${COLOR_OFF}"
     echo ""
 fi
 
