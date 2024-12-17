@@ -59,8 +59,11 @@ echo ""
 echo "sudo ./$function_name $interface_name &>/dev/null &"
 #echo "$CLI_PATH/program/xdp_attach $interface_name $function_name $DIR/temp_output"
 echo ""
-sudo ./$function_name $interface_name >"$DIR/temp_output" 2>&1 &
+#sudo ./$function_name $interface_name >"$DIR/temp_output" 2>&1 &
+sudo ./$function_name $interface_name &
 #temp_output=$(sudo $CLI_PATH/program/xdp_attach "$interface_name" "$function_name" "$DIR/temp_output")
+
+sleep 5
 
 #Loop for countdown
 countdown=$((RANDOM % 6 + 10))
@@ -70,24 +73,25 @@ for i in $(seq $countdown -1 0); do
 done
 
 echo ""
+echo ""
 
 # Check if the word "FATAL" is present in the output
-if cat "$DIR/temp_output" | grep -q "FATAL"; then
-    return_code=1
-    echo ""
-    echo -e "${COLOR_FAILED}Error while attaching ${bold}$function_name!${normal}${COLOR_FAILED}${COLOR_OFF}"
-    echo ""
-else
-    return_code=0
-    echo ""
-    echo -e "${COLOR_PASSED}The function ${bold}$function_name${normal} ${COLOR_PASSED}was successfully attached to ${bold}$interface_name!${normal}${COLOR_OFF}"
-    echo ""
-fi
+#if cat "$DIR/temp_output" | grep -q "FATAL"; then
+#    return_code=1
+#    echo ""
+#    echo -e "${COLOR_FAILED}Error while attaching ${bold}$function_name!${normal}${COLOR_FAILED}${COLOR_OFF}"
+#    echo ""
+#else
+#    return_code=0
+#    echo ""
+#    echo -e "${COLOR_PASSED}The function ${bold}$function_name${normal} ${COLOR_PASSED}was successfully attached to ${bold}$interface_name!${normal}${COLOR_OFF}"
+#    echo ""
+#fi
 
 # Clean up the temporary file
-rm -f "$DIR/temp_output"
+#rm -f "$DIR/temp_output"
 
 #exit with return code
-exit $return_code
+#exit $return_code
 
 #author: https://github.com/jmoya82
