@@ -219,6 +219,7 @@ CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PARTITION_ERR_MSG="Please, choose a valid partition index."
 CHECK_ON_PORT_ERR_MSG="Please, choose a valid port index."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
+CHECK_ON_PROJECT_EMPTY_ERR_MSG="Please, create a project first."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
 CHECK_ON_REMOTE_FILE_ERR_MSG="Please, specify an absolute path for remote programming."
@@ -941,7 +942,7 @@ project_dialog() {
       multiple_projects=$(echo "$result" | sed -n '3p')
       if [[ $project_name = "*" ]]; then
         echo ""
-        echo "Please, create a project first."
+        echo $CHECK_ON_PROJECT_EMPTY_ERR_MSG
         echo ""
         exit 1
       fi
@@ -999,6 +1000,23 @@ project_check() {
       echo $CHECK_ON_PROJECT_ERR_MSG
       echo ""
       exit 1
+  fi
+}
+
+project_check_empty(){
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3
+  local commit_name=$4
+
+  result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+  project_found=$(echo "$result" | sed -n '1p')
+  project_name=$(echo "$result" | sed -n '2p')
+  if [[ $project_name = "*" ]]; then
+    echo ""
+    echo $CHECK_ON_PROJECT_EMPTY_ERR_MSG
+    echo ""
+    exit 1
   fi
 }
 
@@ -2196,6 +2214,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
