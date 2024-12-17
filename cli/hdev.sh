@@ -940,12 +940,6 @@ project_dialog() {
       project_found=$(echo "$result" | sed -n '1p')
       project_name=$(echo "$result" | sed -n '2p')
       multiple_projects=$(echo "$result" | sed -n '3p')
-      if [[ $project_name = "*" ]]; then
-        echo ""
-        echo $CHECK_ON_PROJECT_EMPTY_ERR_MSG
-        echo ""
-        exit 1
-      fi
       if [[ $multiple_projects = "0" ]]; then
           echo $project_name
       fi
@@ -2108,6 +2102,7 @@ case "$command" in
 
         #dialogs
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
@@ -2265,6 +2260,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for bpftool: $commit_name)${normal}"
         echo ""
@@ -2890,6 +2886,7 @@ case "$command" in
         #dialogs
         #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
@@ -3189,6 +3186,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
@@ -3496,6 +3494,7 @@ case "$command" in
 
         #dialogs
         commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
@@ -3646,8 +3645,8 @@ case "$command" in
         exit
 
         #dialogs
-        #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
@@ -3752,6 +3751,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
