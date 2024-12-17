@@ -7,11 +7,17 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/hdev program xdp --commit $commit_name --interface $interface_name --project $project_name --start $function_name
 #example: /opt/hdev/cli/hdev program xdp --commit      8077751 --interface    enp35s0f0np0 --project   hello_world --start   pass_drop
 
+#get username (hdev calls it as sudo)
+#username=$(getent passwd ${SUDO_UID})
+#username=${username%%:*}
+
+#echo "username: $username"
+
 #early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
-is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+is_network_developer=$($CLI_PATH/common/is_member $username vivado_developers)
 if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
     exit 1
 fi
@@ -45,15 +51,17 @@ echo ""
 cd $DIR
 
 # Define a temporary file in the specified directory
-temp_output="$DIR/temp_output"
-touch "$temp_output"
+#temp_output="$DIR/temp_output"
+touch "$DIR/temp_output"
 
 #program application
 echo "${bold}Attaching your XDP/eBPF function:${normal}"
 echo ""
 echo "sudo ./$function_name $interface_name &>/dev/null &"
+#echo "$CLI_PATH/program/xdp_attach $interface_name $function_name $DIR/temp_output"
 echo ""
-sudo ./$function_name $interface_name >"$temp_output" 2>&1 &
+sudo ./$function_name $interface_name >"$DIR/temp_output" 2>&1 &
+#temp_output=$(sudo $CLI_PATH/program/xdp_attach "$interface_name" "$function_name" "$DIR/temp_output")
 
 # Get the PID of the background process
 #pid=$!
@@ -68,7 +76,7 @@ done
 echo ""
 
 # Check if the word "FATAL" is present in the output
-if cat "$temp_output" | grep -q "FATAL"; then
+if cat "$DIR/temp_output" | grep -q "FATAL"; then
     return_code=1
     #echo "An error occurred while attaching the XDP program."
     echo ""
@@ -84,7 +92,7 @@ else
 fi
 
 # Clean up the temporary file
-rm -f "$temp_output"
+rm -f "$DIR/temp_output"
 
 #exit with return code
 exit $return_code
