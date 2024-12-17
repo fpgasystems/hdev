@@ -939,6 +939,12 @@ project_dialog() {
       project_found=$(echo "$result" | sed -n '1p')
       project_name=$(echo "$result" | sed -n '2p')
       multiple_projects=$(echo "$result" | sed -n '3p')
+      if [[ $project_name = "*" ]]; then
+        echo ""
+        echo "Please, create a project first."
+        echo ""
+        exit 1
+      fi
       if [[ $multiple_projects = "0" ]]; then
           echo $project_name
       fi
