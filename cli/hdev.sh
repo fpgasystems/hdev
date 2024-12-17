@@ -1107,12 +1107,18 @@ remote_check() {
   result="$("$CLI_PATH/common/deployment_dialog_check" "${flags_array[@]}")"
   deploy_option_found=$(echo "$result" | sed -n '1p')
   deploy_option=$(echo "$result" | sed -n '2p')
-  #forbidden combinations
-  if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
-      echo ""
-      echo $CHECK_ON_REMOTE_ERR_MSG
-      echo ""
-      exit 1
+  #forbidden combinations (check if deploy_option is numeric before comparing)
+  if [ "$deploy_option_found" = "1" ] && [ "$deploy_option" = "" ]; then
+    echo ""
+    echo $CHECK_ON_REMOTE_ERR_MSG
+    echo ""
+    exit 1
+  fi
+  if [ "$deploy_option_found" = "1" ] && [[ "$deploy_option" =~ ^[0-9]+$ ]] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
+    echo ""
+    echo $CHECK_ON_REMOTE_ERR_MSG
+    echo ""
+    exit 1
   fi
 }
 
