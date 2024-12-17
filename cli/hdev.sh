@@ -1009,16 +1009,6 @@ project_check_empty(){
     echo ""
     exit 1
   fi
-
-  #result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
-  #project_found=$(echo "$result" | sed -n '1p')
-  #project_name=$(echo "$result" | sed -n '2p')
-  #if [[ $project_name = "*" ]]; then
-  #  echo ""
-  #  echo $CHECK_ON_PROJECT_EMPTY_ERR_MSG
-  #  echo ""
-  #  exit 1
-  #fi
 }
 
 push_dialog() {
