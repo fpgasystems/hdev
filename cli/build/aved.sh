@@ -45,6 +45,7 @@ pdi_project_name="${aved_name}.$vivado_version.pdi"
 pdi_name="${aved_name}_nofpt.pdi"
 
 #bitstream compilation is only allowed on CPU (build) servers
+compile="0"
 if [ "$all" = "1" ]; then
     #check on bitstream configuration
     are_equals="0"
@@ -52,7 +53,7 @@ if [ "$all" = "1" ]; then
         are_equals=$($CLI_PATH/common/compare_files "$DIR/configs/device_config" "$DIR/.device_config")
     fi
 
-    compile="0"
+    #compile="0"
     if [ ! -e "$DIR/$pdi_project_name" ]; then
         compile="1"
     elif [ -e "$DIR/$pdi_project_name" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_aved.$hostname.$tag_name.$vivado_version" ]; then
@@ -155,7 +156,9 @@ echo ""
 #echo "Debian pakage artifacts:"
 #echo ""
 echo "$aved_name.$vivado_version.deb"
-echo "$aved_name.$vivado_version.pdi"
+if [ "$compile" = "1" ]; then 
+    echo "$aved_name.$vivado_version.pdi"
+fi
 echo ""
 #echo "Driver, API, and CLI App artifacts:"
 #echo ""
