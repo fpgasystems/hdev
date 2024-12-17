@@ -50,8 +50,7 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-# Define a temporary file in the specified directory
-#temp_output="$DIR/temp_output"
+#define a temporary file in the specified directory
 touch "$DIR/temp_output"
 
 #program application
@@ -62,9 +61,6 @@ echo "sudo ./$function_name $interface_name &>/dev/null &"
 echo ""
 sudo ./$function_name $interface_name >"$DIR/temp_output" 2>&1 &
 #temp_output=$(sudo $CLI_PATH/program/xdp_attach "$interface_name" "$function_name" "$DIR/temp_output")
-
-# Get the PID of the background process
-#pid=$!
 
 #Loop for countdown
 countdown=$((RANDOM % 6 + 10))
@@ -78,15 +74,12 @@ echo ""
 # Check if the word "FATAL" is present in the output
 if cat "$DIR/temp_output" | grep -q "FATAL"; then
     return_code=1
-    #echo "An error occurred while attaching the XDP program."
     echo ""
     echo -e "${COLOR_FAILED}Error while attaching ${bold}$function_name!${normal}${COLOR_FAILED}${COLOR_OFF}"
     echo ""
 else
     return_code=0
-    #echo "XDP program attached successfully."
     echo ""
-    #echo -e "${COLOR_PASSED}${bold}$function_name (pid $pid)${normal} ${COLOR_PASSED}successfully attached!${COLOR_OFF}"
     echo -e "${COLOR_PASSED}The function ${bold}$function_name${normal} ${COLOR_PASSED}was successfully attached to ${bold}$interface_name!${normal}${COLOR_OFF}"
     echo ""
 fi
