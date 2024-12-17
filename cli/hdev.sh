@@ -3503,7 +3503,7 @@ case "$command" in
 
         #interface check (already XDP)
         if ip link show "$interface_name" | grep -q "xdp"; then
-          echo "$CHECK_ON_IFACE_ERR_MSG"
+          echo "Sorry, the interface ${bold}$interface_name${normal} is already in use."
           echo ""
           exit
         fi
