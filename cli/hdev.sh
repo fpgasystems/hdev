@@ -3476,7 +3476,29 @@ case "$command" in
 
         #start_name dialog
         if [ "$start_found" = "0" ]; then
-          start_name="simple"
+          #get all eBPF/XDP programs
+          folders=($(find "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/src" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"))
+
+          # Check if there are any folders
+          if [[ ${#folders[@]} -eq 0 ]]; then
+              #echo "No folders found in $functions."
+              echo ""
+              echo "Please, create an XDP/eBPF program first."
+              echo ""
+              exit 1
+          fi
+
+          # Display a menu using select
+          PS3=""
+          echo "${bold}Please, choose your program:${normal}"
+          echo ""
+          select folder in "${folders[@]}"; do
+              if [[ -n "$folder" ]]; then
+                  start_name=$folder
+                  echo ""
+                  break
+              fi
+          done
         fi
 
         #interface check (already XDP)
