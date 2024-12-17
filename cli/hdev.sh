@@ -227,7 +227,6 @@ CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
-#CHECK_ON_XDP_ERR_MSG="Please, choose a valid XDP interface."
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 
@@ -3474,6 +3473,13 @@ case "$command" in
           iface_dialog "$CLI_PATH" "$CLI_NAME" "${flags_array[@]}"
         fi
 
+        #interface check (already XDP)
+        if ip link show "$interface_name" | grep -q "xdp"; then
+          echo "Sorry, the interface ${bold}$interface_name${normal} is already in use."
+          echo ""
+          exit
+        fi
+        
         #start_name dialog
         if [ "$start_found" = "0" ]; then
           #get all eBPF/XDP programs
@@ -3502,11 +3508,11 @@ case "$command" in
         fi
 
         #interface check (already XDP)
-        if ip link show "$interface_name" | grep -q "xdp"; then
-          echo "Sorry, the interface ${bold}$interface_name${normal} is already in use."
-          echo ""
-          exit
-        fi
+        #if ip link show "$interface_name" | grep -q "xdp"; then
+        #  echo "Sorry, the interface ${bold}$interface_name${normal} is already in use."
+        #  echo ""
+        #  exit
+        #fi
 
         #XDP application check
         if [ "$start_found" = "1" ] && ([ "$start_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/xdp/$commit_name/$project_name/$start_name" ]); then
