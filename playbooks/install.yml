@@ -695,21 +695,15 @@
             src: "../cli/build/xdp.sh"
             dest: "{{ cli_path }}/build/xdp"
             mode: "0755"
-        - name: program (1/3)
+        - name: program
           copy:
-            src: "../cli/program/xdp.sh"
-            dest: "{{ cli_path }}/program/xdp"
+            src: "../cli/program/{{ item }}.sh"
+            dest: "{{ cli_path }}/program/{{ item }}"
             mode: "0755"
-        - name: program (2/3)
-          copy:
-            src: "../cli/program/xdp_attach.sh"
-            dest: "{{ cli_path }}/program/xdp_attach"
-            mode: "0755"
-        - name: program (3/3)
-          copy:
-            src: "../cli/program/xdp_detach.sh"
-            dest: "{{ cli_path }}/program/xdp_detach"
-            mode: "0755"
+          loop:
+            - xdp
+            - xdp_attach
+            - xdp_detach
         #- name: validate
         #  copy:
         #    src: "../cli/validate/xdp.sh"
