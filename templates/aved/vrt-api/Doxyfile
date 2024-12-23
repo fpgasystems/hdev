@@ -1,0 +1,29 @@
+# Doxyfile 1.9.1
+
+# Project related configuration options
+PROJECT_NAME           = "VRT API"
+PROJECT_BRIEF          = "Runtime library for running VRT applications"
+OUTPUT_DIRECTORY       = "docs"
+INPUT                  = "src include"
+RECURSIVE              = YES
+EXTRACT_ALL            = YES
+
+# Build related configuration options
+GENERATE_LATEX         = NO
+GENERATE_HTML          = YES
+
+# Configuration options for the input files
+FILE_PATTERNS          = *.cpp *.hpp *.h
+EXCLUDE_PATTERNS       = */test/*
+
+# Configuration options for the output files
+# HTML_OUTPUT            = html
+# HTML_FILE_EXTENSION    = .html
+# HTML_HEADER            = header.html
+# HTML_FOOTER            = footer.html
+# HTML_STYLESHEET        = custom.css
+
+# Configuration options for the documentation
+GENERATE_TREEVIEW      = YES
+FULL_PATH_NAMES        = NO
+STRIP_FROM_PATH        = src include

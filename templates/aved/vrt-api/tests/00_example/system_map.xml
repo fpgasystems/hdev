@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SystemMap>
+  <Kernel>
+    <Name>accumulate_0</Name>
+    <BaseAddress>0x20100000000</BaseAddress>
+    <Range>0x80</Range>
+    <register offset="0" name="CTRL" access="RW" description="Control signals" range="32"/>
+    <register offset="0x4" name="GIER" access="RW" description="Global Interrupt Enable Register" range="32"/>
+    <register offset="0x8" name="IP_IER" access="RW" description="IP Interrupt Enable Register" range="32"/>
+    <register offset="0xc" name="IP_ISR" access="RW" description="IP Interrupt Status Register" range="32"/>
+    <register offset="0x10" name="size" access="W" description="Data signal of size" range="32"/>
+    <register offset="0x18" name="out_r" access="R" description="Data signal of out_r" range="32"/>
+    <register offset="0x1c" name="out_r_ctrl" access="R" description="Control signal of out_r" range="32"/>
+  </Kernel>
+  <Kernel>
+    <Name>increment_0</Name>
+    <BaseAddress>0x20100000080</BaseAddress>
+    <Range>0x80</Range>
+    <register offset="0" name="CTRL" access="RW" description="Control signals" range="32"/>
+    <register offset="0x4" name="GIER" access="RW" description="Global Interrupt Enable Register" range="32"/>
+    <register offset="0x8" name="IP_IER" access="RW" description="IP Interrupt Enable Register" range="32"/>
+    <register offset="0xc" name="IP_ISR" access="RW" description="IP Interrupt Status Register" range="32"/>
+    <register offset="0x10" name="size" access="W" description="Data signal of size" range="32"/>
+    <register offset="0x18" name="in_r_1" access="W" description="Data signal of in_r" range="32"/>
+    <register offset="0x1c" name="in_r_2" access="W" description="Data signal of in_r" range="32"/>
+  </Kernel>
+</SystemMap>
