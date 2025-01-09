@@ -101,15 +101,17 @@ for ((i=0; i<numa_nodes; i++)); do
     echo "    Memory: $memory"
 
     #nics
+    first_device="1"
     for ((j=1; j<=MAX_NETWORK_DEVICES; j++)); do
         bdf=$($CLI_PATH/get/get_nic_device_param $j bdf)
         numa_node=$(get_numa_node "$bdf")
 
         #print list
         if [ "$numa_node" = "$i" ]; then 
-            if [ "$j" = "1" ]; then
+            if [ "$first_device" = "1" ]; then #[ "$j" = "1" ]; then
                 echo ""
                 echo -e "    ${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+                first_device="0"
             fi
 
             #get other parameters
@@ -121,15 +123,17 @@ for ((i=0; i<numa_nodes; i++)); do
     done
     
     #adaptive devices
+    first_device="1"
     for ((j=1; j<=MAX_ADAPTABLE_DEVICES; j++)); do
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $j upstream_port)
         numa_node=$(get_numa_node "$upstream_port")
 
         #print list
         if [ "$numa_node" = "$i" ]; then
-            if [ "$j" = "1" ]; then
+            if [ "$first_device" = "1" ]; then #[ "$j" = "1" ]; then
                 echo ""
                 echo -e "    ${bold}${COLOR_ON2}Adaptive devices${COLOR_OFF}${normal}"
+                first_device="0"
             fi
 
             #get other parameters
@@ -141,15 +145,17 @@ for ((i=0; i<numa_nodes; i++)); do
     done
 
     #gpus
+    first_device="1"
     for ((j=1; j<=MAX_GPU_DEVICES; j++)); do
         bus=$($CLI_PATH/get/get_gpu_device_param $j bus)
         numa_node=$(get_numa_node "$bus")
 
         #print list
         if [ "$numa_node" = "$i" ]; then 
-            if [ "$j" = "1" ]; then
+            if [ "$first_device" = "1" ]; then #[ "$j" = "1" ]; then
                 echo ""
                 echo -e "    ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
+                first_device="0"
             fi
 
             #get other parameters
