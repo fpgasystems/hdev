@@ -26,6 +26,9 @@ Overall, **hdev** helps create better acceleration solutions for research instit
 * [License](#license)
 * [Known limitations](./known-limitations.md#known-limitations)
 
+![HACC Development (hdev) stack.](./stack.png "HACC Development (hdev) stack.")
+*HACC Development (hdev) stack.*
+
 # Disclaimer
 
 * **HACC Development (hdev)** software is provided "as is" and without warranty of any kind, express or implied. The authors and maintainers of this repository make no claims regarding the fitness of this software for specific purposes or its compatibility with any particular hardware or software environment.
