@@ -1468,6 +1468,13 @@ get_interface_help() {
   exit  
 }
 
+get_interfaces_help() {
+  is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+  is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "interfaces" "-" "-" "-" "-" "-" $is_nic "-" $is_network_developer
+  exit  
+}
+
 get_memory_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
@@ -1483,17 +1490,17 @@ get_name_help() {
   exit  
 }
 
-get_network_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
-    $CLI_PATH/help/get_network $CLI_PATH $CLI_NAME
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
-    echo ""
-  fi
-  exit
-}
+#get_network_help() {
+#  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+#  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#  if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
+#    $CLI_PATH/help/get_network $CLI_PATH $CLI_NAME
+#    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+#    echo ""
+#  fi
+#  exit
+#}
 
 get_platform_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
@@ -2393,6 +2400,17 @@ case "$command" in
 
         #run
         $CLI_PATH/get/interface
+        ;;
+      interfaces)
+        #check on flags
+        valid_flags="-h --help -d --device -p --port -t --type"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #run
+        $CLI_PATH/get/interfaces
         ;;
       memory)
         #early exit

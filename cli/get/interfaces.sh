@@ -10,11 +10,15 @@ hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
 is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ]; then
+is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ] && [ "$is_nic" = "0" ]; then
     exit
 fi
 
 #constants
+COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
+COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
 #check on DEVICES_LIST
@@ -56,21 +60,21 @@ split_addresses (){
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
-    #echo ""
-    #print devices information
-    for device_index in $(seq 1 $MAX_DEVICES); do 
-        ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
-        if [ -n "$ip" ]; then
-            mac=$($CLI_PATH/get/get_fpga_device_param $device_index MAC)
-            device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-            add_0=$(split_addresses $ip $mac 0)
-            add_1=$(split_addresses $ip $mac 1)
-            name="$device_index" 
-            name_length=$(( ${#name} + 1 ))
-            echo "$name: $add_0"
-            printf "%-${name_length}s %s\n" "" "$add_1"
-        fi
-    done
+    if [ "$is_nic" = "1" ]; then
+        $CLI_PATH/get/ifconfig
+        legend_nic="${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+    fi
+    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
+        $CLI_PATH/get/network
+        legend_fpga="${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
+    fi
+    if [ -n "$legend_nic" ] && [ -n "$legend_fpga" ]; then
+        echo -e $legend_nic" "$legend_fpga
+    elif [ -n "$legend_fpga" ]; then
+        echo -e $legend_nic
+    elif [ -n "$legend_nic" ]; then
+        echo -e $legend_fpga
+    fi
     echo ""
 else
     #device_dialog_check
@@ -135,3 +139,5 @@ else
         echo ""
     fi
 fi
+
+#author: https://github.com/jmoya82

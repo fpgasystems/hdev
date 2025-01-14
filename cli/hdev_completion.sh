@@ -29,8 +29,7 @@ AVED_BUILD_FLAGS=( "--project" "--tag" )
 AVED_NEW_FLAGS=( "--project" "--push" "--tag" )
 AVED_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 AVED_RUN_FLAGS=( "--config" "--device" "--project" "--tag" )
-GET_IFCONFIG_FLAGS=( "--device" "--port" )
-GET_NETWORK_FLAGS=( "--device" "--port" )
+GET_INTERFACES_FLAGS=( "--device" "--port" )
 HIP_RUN_FLAGS=( "--device" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
@@ -154,12 +153,12 @@ _hdev_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 get)
-                    commands="ifconfig interface servers topo --help"
+                    commands="ifconfig interfaces servers topo --help"
                     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
-                        commands="${commands} bdf clock memory name network platform resource serial slr workflow"
+                        commands="${commands} bdf clock memory name platform resource serial slr workflow"
                     fi
                     if [ "$is_asoc" = "1" ]; then
-                        commands="${commands} bdf name network serial uuid workflow"
+                        commands="${commands} bdf name serial uuid workflow"
                     fi
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"
@@ -327,14 +326,8 @@ _hdev_completions()
                         name)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
-                        ifconfig) 
-                            COMPREPLY=($(compgen -W "${GET_IFCONFIG_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
-                        interface)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
-                            ;;
-                        network) 
-                            COMPREPLY=($(compgen -W "${GET_NETWORK_FLAGS[*]} --help" -- "${cur}"))
+                        interfaces)
+                            COMPREPLY=($(compgen -W "${GET_INTERFACES_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         platform) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
@@ -496,12 +489,8 @@ _hdev_completions()
                     ;;
                 get)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        ifconfig)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_IFCONFIG_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                        network)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_NETWORK_FLAGS[*]}")
+                        interfaces)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_INTERFACES_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac

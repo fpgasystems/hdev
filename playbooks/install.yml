@@ -1,13 +1,13 @@
 ---
 
 - hosts: 
-    - hacc_build 
-    - alveo_u50d
-    - alveo_u55c
-    - versal_v80
-    - alveo_boxes
-    - hacc_boxes
-    #- hacc-box-01.inf.ethz.ch
+    #- hacc_build 
+    #- alveo_u50d
+    #- alveo_u55c
+    #- versal_v80
+    #- alveo_boxes
+    #- hacc_boxes
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -20,7 +20,7 @@
     cli_name: hdev
     templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: true
+    all: false
     #cli installation
     aved: false
     bitstreams: false
@@ -29,9 +29,9 @@
     directories: false
     enable: false
     examine: false
-    get: false
-    hdev: false
-    help: false
+    get: true
+    hdev: true
+    help: true
     hip: false
     new: false
     opennic: false
@@ -401,6 +401,7 @@
         - get_nic_device_param
         - ifconfig
         - interface
+        - interfaces
         - memory
         - name
         - network
