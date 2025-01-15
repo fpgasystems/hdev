@@ -20,6 +20,7 @@ COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+TMP_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 
 #check on DEVICES_LIST
 source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
@@ -56,17 +57,27 @@ split_addresses (){
   fi
 }
 
+#legends
+if [ "$is_nic" = "1" ]; then
+    legend_nic="${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+fi
+if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
+    legend_fpga="${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
+fi
+
 #check on flags
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
     if [ "$is_nic" = "1" ]; then
-        $CLI_PATH/get/ifconfig
-        legend_nic="${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+        #$CLI_PATH/get/ifconfig
+        $CLI_PATH/get/ifconfig > $TMP_PATH/interfaces.txt
+        awk -v COLOR_ON1="$COLOR_ON1" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON1 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
     fi
     if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
-        $CLI_PATH/get/network
-        legend_fpga="${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
+        #$CLI_PATH/get/network
+        $CLI_PATH/get/network > $TMP_PATH/interfaces.txt
+        awk -v COLOR_ON2="$COLOR_ON2" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON2 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
     fi
     if [ -n "$legend_nic" ] && [ -n "$legend_fpga" ]; then
         echo -e $legend_nic" "$legend_fpga
@@ -139,5 +150,8 @@ else
         echo ""
     fi
 fi
+
+#delete temporal file
+rm -f $TMP_PATH/interfaces.txt
 
 #author: https://github.com/jmoya82
