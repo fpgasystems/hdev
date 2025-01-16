@@ -86,8 +86,16 @@ case "$parameter" in
       ;;
     TYPE)
       if [ ! "$iface" = "" ]; then
-        STATE=$(nmcli dev | grep "$iface" | awk '{print $2}')
-        echo $STATE
+        TYPE=$(nmcli dev | grep "$iface" | awk '{print $2}')
+        echo $TYPE
+      fi
+      ;;
+    XDP)
+      if [ ! "$iface" = "" ]; then
+        output=$(ip link show "$iface")
+        if echo "$output" | grep -q "xdp"; then
+            echo "xdp"
+        fi
       fi
       ;;
     *)
