@@ -44,7 +44,7 @@ split_addresses (){
 }
 
 print_nic_devices_header (){
-  echo -e "${bold}${COLOR_ON1}Device Index : BDF     : Device Type (Name)   : Networking                        : Device (state) ${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON1}Device Index : BDF     : Device Type (Name)   : Networking                        : Device (type) ${COLOR_OFF}${normal}"
   echo -e "${bold}${COLOR_ON1}------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
@@ -95,20 +95,20 @@ if [[ -s "$DEVICE_LIST_NETWORK" ]]; then
         diff=$(( $NETWORKING_STR_LENGTH - ${#add_0} ))
         add_0="$add_0$(printf '%*s' $diff)"
         add_1="$add_1$(printf '%*s' $diff)"
-        #get DEVICE and STATE (ports 1 and 2)
+        #get DEVICE and TYPE (ports 1 and 2)
         DEVICE_1=$($CLI_PATH/get/get_nic_config $i 1 DEVICE)
         if [ ! "$DEVICE_1" = "" ]; then
-          STATE_1=$($CLI_PATH/get/get_nic_config $i 1 STATE)
-          STATE_1="($STATE_1)"
+          TYPE_1=$($CLI_PATH/get/get_nic_config $i 1 TYPE)
+          TYPE_1="($TYPE_1)"
         fi
         DEVICE_2=$($CLI_PATH/get/get_nic_config $i 2 DEVICE)
         if [ ! "$DEVICE_2" = "" ]; then
-          STATE_2=$($CLI_PATH/get/get_nic_config $i 2 STATE)
-          STATE_2="($STATE_2)"
+          TYPE_2=$($CLI_PATH/get/get_nic_config $i 2 TYPE)
+          TYPE_2="($TYPE_2)"
         fi
         #print row
-        echo "$id            : $bdf : $device_type_name : $add_0 : $DEVICE_1 $STATE_1"
-        echo "                                                $add_1 " " $DEVICE_2 $STATE_2"
+        echo "$id            : $bdf : $device_type_name : $add_0 : $DEVICE_1 $TYPE_1"
+        echo "                                                $add_1 " " $DEVICE_2 $TYPE_2"
       fi
     done
     echo ""

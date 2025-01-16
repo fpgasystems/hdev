@@ -84,6 +84,12 @@ case "$parameter" in
         echo $SCONNECTIONTATE
       fi
       ;;
+    TYPE)
+      if [ ! "$iface" = "" ]; then
+        STATE=$(nmcli dev | grep "$iface" | awk '{print $2}')
+        echo $STATE
+      fi
+      ;;
     *)
       echo "Unknown parameter $parameter."
       ;;
