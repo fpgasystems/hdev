@@ -153,7 +153,7 @@ _hdev_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 get)
-                    commands="ifconfig interfaces servers topo --help"
+                    commands="interfaces servers topo --help"
                     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
                         commands="${commands} bdf clock memory name platform resource serial slr workflow"
                     fi
