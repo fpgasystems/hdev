@@ -2407,7 +2407,7 @@ case "$command" in
           exit
         fi
 
-        valid_flags="-h --help -d --device -p --port -t --type"
+        valid_flags="-h --help -t --type"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       memory)

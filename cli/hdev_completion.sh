@@ -29,7 +29,7 @@ AVED_BUILD_FLAGS=( "--project" "--tag" )
 AVED_NEW_FLAGS=( "--project" "--push" "--tag" )
 AVED_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 AVED_RUN_FLAGS=( "--config" "--device" "--project" "--tag" )
-GET_INTERFACES_FLAGS=( "--device" "--port" )
+GET_INTERFACES_FLAGS=( "--type" )
 HIP_RUN_FLAGS=( "--device" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
@@ -483,14 +483,6 @@ _hdev_completions()
                         xdp)
                             #--commit --project
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_BUILD_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                    esac
-                    ;;
-                get)
-                    case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        interfaces)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${GET_INTERFACES_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
