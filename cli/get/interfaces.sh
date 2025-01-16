@@ -70,23 +70,13 @@ device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
     if [ "$is_nic" = "1" ]; then
-        #$CLI_PATH/get/ifconfig
         $CLI_PATH/get/ifconfig > $TMP_PATH/interfaces.txt
         awk -v COLOR_ON1="$COLOR_ON1" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON1 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
     fi
     if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
-        #$CLI_PATH/get/network
         $CLI_PATH/get/network > $TMP_PATH/interfaces.txt
         awk -v COLOR_ON2="$COLOR_ON2" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON2 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
     fi
-    if [ -n "$legend_nic" ] && [ -n "$legend_fpga" ]; then
-        echo -e $legend_nic" "$legend_fpga
-    elif [ -n "$legend_fpga" ]; then
-        echo -e $legend_nic
-    elif [ -n "$legend_nic" ]; then
-        echo -e $legend_fpga
-    fi
-    echo ""
 else
     #device_dialog_check
     result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
@@ -126,30 +116,36 @@ else
         echo ""
         exit
     fi
-    
-    #get values
-    ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
-    mac=$($CLI_PATH/get/get_fpga_device_param $device_index MAC)
-    device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-    add_0=$(split_addresses $ip $mac 0)
-    add_1=$(split_addresses $ip $mac 1)
-    name="$device_index"
-    name_length=$(( ${#name} + 1 ))
 
-    #print
-    if [[ $port_found = "0" ]]; then
-        echo ""
-        echo "$name: $add_0"
-        printf "%-${name_length}s %s\n" "" "$add_1"
-        echo ""
-    else
-        port_index=$((port_index - 1))
-        var_name="add_$port_index" # Create the variable name string
-        echo ""
-        echo "$name: ${!var_name}" 
-        echo ""
+    echo "HEY 1"
+    
+    if [[ $device_found = "1" ]] && [[ $port_found = "0" ]]; then
+        echo "HEY 2"
+        if [ "$is_nic" = "1" ]; then
+            echo "HEY 3"
+            $CLI_PATH/get/ifconfig --device $device_index > $TMP_PATH/interfaces.txt
+            awk -v COLOR_ON1="$COLOR_ON1" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON1 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
+        fi
+        if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
+            echo "HEY 4"
+            $CLI_PATH/get/network --device $device_index > $TMP_PATH/interfaces.txt
+            awk -v COLOR_ON2="$COLOR_ON2" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON2 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
+        fi
+    elif [[ $device_found = "1" ]] && [[ $port_found = "1" ]]; then
+        echo "HEY!!!!"
     fi
+    
 fi
+
+#print legend
+if [ -n "$legend_nic" ] && [ -n "$legend_fpga" ]; then
+    echo -e $legend_nic" "$legend_fpga
+elif [ -n "$legend_fpga" ]; then
+    echo -e $legend_nic
+elif [ -n "$legend_nic" ]; then
+    echo -e $legend_fpga
+fi
+echo ""
 
 #delete temporal file
 rm -f $TMP_PATH/interfaces.txt

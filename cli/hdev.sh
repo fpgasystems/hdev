@@ -2402,15 +2402,13 @@ case "$command" in
         $CLI_PATH/get/interface
         ;;
       interfaces)
-        #check on flags
+        #early exit
+        if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ] && [ "$is_nic" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device -p --port -t --type"
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #run
-        $CLI_PATH/get/interfaces
+        command_run $command_arguments_flags"@"$valid_flags
         ;;
       memory)
         #early exit
