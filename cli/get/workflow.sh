@@ -87,7 +87,19 @@ if [ "$flags" = "" ]; then
 
             #check on integrations
             if [ "$opennic" = "1" ]; then
-                echo "$device_index: opennic"
+                workflow="onic"
+                #check on XDP
+                ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
+                iface_name=$(ifconfig | awk -v ip="$ip" '
+                    /^[^ \t]/ { iface=$1; sub(":", "", iface) } 
+                    $0 ~ ip { print iface }')
+                if [ ! "$iface_name" = "" ]; then
+                    output=$(ip link show "$iface_name")
+                    if echo "$output" | grep -q "xdp"; then
+                        workflow="onicxdp"
+                    fi
+                fi
+                echo "$device_index: $workflow"
             else
                 echo "$device_index: vivado"
             fi
@@ -138,7 +150,19 @@ else
 
         #check on integrations
         if [ "$opennic" = "1" ]; then
-            echo "$device_index: opennic"
+            workflow="onic"
+            #check on XDP
+            ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
+            iface_name=$(ifconfig | awk -v ip="$ip" '
+                /^[^ \t]/ { iface=$1; sub(":", "", iface) } 
+                $0 ~ ip { print iface }')
+            if [ ! "$iface_name" = "" ]; then
+                output=$(ip link show "$iface_name")
+                if echo "$output" | grep -q "xdp"; then
+                    workflow="onicxdp"
+                fi
+            fi
+            echo "$device_index: $workflow"
         else
             echo "$device_index: vivado"
         fi
