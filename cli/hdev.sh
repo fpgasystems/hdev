@@ -2385,22 +2385,6 @@ case "$command" in
         valid_flags="-d --device -p --port -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      interface)
-        #check on flags
-        valid_flags="--help"
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #checks (command line 2/2)
-        #if [ ! "$flags_array" = "" ]; then
-        #  device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        #fi
-
-        #run
-        $CLI_PATH/get/interface
-        ;;
       interfaces)
         #early exit
         if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ] && [ "$is_nic" = "0" ]; then
