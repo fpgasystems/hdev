@@ -82,19 +82,16 @@ if [ "$flags" = "" ]; then
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 	    bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00    
         if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 1 ]]; then
-            #check on OpenNIC
-            opennic=$(is_opennic "$device_index")
-
             #check on integrations
+            opennic=$(is_opennic "$device_index")
             if [ "$opennic" = "1" ]; then
                 workflow="onic"
-                #check on XDP
+                #check on XDP (check on first interface)
                 ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
-                iface_name=$(ifconfig | awk -v ip="$ip" '
-                    /^[^ \t]/ { iface=$1; sub(":", "", iface) } 
-                    $0 ~ ip { print iface }')
-                if [ ! "$iface_name" = "" ]; then
-                    output=$(ip link show "$iface_name")
+                ip1=$(echo "$ip" | cut -d'/' -f1)
+                iface_name_1=$(ifconfig | grep -B1 "$ip1" | awk '/^[a-zA-Z0-9]/ {print $1}' | sed 's/://')
+                if [ -n "$iface_name_1" ]; then
+                    output=$(ip link show "$iface_name_1")
                     if echo "$output" | grep -q "xdp"; then
                         workflow="onicxdp"
                     fi
@@ -145,19 +142,16 @@ else
     #print
     echo ""
     if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 1 ]]; then
-        #check on OpenNIC
-        opennic=$(is_opennic "$device_index")
-
         #check on integrations
+        opennic=$(is_opennic "$device_index")
         if [ "$opennic" = "1" ]; then
             workflow="onic"
-            #check on XDP
+            #check on XDP (check on first interface)
             ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
-            iface_name=$(ifconfig | awk -v ip="$ip" '
-                /^[^ \t]/ { iface=$1; sub(":", "", iface) } 
-                $0 ~ ip { print iface }')
-            if [ ! "$iface_name" = "" ]; then
-                output=$(ip link show "$iface_name")
+            ip1=$(echo "$ip" | cut -d'/' -f1)
+            iface_name_1=$(ifconfig | grep -B1 "$ip1" | awk '/^[a-zA-Z0-9]/ {print $1}' | sed 's/://')
+            if [ -n "$iface_name_1" ]; then
+                output=$(ip link show "$iface_name_1")
                 if echo "$output" | grep -q "xdp"; then
                     workflow="onicxdp"
                 fi
