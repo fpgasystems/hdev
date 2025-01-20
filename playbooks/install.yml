@@ -31,7 +31,7 @@
     examine: false
     get: true
     hdev: true
-    help: true
+    help: false
     hip: false
     new: false
     opennic: false
@@ -400,7 +400,6 @@
         - get_nic_config
         - get_nic_device_param
         - ifconfig
-        - interface
         - interfaces
         - memory
         - name
@@ -798,6 +797,7 @@
         path: "{{ cli_path }}/get/{{ item }}"
         state: absent
       loop:
+        - interface
         - xdp
     #mpi
     #- name: deleting mpi workflow
