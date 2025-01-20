@@ -3780,7 +3780,7 @@ case "$command" in
 
         #onic workflow check
         workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        if [ ! "$workflow" = "opennic" ]; then
+        if [ ! "$workflow" = "onic" ]; then
             echo "$CHECK_ON_WORKFLOW_ERR_MSG"
             echo ""
             exit
