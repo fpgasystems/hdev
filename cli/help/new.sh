@@ -21,6 +21,7 @@ is_network_developer=${12}
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
 XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
 XDP_LIBBPF_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_LIBBPF_COMMIT)
 
@@ -54,6 +55,9 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
+        echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Generates an Alveo V80 RunTime (VRT) project."
+        fi
         if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
         echo -e "   ${bold}xdp${normal}             - Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
         fi
@@ -70,8 +74,8 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo "Generates an AMD Versal Example Design (AVED) project."
             echo ""
             echo "FLAGS:"
-            echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
-            echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account." 
+            echo "       ${bold}--project${normal}   - Specifies your AVED project name." 
+            echo "       ${bold}--push${normal}      - Pushes your AVED project to your GitHub account." 
             echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$AVED_TAG${normal})."
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -105,6 +109,23 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo "   ${bold}-c, --commit${normal}    - GitHub shell and driver commit IDs (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
             echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
             echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account." 
+            echo ""
+            echo "   ${bold}-h, --help${normal}      - Help to use this command."
+            echo ""
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
+            echo ""
+        fi
+    elif [ "$parameter" = "vrt" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
+            echo ""
+            echo "${bold}$CLI_NAME new vrt [flags] [--help]${normal}"
+            echo ""
+            echo "Generates an Alveo V80 RunTime (VRT) project."
+            echo ""
+            echo "FLAGS:"
+            echo "       ${bold}--project${normal}   - Specifies your VRT project name." 
+            echo "       ${bold}--push${normal}      - Pushes your VRT project to your GitHub account." 
+            echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$VRT_TAG${normal})."
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""

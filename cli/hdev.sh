@@ -1601,6 +1601,14 @@ new_opennic_help() {
   exit
 }
 
+new_vrt_help() {
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" "0" $is_vivado_developer
+  exit
+}
+
 new_xdp_help() {
   #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   #is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
@@ -2728,6 +2736,81 @@ case "$command" in
   
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --push $push_option
+        ;;
+      vrt)
+        #early exit
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
+            exit 1
+        fi
+
+        echo "HEY! I am here!"
+        exit
+
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-t --tag --project --push -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #check_on_tag
+        tag_found=""
+        tag_name=""
+        if [ "$flags_array" = "" ]; then
+            #commit dialog
+            tag_found="1"
+            tag_name=$AVED_TAG
+        else
+            #github_tag_dialog_check
+            result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
+            tag_found=$(echo "$result" | sed -n '1p')
+            tag_name=$(echo "$result" | sed -n '2p')
+
+            #check if tag_name is empty
+            if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                exit
+            fi
+            
+            #check if tag exist
+            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $AVED_REPO $tag_name)
+            
+            if [ "$tag_found" = "0" ]; then 
+                tag_name=$AVED_TAG
+            elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                exit
+            elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
+                if [ "$exists_tag" = "0" ]; then
+                  echo ""
+                  echo $CHECK_ON_GH_TAG_ERR_MSG
+                  echo ""
+                  exit 1
+                fi
+            fi
+        fi
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+          push_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
+        echo ""
+        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+  
+        #run
+        $CLI_PATH/new/aved --tag $tag_name --project $new_name --push $push_option
         ;;
       xdp)
         #early exit

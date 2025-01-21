@@ -40,6 +40,7 @@ PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
+VRT_NEW_FLAGS=( "--project" "--push" "--tag" )
 XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--project" "--start" ) #"--stop"
@@ -174,7 +175,7 @@ _hdev_completions()
                 new)
                     commands="--help"
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} aved"
+                        commands="${commands} aved vrt"
                     fi
                     if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
@@ -369,6 +370,9 @@ _hdev_completions()
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        vrt)
+                            COMPREPLY=($(compgen -W "${VRT_NEW_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         xdp)
                             COMPREPLY=($(compgen -W "${XDP_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -499,6 +503,10 @@ _hdev_completions()
                             ;;
                         xdp)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
