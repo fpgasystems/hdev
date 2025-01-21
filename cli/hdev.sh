@@ -34,6 +34,7 @@ ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
+VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
 XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
 XDP_BPFTOOL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_REPO)
 XDP_LIBBPF_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_LIBBPF_COMMIT)
@@ -2743,9 +2744,6 @@ case "$command" in
             exit 1
         fi
 
-        echo "HEY! I am here!"
-        exit
-
         #check on groups
         vivado_developers_check "$USER"
         
@@ -2765,7 +2763,7 @@ case "$command" in
         if [ "$flags_array" = "" ]; then
             #commit dialog
             tag_found="1"
-            tag_name=$AVED_TAG
+            tag_name=$VRT_TAG
         else
             #github_tag_dialog_check
             result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
@@ -2782,7 +2780,7 @@ case "$command" in
             exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $AVED_REPO $tag_name)
             
             if [ "$tag_found" = "0" ]; then 
-                tag_name=$AVED_TAG
+                tag_name=$VRT_TAG
             elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
                 $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
                 exit
@@ -2810,7 +2808,7 @@ case "$command" in
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
   
         #run
-        $CLI_PATH/new/aved --tag $tag_name --project $new_name --push $push_option
+        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --push $push_option
         ;;
       xdp)
         #early exit

@@ -26,7 +26,7 @@
     aved: false
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
@@ -44,7 +44,7 @@
     update: false
     validate: false
     vitis: false
-    vrt: false
+    vrt: true
     xdp: false
     #release
     #    1. Merge a development branch into main.
@@ -349,6 +349,7 @@
         - gh_tag_check
         - git_clone_aved
         - git_clone_opennic
+        - git_clone_vrt
         - git_clone_xdp
         - github_tag_dialog_check
         - iface_dialog_check
@@ -482,6 +483,7 @@
         - aved
         - hip
         - opennic
+        - vrt
         - xdp
     #program
     - name: copying program scripts
@@ -698,6 +700,38 @@
             dest: "{{ cli_path }}/validate/opennic"
             mode: "0755"
       when: all or opennic
+    #vrt
+    - name: copying vrt workflow
+      block:
+        - name: copying vrt workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/vrt.sh"
+            dest: "{{ cli_path }}/new/vrt"
+            mode: "0755"
+        #- name: build
+        #  copy:
+        #    src: "../cli/build/vrt.sh"
+        #    dest: "{{ cli_path }}/build/vrt"
+        #    mode: "0755"
+        #- name: program
+        #  copy:
+        #    src: "../cli/program/vrt.sh"
+        #    dest: "{{ cli_path }}/program/vrt"
+        #    mode: "0755"
+        #- name: run
+        #  copy:
+        #    src: "../cli/run/vrt.sh"
+        #    dest: "{{ cli_path }}/run/vrt"
+        #    mode: "0755"
+        #- name: validate
+        #  copy:
+        #    src: "../cli/validate/vrt.sh"
+        #    dest: "{{ cli_path }}/validate/vrt"
+        #    mode: "0755"
+      when: all or vrt
     #xdp
     - name: copying xdp workflow
       block:

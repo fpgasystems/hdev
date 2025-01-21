@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new aved --tag                            $tag_name --project   $new_name --push $push_option
-#example: /opt/hdev/cli/hdev new aved --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --push            0
+#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --push $push_option
+#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -30,9 +30,9 @@ if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
 fi
 
 #constants
-AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
+#AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-WORKFLOW="aved"
+WORKFLOW="vrt"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$new_name"
@@ -52,30 +52,30 @@ else
 fi
 
 #clone repository
-$CLI_PATH/common/git_clone_aved $DIR $tag_name
+$CLI_PATH/common/git_clone_vrt $DIR $tag_name
 
 #change to project directory
 #cd $DIR
 
 #save tag_name
-echo "$tag_name" > $DIR/AVED_TAG
+echo "$tag_name" > $DIR/VRT_TAG
 
 #move files
-mv $DIR/AVED/* $DIR/
-rm -rf $DIR/AVED
+mv $DIR/vrt/* $DIR/
+rm -rf $DIR/vrt
 
 #remove files
 rm $DIR/README.md
 
 #get AVED example design name
-aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
+#aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 
 #get SMBus version
-smbus_version=$(find "$HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
-smbus_version=$(basename "$smbus_version")
+#smbus_version=$(find "$HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
+#smbus_version=$(basename "$smbus_version")
 
 #copy SMBus IP
-cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
+#cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
 
 #add template files
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
