@@ -7,8 +7,8 @@
     #- versal_v80
     #- alveo_boxes
     #- hacc_boxes
-    #- hacc-box-01.inf.ethz.ch
-    - versal-v80-04.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
+    #- versal-v80-04.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -30,13 +30,13 @@
     directories: false
     enable: false
     examine: false
-    get: false
+    get: true
     hdev: true
     help: false
     hip: false
     new: false
     opennic: false
-    program: false
+    program: true
     reboot: false
     run: false
     set: false
@@ -44,7 +44,7 @@
     update: false
     validate: false
     vitis: false
-    vrt: true
+    vrt: false
     xdp: false
     #release
     #    1. Merge a development branch into main.
@@ -508,6 +508,7 @@
         - vivado #program bitstream should be used, but we keep it for backward compatibility
         - xdp_attach
         - xdp_detach
+        - xdp_revert
         - xdp
     - name: copying program tcl
       copy:
