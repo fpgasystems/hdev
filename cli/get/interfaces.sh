@@ -19,45 +19,10 @@ fi
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
-DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 TMP_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-
-#check on DEVICES_LIST
-source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
-
-#get number of fpga and acap devices present
-MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
-
-#check on multiple devices
-multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 
 #inputs
 read -a flags <<< "$@"
-
-#helper functions
-split_addresses (){
-  #input parameters
-  str_ip=$1
-  str_mac=$2
-  aux=$3
-  #save the current IFS
-  OLDIFS=$IFS
-  #set the IFS to / to split the string at each /
-  IFS="/"
-  #read the two parts of the string into variables
-  read ip0 ip1 <<< "$str_ip"
-  read mac0 mac1 <<< "$str_mac"
-  #reset the IFS to its original value
-  IFS=$OLDIFS
-  #print the two parts of the string
-  if [[ "$aux" == "0" ]]; then
-    echo "$ip0 ($mac0)"
-  else
-    echo "$ip1 ($mac1)"
-  fi
-}
-
-
 
 #check on flags
 if [ "$flags" = "" ]; then
@@ -114,23 +79,6 @@ else
         echo ""
         $CLI_PATH/get/network
     fi
-
-    #if [[ $device_found = "1" ]] && [[ $port_found = "0" ]]; then
-    #    echo "HEY 2"
-    #    if [ "$is_nic" = "1" ]; then
-    #        echo "HEY 3"
-    #        $CLI_PATH/get/ifconfig --device $device_index > $TMP_PATH/interfaces.txt
-    #        awk -v COLOR_ON1="$COLOR_ON1" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON1 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
-    #    fi
-    #    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
-    #        echo "HEY 4"
-    #        $CLI_PATH/get/network --device $device_index > $TMP_PATH/interfaces.txt
-    #        awk -v COLOR_ON2="$COLOR_ON2" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON2 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
-    #    fi
-    #elif [[ $device_found = "1" ]] && [[ $port_found = "1" ]]; then
-    #    echo "HEY!!!!"
-    #fi
-    
 fi
 
 #author: https://github.com/jmoya82
