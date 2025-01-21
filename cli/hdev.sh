@@ -3531,11 +3531,8 @@ case "$command" in
 
             #kill xdp propgram
             echo ""
-            echo "${bold}Detaching your XDP/eBPF function:${normal}"
+            echo "${bold}Detaching XDP/eBPF function:${normal}"
             echo ""
-            #echo "sudo ip link set dev $stop_name xdp off"
-            #echo ""            
-            #sudo ip link set dev $stop_name xdp off
             echo "sudo $CLI_PATH/program/xdp_detach $stop_name"
             echo ""            
             sudo $CLI_PATH/program/xdp_detach $stop_name
