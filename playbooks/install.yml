@@ -7,7 +7,8 @@
     #- versal_v80
     #- alveo_boxes
     #- hacc_boxes
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
+    - versal-v80-04.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,7 +30,7 @@
     directories: false
     enable: false
     examine: false
-    get: true
+    get: false
     hdev: true
     help: false
     hip: false
@@ -43,6 +44,7 @@
     update: false
     validate: false
     vitis: false
+    vrt: false
     xdp: false
     #release
     #    1. Merge a development branch into main.
@@ -151,6 +153,8 @@
         - UPDATES_PATH
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
+        - VRT_REPO
+        - VRT_TAG
         - XDP_BPFTOOL_COMMIT
         - XDP_BPFTOOL_REPO
         - XDP_LIBBPF_COMMIT
@@ -248,6 +252,23 @@
             dest: "{{ hdev_base_path }}/templates"
             mode: "0755"
       when: all or (templates and opennic)
+    #vrt
+    - name: managing vrt template
+      block:
+        - name: managing vrt template
+          debug:
+            msg: ""
+        - name: deleting vrt template
+          file:
+            path: "{{ hdev_base_path }}/templates/vrt"
+            state: absent
+          register: vrt_templates
+        - name: copying vrt template
+          copy:
+            src: "../templates/vrt"
+            dest: "{{ hdev_base_path }}/templates"
+            mode: "0755"
+      when: all or (templates and vrt)
     #xdp
     - name: managing xdp template
       block:
