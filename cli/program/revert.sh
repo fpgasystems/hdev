@@ -97,6 +97,9 @@ elif [ "$device_type" = "acap" ] || [ "$device_type" = "fpga" ]; then
     workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
     if [[ $workflow = "vitis" ]]; then
         exit
+    elif [[ $workflow = "onicxdp" ]]; then
+        #kill xdp propgram
+        $CLI_PATH/program/xdp_revert $device_index
     fi
 
     #get upstream_port
