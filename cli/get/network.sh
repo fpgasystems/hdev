@@ -70,16 +70,8 @@ if [ "$flags" = "" ]; then
             iface_name_0=$(ifconfig | grep -B1 "$ip0" | awk '/^[a-zA-Z0-9]/ {print $1}' | sed 's/://') 
             iface_name_1=$(ifconfig | grep -B1 "$ip1" | awk '/^[a-zA-Z0-9]/ {print $1}' | sed 's/://')
 
-            
-
-
-            #first interface (xdp)
+            #first interface
             if [ -n "$iface_name_0" ]; then
-                #output=$(ip link show "$iface_name_0")
-                #if echo "$output" | grep -q "xdp"; then
-                #    xdp_0="(onicxdp)"
-                #fi
-
                 #format
                 iface_name_0=": $iface_name_0"
 
@@ -89,18 +81,11 @@ if [ "$flags" = "" ]; then
                 if [ $workflow = "onic" ] || [ $workflow = "onicxdp" ]; then
                     iface_name_0="$iface_name_0 ($workflow)"
                 fi
-
-                #format
-                #iface_name_0=": $iface_name_0 $xdp_0"
             fi
             #second interface
             if [ -n "$iface_name_1" ]; then
-                #output=$(ip link show "$iface_name_1")
-                #if echo "$output" | grep -q "xdp"; then
-                #    xdp_1="(onicxdp)"
-                #fi
                 #format
-                iface_name_1=" : $iface_name_1" #iface_name_1=" : $iface_name_1 $xdp_1"
+                iface_name_1=" : $iface_name_1"
             fi
             name="$device_index" 
             name_length=$(( ${#name} + 1 ))
@@ -116,7 +101,6 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        #$CLI_PATH/hdev get network -h
         echo ""
         echo "Please, choose a valid device index."
         echo ""
@@ -140,7 +124,6 @@ else
     #forbidden combinations (port)
     MAX_NUM_PORTS=$($CLI_PATH/get/get_fpga_device_param $device_index IP | grep -o '/' | wc -l)
     MAX_NUM_PORTS=$((MAX_NUM_PORTS + 1))
-    #if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $port_index != 1 ))) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
     if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
         #$CLI_PATH/hdev get network -h
         echo ""
@@ -166,7 +149,7 @@ else
         echo ""
     else
         port_index=$((port_index - 1))
-        var_name="add_$port_index" # Create the variable name string
+        var_name="add_$port_index"
         echo ""
         echo "$name: ${!var_name}" 
         echo ""
