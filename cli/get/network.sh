@@ -78,8 +78,8 @@ if [ "$flags" = "" ]; then
                 #check on onic(xdp)
                 workflow=$($CLI_PATH/get/workflow -d $device_index)
                 workflow=$(echo "$workflow" $device_index | cut -d' ' -f2 | sed '/^\s*$/d')
-                if [ $workflow = "onic" ] || [ $workflow = "onicxdp" ]; then
-                    iface_name_0="$iface_name_0 ($workflow)"
+                if [ $workflow = "onicxdp" ]; then #if [ $workflow = "onic" ] || [ $workflow = "onicxdp" ]; then
+                    iface_name_0="$iface_name_0 (xdp)"
                 fi
             fi
             #second interface

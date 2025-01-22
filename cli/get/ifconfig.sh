@@ -62,7 +62,8 @@ if [ "$flags" = "" ]; then
             if [ -n "$iface_name_0" ]; then
                 output=$(ip link show "$iface_name_0")
                 if echo "$output" | grep -q "xdp"; then
-                    xdp_0="(ethxdp)"
+                    #xdp_0="(ethxdp)"
+                    xdp_0="(xdp)"
                 fi
                 #format
                 iface_name_0=": $iface_name_0 $xdp_0"
@@ -71,7 +72,8 @@ if [ "$flags" = "" ]; then
             if [ -n "$iface_name_1" ]; then
                 output=$(ip link show "$iface_name_1")
                 if echo "$output" | grep -q "xdp"; then
-                    xdp_1="(ethxdp)"
+                    #xdp_1="(ethxdp)"
+                    xdp_1="(xdp)"
                 fi
                 #format
                 iface_name_1=" : $iface_name_1 $xdp_1"
