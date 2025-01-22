@@ -69,23 +69,38 @@ if [ "$flags" = "" ]; then
             add_1=$(split_addresses $ip $mac 1)
             iface_name_0=$(ifconfig | grep -B1 "$ip0" | awk '/^[a-zA-Z0-9]/ {print $1}' | sed 's/://') 
             iface_name_1=$(ifconfig | grep -B1 "$ip1" | awk '/^[a-zA-Z0-9]/ {print $1}' | sed 's/://')
-            #first interface
+
+            
+
+
+            #first interface (xdp)
             if [ -n "$iface_name_0" ]; then
-                output=$(ip link show "$iface_name_0")
-                if echo "$output" | grep -q "xdp"; then
-                    xdp_0="(onicxdp)"
-                fi
+                #output=$(ip link show "$iface_name_0")
+                #if echo "$output" | grep -q "xdp"; then
+                #    xdp_0="(onicxdp)"
+                #fi
+
                 #format
-                iface_name_0=": $iface_name_0 $xdp_0"
+                iface_name_0=": $iface_name_0"
+
+                #check on onic(xdp)
+                workflow=$($CLI_PATH/get/workflow -d $device_index)
+                workflow=$(echo "$workflow" $device_index | cut -d' ' -f2 | sed '/^\s*$/d')
+                if [ $workflow = "onic" ] || [ $workflow = "onicxdp" ]; then
+                    iface_name_0="$iface_name_0 ($workflow)"
+                fi
+
+                #format
+                #iface_name_0=": $iface_name_0 $xdp_0"
             fi
             #second interface
             if [ -n "$iface_name_1" ]; then
-                output=$(ip link show "$iface_name_1")
-                if echo "$output" | grep -q "xdp"; then
-                    xdp_1="(onicxdp)"
-                fi
+                #output=$(ip link show "$iface_name_1")
+                #if echo "$output" | grep -q "xdp"; then
+                #    xdp_1="(onicxdp)"
+                #fi
                 #format
-                iface_name_1=" : $iface_name_1 $xdp_1"
+                iface_name_1=" : $iface_name_1" #iface_name_1=" : $iface_name_1 $xdp_1"
             fi
             name="$device_index" 
             name_length=$(( ${#name} + 1 ))
