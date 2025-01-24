@@ -13,12 +13,8 @@ alveo-u55c-[01:10].inf.ethz.ch
 [hacc_boxes]
 hacc-box-[01:03].inf.ethz.ch
 
-[versal_v80]
-versal-v80-03.inf.ethz.ch
-versal-v80-04.inf.ethz.ch
-
-[versal_vck5000]
-versal-vck5000-01.inf.ethz.ch
+[alveo_v80]
+alveo-v80-01.inf.ethz.ch
 
 [local]
 localhost ansible_connection=local
@@ -27,4 +23,5 @@ localhost ansible_connection=local
 alveo-build-01-ra.inf.ethz.ch
 alveo-u50d-[01:03]-ra.inf.ethz.ch
 alveo-u55c-[01:10]-ra.inf.ethz.ch
-versal-v80-04-ra.inf.ethz.ch
+alveo-box-[01:02]-ra.inf.ethz.ch
+alveo-v80-01-ra.inf.ethz.ch
