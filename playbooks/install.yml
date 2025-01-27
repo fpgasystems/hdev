@@ -21,7 +21,7 @@
     cli_name: hdev
     templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #cli installation
     aved: false
     bitstreams: false
@@ -152,7 +152,6 @@
         - ONIC_SHELL_REPO
         - UPDATES_PATH
         - ROCM_PATH  
-        #- VIRTUALIZED_SERVERS_LIST
         - VRT_REPO
         - VRT_TAG
         - XDP_BPFTOOL_COMMIT
@@ -361,7 +360,6 @@
         - is_member
         - is_nic
         - is_sudo
-        #- is_virtualized
         - mkdir
         - new_dialog
         - new_dialog_check
