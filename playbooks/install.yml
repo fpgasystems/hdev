@@ -5,9 +5,9 @@
     #- alveo_u50d
     #- alveo_u55c
     #- alveo_v80
-    - alveo_boxes
+    #- alveo_boxes
     #- hacc_boxes
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
     #- versal-v80-03.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -21,7 +21,7 @@
     cli_name: hdev
     templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: true
+    all: false
     #cli installation
     aved: false
     bitstreams: false
@@ -31,18 +31,18 @@
     enable: false
     examine: false
     get: false
-    hdev: false
+    hdev: true
     help: false
     hip: false
     new: false
     opennic: false
-    program: false
+    program: true
     reboot: false
     run: false
     set: false
     templates: false
     update: false
-    validate: false
+    validate: true
     vitis: false
     vrt: false
     xdp: false
@@ -152,7 +152,7 @@
         - ONIC_SHELL_REPO
         - UPDATES_PATH
         - ROCM_PATH  
-        - VIRTUALIZED_SERVERS_LIST
+        #- VIRTUALIZED_SERVERS_LIST
         - VRT_REPO
         - VRT_TAG
         - XDP_BPFTOOL_COMMIT
@@ -361,7 +361,7 @@
         - is_member
         - is_nic
         - is_sudo
-        - is_virtualized
+        #- is_virtualized
         - mkdir
         - new_dialog
         - new_dialog_check
@@ -791,17 +791,12 @@
     #  loop:
     #    - shell
     #common
-    #- name: deleting common scripts
-    #  file:
-    #    path: "{{ cli_path }}/common/{{ item }}"
-    #    state: absent
-    #  loop:
-    #    - check_on_vivado
-    #    - remote_dialog
-    #    - is_enabled
-    #    - is_cpu
-    #    - enable_integrations
-    #    - get_email
+    - name: deleting common scripts
+      file:
+        path: "{{ cli_path }}/common/{{ item }}"
+        state: absent
+      loop:
+        - is_virtualized
     #constants
     - name: deleting constants
       file:
@@ -809,6 +804,7 @@
         state: absent
       loop:
         - AVED_QDMA_REPO
+        - VIRTUALIZED_SERVERS_LIST
     #    - ONIC_COMMIT
     #    - BITSTREAM_PATH
     #    - BITSTREAMS_PATH
@@ -907,3 +903,5 @@
     #  file:
     #    path: "{{ cli_path }}/validate/vitis-ai"
     #    state: absent
+
+#author: https://github.com/jmoya82

@@ -60,7 +60,7 @@ is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
-is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+#is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
 #check on groups
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
@@ -138,11 +138,12 @@ cli_help() {
   if [ "$is_build" = "1" ]; then
   echo "                     ${bold}This is a build server${normal}"
   elif [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
-    if [ "$is_virtualized" = "1" ]; then
-      echo "                     ${bold}This is a virtualized deployment server${normal}"
-    else
-      echo "                     ${bold}This is a deployment server${normal}"
-    fi
+  echo "                     ${bold}This is a deployment server${normal}"  
+    #if [ "$is_virtualized" = "1" ]; then
+    #  echo "                     ${bold}This is a virtualized deployment server${normal}"
+    #else
+    #  echo "                     ${bold}This is a deployment server${normal}"
+    #fi
   
   fi
   echo ""
@@ -1138,17 +1139,17 @@ remote_check() {
   fi
 }
 
-virtualized_check() {
-  local CLI_PATH=$1
-  local hostname=$2
-  virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
-  if [ "$virtualized" = "1" ]; then
-      echo ""
-      echo $CHECK_ON_HOSTNAME_ERR_MSG
-      echo ""
-      exit 1
-  fi
-}
+#virtualized_check() {
+#  local CLI_PATH=$1
+#  local hostname=$2
+#  virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+#  if [ "$virtualized" = "1" ]; then
+#      echo ""
+#      echo $CHECK_ON_HOSTNAME_ERR_MSG
+#      echo ""
+#      exit 1
+#  fi
+#}
 
 sudo_check() {
   local username=$1
@@ -1644,13 +1645,13 @@ program_help() {
     if [ "$vivado_enabled_asoc" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}image${COLOR_OFF}${normal}           - Programs an AVED Programmable Device Image (PDI) to a given device."
     fi
-    if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+    if [ "$is_vivado_developer" = "1" ]; then #if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
     fi
     if [ ! "$is_asoc" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           - Performs a 'HOT Reset' on a Vitis device."
     fi
-    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then #if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
       echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
     fi
     if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
@@ -1703,7 +1704,7 @@ program_image_help() {
 }
 
 program_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
@@ -1721,7 +1722,7 @@ program_reset_help() {
 }
 
 program_revert_help() {
-  if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+  if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then #if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
@@ -1936,7 +1937,7 @@ validate_help() {
     echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-built Alveo Versal Example Design (AVED) validation."
     fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
-    if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
     fi
     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
@@ -2007,7 +2008,7 @@ validate_hip_help() {
 }
 
 validate_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""
@@ -3218,7 +3219,7 @@ case "$command" in
         ;;
       opennic)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then #|| [ "$is_virtualized" = "1" ] 
           exit
         fi
 
@@ -3231,7 +3232,7 @@ case "$command" in
         fi
 
         #check on server
-        virtualized_check "$CLI_PATH" "$hostname"
+        #virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
         
         #check on groups
@@ -3373,12 +3374,12 @@ case "$command" in
         ;;
       revert)
         #early exit
-        if [ "$is_virtualized" = "1" ] || ( [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ] ); then
+        if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ]; then #if [ "$is_virtualized" = "1" ] || ( [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ] ); then
           exit
         fi
 
         #check on server
-        virtualized_check "$CLI_PATH" "$hostname"
+        #virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
 
         #check on software  
@@ -4099,7 +4100,7 @@ case "$command" in
         ;;
       opennic)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then #if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 
@@ -4115,7 +4116,7 @@ case "$command" in
         fi
 
         #check on server
-        virtualized_check "$CLI_PATH" "$hostname"
+        #virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
 
         #check on groups

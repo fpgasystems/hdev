@@ -52,7 +52,7 @@ echo "${bold}hdev program vivado${normal}"
 echo ""
 
 #get virtualized
-virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+#virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
 #get serial number
 serial_number=$($CLI_PATH/get/get_fpga_device_param $device_index serial_number)
@@ -64,25 +64,25 @@ echo "${bold}Programming bitstream:${normal}"
 $VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $CLI_PATH/program/flash_bitstream.tcl -tclargs $SERVERADDR $serial_number $device_name $bitstream_name
 
 #check for virtualized and apply pci_hot_plug (is always needed as we reverted first)
-if [ "$virtualized" = "1" ] && [[ $(lspci | grep Xilinx | wc -l) = 2 ]]; then
-    #echo ""
-    #echo "${bold}The server needs to warm boot to operate in Vivado workflow. For this purpose:${normal}"
-    #echo ""
-    #echo "    Use the ${bold}go to baremetal${normal} button on the booking system, or"
-    #echo "    Contact ${bold}$email${normal} for support."
-    #echo ""
-    #Using the terms guest reboot and host reboot is also common, where guest refers to the VM and host refers to the hypervisor.
-    echo ""
-    echo "${bold}The hypervisor needs a host reboot to operate in Vivado workflow.${normal}"
-    echo ""
-elif [ "$virtualized" = "0" ]; then 
+#if [ "$virtualized" = "1" ] && [[ $(lspci | grep Xilinx | wc -l) = 2 ]]; then
+#    #echo ""
+#    #echo "${bold}The server needs to warm boot to operate in Vivado workflow. For this purpose:${normal}"
+#    #echo ""
+#    #echo "    Use the ${bold}go to baremetal${normal} button on the booking system, or"
+#    #echo "    Contact ${bold}$email${normal} for support."
+#    #echo ""
+#    #Using the terms guest reboot and host reboot is also common, where guest refers to the VM and host refers to the hypervisor.
+#    echo ""
+#    echo "${bold}The hypervisor needs a host reboot to operate in Vivado workflow.${normal}"
+#    echo ""
+#elif [ "$virtualized" = "0" ]; then 
     #get device params
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
     root_port=$($CLI_PATH/get/get_fpga_device_param $device_index root_port)
     LinkCtl=$($CLI_PATH/get/get_fpga_device_param $device_index LinkCtl)
     #hot plug boot
     sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
-fi
+#fi
 
 #programming remote servers (if applies)
 programming_string="$CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version --remote 0"

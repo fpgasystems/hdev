@@ -11,7 +11,7 @@ is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
-is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+#is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
 #check on groups
 IS_GPU_DEVELOPER="1"
@@ -196,13 +196,13 @@ _hdev_completions()
                     if [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} bitstream driver" #vivado
                     fi
-                    if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    if [ "$is_vivado_developer" = "1" ]; then #if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     if [ ! "$is_asoc" = "1" ]; then
                         commands="${commands} reset"
                     fi
-                    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+                    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then #if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} revert"
                     fi
                     if [ "$vivado_enabled_asoc" = "1" ]; then
@@ -259,7 +259,7 @@ _hdev_completions()
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
@@ -828,3 +828,5 @@ _hdev_completions()
 }
 
 complete -F _hdev_completions hdev
+
+#author: https://github.com/jmoya82
