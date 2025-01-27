@@ -3681,7 +3681,7 @@ case "$command" in
         #early onic workflow check
         #if [ "$device_found" = "1" ]; then
         #  workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        #  if [ ! "$workflow" = "opennic" ]; then
+        #  if [ ! "$workflow" = "onic" ]; then
         #      echo ""
         #      echo "$CHECK_ON_WORKFLOW_ERR_MSG"
         #      echo ""
@@ -3716,7 +3716,7 @@ case "$command" in
 
         #onic workflow check
         #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        #if [ ! "$workflow" = "opennic" ]; then
+        #if [ ! "$workflow" = "onic" ]; then
         #    echo "$CHECK_ON_WORKFLOW_ERR_MSG"
         #    echo ""
         #    exit
@@ -3791,7 +3791,7 @@ case "$command" in
         #early onic workflow check
         if [ "$device_found" = "1" ]; then
           workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-          if [ ! "$workflow" = "opennic" ]; then
+          if [ ! "$workflow" = "onic" ]; then
               echo ""
               echo "$CHECK_ON_WORKFLOW_ERR_MSG"
               echo ""
