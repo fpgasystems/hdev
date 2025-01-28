@@ -34,6 +34,7 @@ ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
+VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
 VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
 XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
 XDP_BPFTOOL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_REPO)
@@ -2756,7 +2757,7 @@ case "$command" in
             fi
             
             #check if tag exist
-            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $AVED_REPO $tag_name)
+            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $VRT_REPO $tag_name)
             
             if [ "$tag_found" = "0" ]; then 
                 tag_name=$VRT_TAG
