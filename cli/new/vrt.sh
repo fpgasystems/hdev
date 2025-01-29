@@ -67,6 +67,19 @@ rm -rf $DIR/vrt
 #remove files
 rm $DIR/README.md
 
+#temporal solution (read from mnt/scratch)
+rm -rf $DIR/*
+cp -rf /mnt/scratch/hacc/aved/vrt-api/* $DIR
+#00_example
+chmod +x $DIR/tests/00_example/build_all.sh
+chmod +x $DIR/tests/00_example/build/v80-vitis-flow/scripts/v80++
+#01_aximm
+chmod +x $DIR/tests/01_aximm/build_all.sh
+chmod +x $DIR/tests/01_aximm/build/v80-vitis-flow/scripts/v80++
+
+#create directory
+mkdir -p "$AMI_HOME/c4\:00.0"
+
 #get AVED example design name
 #aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 
