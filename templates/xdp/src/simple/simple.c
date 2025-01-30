@@ -103,9 +103,9 @@ int main(int argc, const char **argv) {
 
   log_info("Successfully attached!");
 
-  // Sleep for 20 minutes to allow for testing to be done
-  sleep(1200);
-
+  while (1) {
+    sleep(5);
+  }
 cleanup:
   cleanup_iface();
   simple_bpf__destroy(skel);
