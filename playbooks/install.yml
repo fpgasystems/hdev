@@ -7,8 +7,9 @@
     #- alveo_v80
     #- alveo_boxes
     #- hacc_boxes
+    #- hacc-box-01.inf.ethz.ch
     - hacc-box-01.inf.ethz.ch
-    #- versal-v80-03.inf.ethz.ch
+    #- alveo-v80-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -21,7 +22,7 @@
     cli_name: hdev
     templates_path: "{{ hdev_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: true
+    all: false
     #cli installation
     aved: false
     bitstreams: false
@@ -36,16 +37,16 @@
     hip: false
     new: false
     opennic: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
-    templates: false
+    templates: true
     update: false
-    validate: true
+    validate: false
     vitis: false
     vrt: false
-    xdp: false
+    xdp: true
     #release
     #    1. Merge a development branch into main.
     #    2. Login to a server (i.e., hacc-box-01), run "hdev update," and capture COMMIT and COMMIT_DATE. Remeber that "hdev update" is only for sudo users.
