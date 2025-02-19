@@ -974,16 +974,25 @@ project_check() {
   #check on PWD
   project_path=$(dirname "$PWD")  
 
+  #evaluate current directory
   if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
       project_found="1"
       project_name=$(basename "$PWD")
       return 1
   fi
 
+  #find project name
   result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
   project_found=$(echo "$result" | sed -n '1p')
   project_path=$(echo "$result" | sed -n '2p')
   project_name=$(echo "$result" | sed -n '3p')
+
+  #check if the project exists for WORKFLOW and commit/tag_name
+  if [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]; then
+      project_found="1"
+      return 1
+  fi
+
   #forbidden combinations
   if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
       echo ""
