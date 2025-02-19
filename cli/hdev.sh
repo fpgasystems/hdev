@@ -1167,9 +1167,9 @@ tag_dialog() {
         tag_found="1"
         project_found="1"
         project_name=$(basename "$PWD")
-    elif [ "$tag_name" = "$WORKFLOW" ]; then
-        tag_found="1"
-        tag_name="${PWD##*/}"
+    #elif [ "$tag_name" = "$WORKFLOW" ]; then
+    #    tag_found="1"
+    #    tag_name="${PWD##*/}"
     else
         tag_found="1"
         tag_name=$DEFAULT_TAG
