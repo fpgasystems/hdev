@@ -56,7 +56,9 @@ echo "I am here!"
 cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
 cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
 
-sudo sh -c "echo 6 > /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages"
+#sudo sh -c "echo $number_value > /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages"
+#echo "$number_value" | sudo tee /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages
+echo "$number_value" | sudo tee /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages > /dev/null 2>&1
 
 cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
 
