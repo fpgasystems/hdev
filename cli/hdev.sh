@@ -1855,7 +1855,9 @@ set_gh_help() {
 }
 
 set_hugepages_help() {
-  $CLI_PATH/help/set_hugepages $CLI_NAME
+  max_2M=$($CLI_PATH/common/get_max_hugepages "2M")
+  max_1G=$($CLI_PATH/common/get_max_hugepages "1G")
+  $CLI_PATH/help/set_hugepages $CLI_NAME $max_2M $max_1G
   exit
 }
 
@@ -3925,9 +3927,12 @@ case "$command" in
         
         #check on pages
         word_check "$CLI_PATH" "-n" "--pages" "${flags_array[@]}"
-        number_found=$word_found
+        pages_found=$word_found
         pages_value=$word_value
-        if [ "$number_found" = "0" ] || [[ ! "$pages_value" =~ ^[0-9]+$ ]]; then
+
+        #get maximum number of pages
+        max_pages=$($CLI_PATH/common/get_max_hugepages $size_id)
+        if [ "$pages_found" = "0" ] || [[ ! "$pages_value" =~ ^[0-9]+$ ]] || [ "$pages_value" -lt 1 ] || [ "$pages_value" -gt "$max_pages" ]; then
           echo ""
           echo "Please, choose a valid value for pages."
           echo ""

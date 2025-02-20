@@ -54,9 +54,9 @@ max_pages=$($CLI_PATH/common/get_max_hugepages $size_id)
 
 #verify the number of pages is valid
 if [ "$pages_value" -gt "$max_pages" ]; then
-    echo ""
-    echo "Please, choose a valid value for ${bold}$size_id${normal}-pages (maximum: ${bold}$max_pages${normal})."
-    echo ""
+    #echo ""
+    #echo "Please, choose a valid value for ${bold}$size_id${normal}-pages (maximum: ${bold}$max_pages${normal})."
+    #echo ""
     exit
 fi
 
