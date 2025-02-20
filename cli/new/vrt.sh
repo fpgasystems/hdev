@@ -69,7 +69,7 @@ rm $DIR/README.md
 
 #temporal solution (read from mnt/scratch)
 rm -rf $DIR/*
-cp -rf /mnt/scratch/hacc/aved/vrt-api/* $DIR
+cp -rf /mnt/scratch/hacc/VRT_downloads/vrt-api/* $DIR
 #00_example
 chmod +x $DIR/tests/00_example/build_all.sh
 chmod +x $DIR/tests/00_example/build/v80-vitis-flow/scripts/v80++
