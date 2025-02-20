@@ -51,18 +51,5 @@ if [ "$number_value" -gt "$max_pages" ]; then
     exit
 fi
 
-echo "I am here!"
-
-cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
-cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
-
-#sudo sh -c "echo $number_value > /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages"
-#echo "$number_value" | sudo tee /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages
+#set hugepages
 echo "$number_value" | sudo tee /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages > /dev/null 2>&1
-
-cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
-
-#get interface_name
-
-    #set mtu_value
-#    sudo ifconfig $interface_name hugepages $mtu_value up > /dev/null 2>&1
