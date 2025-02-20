@@ -38,6 +38,7 @@ OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
 PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
+SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" )
 XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
@@ -240,7 +241,7 @@ _hdev_completions()
                         commands="${commands} license"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} mtu"
+                        commands="${commands} mtu hugepages"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -423,6 +424,9 @@ _hdev_completions()
                         gh)
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
+                        hugepages)
+                            COMPREPLY=($(compgen -W "${SET_HUGEPAGES_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         keys)
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
@@ -572,6 +576,10 @@ _hdev_completions()
                     ;;
                 set)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        hugepages)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SET_HUGEPAGES_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         mtu)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SET_MTU_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))

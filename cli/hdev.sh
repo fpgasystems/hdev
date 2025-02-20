@@ -1822,6 +1822,9 @@ set_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   ${bold}gh${normal}              - Enables GitHub CLI on your host (default path: ${bold}$GITHUB_CLI_PATH${normal})."
+    if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+    echo "   ${bold}hugepages${normal}       - Sets the number of 2MB or 1G hugepages."
+    fi
     echo "   ${bold}keys${normal}            - Creates your RSA key pairs and adds to authorized_keys and known_hosts."
     if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}license${normal}         - Configures a set of verified license servers for Xilinx tools."
@@ -1849,6 +1852,11 @@ set_gh_help() {
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     exit 1
+}
+
+set_hugepages_help() {
+  $CLI_PATH/help/set_hugepages $CLI_NAME
+  exit
 }
 
 set_keys_help() {
@@ -3888,6 +3896,46 @@ case "$command" in
           exit 1
         fi
         eval "$CLI_PATH/set/gh"
+        ;;
+      hugepages)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
+            exit 1
+        fi
+
+        #check on groups
+        vivado_developers_check "$USER"
+
+        valid_flags="-p --pages -s --size"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+        
+        #check on size
+        word_check "$CLI_PATH" "-s" "--size" "${flags_array[@]}"
+        size_found=$word_found
+        size_id=$word_value
+        if [[ ! "$size_id" =~ ^(2M|1G)$ ]]; then
+          echo ""
+          echo "Please, choose a valid value for size."
+          echo ""
+          exit 1
+        fi
+        
+        #check on pages
+        word_check "$CLI_PATH" "-n" "--pages" "${flags_array[@]}"
+        number_found=$word_found
+        pages_value=$word_value
+        if [ "$number_found" = "0" ] || [[ ! "$pages_value" =~ ^[0-9]+$ ]]; then
+          echo ""
+          echo "Please, choose a valid value for pages."
+          echo ""
+          exit
+        fi
+
+        #run
+        $CLI_PATH/set/hugepages --size $size_id --pages $pages_value
         ;;
       keys)
         echo ""

@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev set hugepages --size $size_id --number $number_value
-#example: /opt/hdev/cli/hdev set hugepages --size       1G --number            32
+#usage:       $CLI_PATH/hdev set hugepages --size $size_id --pages $pages_value
+#example: /opt/hdev/cli/hdev set hugepages --size       1G --pages           32
 
 #early exit
 url="${HOSTNAME}"
@@ -18,10 +18,10 @@ fi
 
 #inputs
 size_id=$2
-number_value=$4
+pages_value=$4
 
 #all inputs must be provided
-if [ "$size_id" = "" ] || [ "$number_value" = "" ]; then
+if [ "$size_id" = "" ] || [ "$pages_value" = "" ]; then
     exit
 fi
 
@@ -44,9 +44,12 @@ ram_75_kB=$(echo "$total_ram_kB * 0.75" | bc)
 max_pages=$(echo "($ram_75_kB + $page_kB / 2) / $page_kB" | bc)
 
 #verify the number of pages is valid
-if [ "$number_value" -gt "$max_pages" ]; then
+if [ "$pages_value" -gt "$max_pages" ]; then
+    echo ""
+    echo "Please, choose a valid value for pages (the maximum allowed is ${bold}$max_pages${normal})."
+    echo ""
     exit
 fi
 
 #set hugepages
-echo "$number_value" | sudo tee /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages > /dev/null 2>&1
+echo "$pages_value" | sudo tee /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages > /dev/null 2>&1
