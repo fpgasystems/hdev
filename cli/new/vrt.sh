@@ -76,6 +76,18 @@ chmod +x $DIR/tests/00_example/build/v80-vitis-flow/scripts/v80++
 #01_aximm
 chmod +x $DIR/tests/01_aximm/build_all.sh
 chmod +x $DIR/tests/01_aximm/build/v80-vitis-flow/scripts/v80++
+#02_chain
+chmod +x $DIR/tests/02_chain/build_all.sh
+chmod +x $DIR/tests/02_chain/build/v80-vitis-flow/scripts/v80++
+#03_multiple_boards
+chmod +x $DIR/tests/03_multiple_boards/build_all.sh
+chmod +x $DIR/tests/03_multiple_boards/build/v80-vitis-flow/scripts/v80++
+#04_segmented
+chmod +x $DIR/tests/04_segmented/build_all.sh
+chmod +x $DIR/tests/04_segmented/build/v80-vitis-flow/scripts/v80++
+#05_emulation
+chmod +x $DIR/tests/05_emulation/build_all.sh
+chmod +x $DIR/tests/05_emulation/build/v80-vitis-flow/scripts/v80++
 
 #create directory
 mkdir -p "$AMI_HOME/c4\:00.0"
