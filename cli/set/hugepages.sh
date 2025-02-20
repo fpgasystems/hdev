@@ -36,15 +36,12 @@ fi
 
 #total ram on the server (kB)
 total_ram_kB=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-echo "total_ram_kB: $total_ram_kB"
 
 #the maximum amount for pagination is 75% of the total ram
 ram_75_kB=$(echo "$total_ram_kB * 0.75" | bc)
-echo "ram_75_kB: $ram_75_kB"
 
 #get number of pages
 max_pages=$(echo "($ram_75_kB + $page_kB / 2) / $page_kB" | bc)
-echo "max_pages: $max_pages"
 
 #verify the number of pages is valid
 if [ "$number_value" -gt "$max_pages" ]; then
