@@ -18,4 +18,3 @@ echo "   ${bold}-s, --size${normal}      - Use 2M for 2-megabyte pages or 1G for
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""
-#exit 1
