@@ -28,8 +28,10 @@ fi
 #get page size in kB
 if [ "$size_id" = "2M" ]; then
     page_kB="2048"
+    page_id="2048kB"
 elif [ "$size_id" = "1G" ]; then
     page_kB="1048576"
+    page_id="1048576kB"
 fi
 
 #total ram on the server (kB)
@@ -50,6 +52,13 @@ if [ "$number_value" -gt "$max_pages" ]; then
 fi
 
 echo "I am here!"
+
+cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
+
+sudo sh -c "echo 6 > /sys/kernel/mm/hugepages/hugepages-$page_id/nr_hugepages"
+
+cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
 
 #get interface_name
 
