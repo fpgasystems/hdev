@@ -11,6 +11,7 @@ is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
+is_numa=$($CLI_PATH/common/is_numa $CLI_PATH)
 
 #check on groups
 IS_GPU_DEVELOPER="1"
@@ -38,6 +39,7 @@ OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
 PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
+SET_BALANCING_FLAGS=( "--value" )
 SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" )
@@ -237,6 +239,9 @@ _hdev_completions()
                     ;;
                 set)
                     commands="gh keys --help"
+                    if [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                        commands="${commands} balancing"
+                    fi
                     if [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} license"
                     fi
@@ -421,6 +426,9 @@ _hdev_completions()
                     ;;
                 set)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        balancing)
+                            COMPREPLY=($(compgen -W "${SET_BALANCING_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         gh)
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
