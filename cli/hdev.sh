@@ -3932,42 +3932,17 @@ case "$command" in
         if [ "$flags_array" = "" ]; then
           set_balancing_help
         else
-
           #value
           result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
           value_found=$(echo "$result" | sed -n '1p')
           value=$(echo "$result" | sed -n '2p')
 
-          echo "value_found: $value_found"
-          echo "value: $value"
-
-          exit
-
-
-          #device and port are binded
-          if [ "$device_found" = "1" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "0" ]; then
-            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
-          elif [ "$device_found" = "0" ] && [ "$port_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
-            echo ""
-            echo $CHECK_ON_DEVICE_ERR_MSG
-            echo ""
-            exit
-          elif [ "$device_found" = "0" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "1" ]; then
-            value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
-            echo ""
-            echo $CHECK_ON_DEVICE_ERR_MSG
-            echo ""
-            exit
-          fi
-          
-          #natural order
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
-          port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
-          value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
+          #check on value
+          value_check "$CLI_PATH" "0" "1" "balancing" "${flags_array[@]}"
         fi
 
         #run
-        $CLI_PATH/set/mtu --device $device_index --port $port_index --value $mtu_value
+        $CLI_PATH/set/balancing --value $value
         ;;
       gh)
         if [ "$#" -ne 2 ]; then
