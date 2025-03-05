@@ -31,6 +31,7 @@ if [ "$current_value" = "$new_value" ]; then
     exit
 fi
 
+echo ""
 echo "sudo sysctl kernel.numa_balancing=$new_value"
 echo ""
 sudo sysctl kernel.numa_balancing=$new_value >/dev/null 2>&1
