@@ -36,7 +36,7 @@ OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
 OPENNIC_RUN_FLAGS=( "--commit" "--config" "--device" "--project" )
 OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
-PROGRAM_BITSTREAM_FLAGS=( "--device" "--path" "--remote" )
+PROGRAM_BITSTREAM_FLAGS=( "--device" "--hotplug" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
 PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_BALANCING_FLAGS=( "--value" )
@@ -720,6 +720,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
                         aved)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        bitstream)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)

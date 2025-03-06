@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev program bitstream --path      $bitstream_path --device $device_index --version $vivado_version --remote $deploy_option 
-#example: /opt/hdev/cli/hdev program bitstream --path path_to_my_shell.bit --device             1 --version          2022.1 --remote              0
+#usage:       $CLI_PATH/hdev program bitstream --path      $bitstream_path --device $device_index --version $vivado_version --hotplug $hotplug_value --remote $deploy_option 
+#example: /opt/hdev/cli/hdev program bitstream --path path_to_my_shell.bit --device             1 --version          2022.1 --hotplug              1 --remote              0
 
 #arly exit
 url="${HOSTNAME}"
@@ -24,11 +24,12 @@ fi
 bitstream_path=$2
 device_index=$4
 vivado_version=$6
-deploy_option=$8
-servers_family_list=$9
+hotplug_value=$8
+deploy_option=${10}
+servers_family_list=${11}
 
 #all inputs must be provided
-if [ "$bitstream_path" = "" ] || [ "$device_index" = "" ] || [ "$vivado_version" = "" ] || [ "$deploy_option" = "" ]; then
+if [ "$bitstream_path" = "" ] || [ "$device_index" = "" ] || [ "$vivado_version" = "" ] || [ "$hotplug_value" = "" ] || [ "$deploy_option" = "" ]; then
     exit
 fi
 
@@ -66,10 +67,12 @@ root_port=$($CLI_PATH/get/get_fpga_device_param $device_index root_port)
 LinkCtl=$($CLI_PATH/get/get_fpga_device_param $device_index LinkCtl)
 
 #hot plug boot
-sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
+if [ "$hotplug_value" = "1" ]; then
+    sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
+fi
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/bitstream --path $bitstream_path --device $device_index --version $vivado_version --remote 0"
+programming_string="$CLI_PATH/program/bitstream --path $bitstream_path --device $device_index --version $vivado_version --hotplug $hotplug_value --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82

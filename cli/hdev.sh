@@ -209,6 +209,7 @@ CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid tag ID."
 CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
+CHECK_ON_HOTPLUG_ERR_MSG="Please, choose a valid hotplug option."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
 CHECK_ON_IMAGE_ERR_MSG="Your targeted image is missing."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
@@ -3027,7 +3028,7 @@ case "$command" in
         #check on flags
         #NOTE 1:  -v --version are not exposed and not shown in help command or completion
         #NOTE 2:  -p --path replace -b --bitstream (which are kept for compatibility)
-        valid_flags="-b --bitstream -d --device -p --path -r --remote -v --version -h --help"
+        valid_flags="-b --bitstream -d --device --hotplug -p --path -r --remote -v --version --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -3066,6 +3067,25 @@ case "$command" in
               device_found="1"
               device_index="1"
           fi
+
+          #check if hotplug flag is present (an empty value is controlled)
+          word_check "$CLI_PATH" "--hotplug" "--hotplug" "${flags_array[@]}"
+          hotplug_found=$word_found
+          hotplug_value=$word_value
+          
+          #check on hotplug value
+          if [ "$hotplug_found" = "0" ]; then
+            #enabled by default
+            hotplug_value="1"
+          elif [ "$hotplug_found" = "1" ]; then
+            if [ "$hotplug_value" != "0" ] && [ "$hotplug_value" != "1" ]; then
+                echo ""
+                echo $CHECK_ON_HOTPLUG_ERR_MSG
+                echo ""
+                exit
+            fi
+          fi
+
         fi
         echo ""
 
@@ -3079,7 +3099,7 @@ case "$command" in
         fi
 
         #run
-        $CLI_PATH/program/bitstream --path $bitstream_name --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        $CLI_PATH/program/bitstream --path $bitstream_name --device $device_index --version $vivado_version --hotplug $hotplug_value --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       driver)
         #early exit
