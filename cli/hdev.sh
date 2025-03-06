@@ -3085,7 +3085,6 @@ case "$command" in
                 exit
             fi
           fi
-
         fi
         echo ""
 
