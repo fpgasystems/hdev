@@ -69,6 +69,8 @@ LinkCtl=$($CLI_PATH/get/get_fpga_device_param $device_index LinkCtl)
 #hot plug boot
 if [ "$hotplug_value" = "1" ]; then
     sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
+elif [ "$hotplug_value" = "0" ]; then
+    echo ""
 fi
 
 #programming remote servers (if applies)
