@@ -43,7 +43,7 @@ PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_BALANCING_FLAGS=( "--value" )
 SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
-SET_PERFORMANCE_FLAGS=( "--value" )
+SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" )
 XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
@@ -602,6 +602,10 @@ _hdev_completions()
                         mtu)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SET_MTU_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        performance)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SET_PERFORMANCE_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags[*]}" -- "${cur}"))
                             ;;
                     esac
                     ;;

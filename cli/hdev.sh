@@ -1946,6 +1946,7 @@ set_performance_help() {
     echo "Change performance level to low, high, or auto."
     echo ""
     echo "FLAGS:"
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
     echo "   ${bold}-v, --value${normal}     - Low, high, or auto (as seen in ${bold}$CLI_NAME get performance${normal})."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -4149,7 +4150,7 @@ case "$command" in
             exit 1
         fi
 
-        valid_flags="-v --value -h --help"
+        valid_flags="-d --device -v --value -h --help"
         #command_run $command_arguments_flags"@"$valid_flags
         flags_check $command_arguments_flags"@"$valid_flags
 
@@ -4160,10 +4161,20 @@ case "$command" in
         if [ "$flags_array" = "" ]; then
           set_performance_help
         else
+          #device
+          result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
+          device_found=$(echo "$result" | sed -n '1p')
+          device_index=$(echo "$result" | sed -n '2p')
+
           #value
           result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
           value_found=$(echo "$result" | sed -n '1p')
           value=$(echo "$result" | sed -n '2p')
+
+          #check on device
+          if [ "$device_found" = "1" ]; then
+            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          fi
 
           #check on value
           if [[ "$value" != "low" && "$value" != "high" && "$value" != "auto" ]]; then
@@ -4175,7 +4186,7 @@ case "$command" in
         fi
 
         #run
-        $CLI_PATH/set/performance --value $value
+        $CLI_PATH/set/performance --value $value --device $device_index
         ;;
       *)
         set_help
