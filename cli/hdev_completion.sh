@@ -30,6 +30,7 @@ AVED_NEW_FLAGS=( "--project" "--push" "--tag" )
 AVED_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 AVED_RUN_FLAGS=( "--config" "--device" "--project" "--tag" )
 GET_INTERFACES_FLAGS=( "--type" )
+GET_PERFORMANCE_FLAGS=( "--device" )
 HIP_RUN_FLAGS=( "--device" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
@@ -164,7 +165,7 @@ _hdev_completions()
                         commands="${commands} bdf name serial uuid workflow"
                     fi
                     if [ "$is_gpu" = "1" ]; then
-                        commands="${commands} bus"
+                        commands="${commands} bus performance"
                     fi 
                     if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} syslog"
@@ -334,6 +335,9 @@ _hdev_completions()
                             ;;
                         interfaces)
                             COMPREPLY=($(compgen -W "${GET_INTERFACES_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        performance)
+                            COMPREPLY=($(compgen -W "${GET_PERFORMANCE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         platform) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))

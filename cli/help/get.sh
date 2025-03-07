@@ -62,8 +62,8 @@ if [ "$parameter" = "--help" ]; then
         fi
         if [ "$is_gpu" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}bus${COLOR_OFF}${normal}             - Peripheral Component Interconnect (PCI) identifiers."
+        echo -e "   ${bold}${COLOR_ON5}performance${COLOR_OFF}${normal}     - Performance level (low, high, auto)."
         fi
-        
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
@@ -184,6 +184,21 @@ elif [ "$parameter" = "interfaces" ]; then
         echo ""
         #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         #echo ""
+    fi
+elif [ "$parameter" = "performance" ]; then
+    if [ "$is_gpu" = "1" ]; then
+        echo ""
+        echo "${bold}$CLI_NAME get performance [flags] [--help]${normal}"
+        echo ""
+        echo "Performance level (low, high, auto)."
+        echo ""
+        echo "FLAGS:"
+        echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+        echo ""
+        echo "   ${bold}-h, --help${normal}      - Help to use this command."
+        echo ""
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
+        echo ""
     fi
 elif [ "$parameter" = "platform" ]; then
     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then

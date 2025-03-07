@@ -1497,6 +1497,12 @@ get_name_help() {
 #  exit
 #}
 
+get_performance_help() {  
+  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "performance" "-" "-" "-" "-" $is_gpu "-" "-" "-"
+  exit
+}
+
 get_platform_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
@@ -2448,6 +2454,15 @@ case "$command" in
         fi
 
         valid_flags="-h --help -d --device -p --port"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      performance)
+        #early exit
+        if [ "$is_gpu" = "0" ]; then
+          exit
+        fi
+
+        valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       platform)
