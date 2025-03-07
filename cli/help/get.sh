@@ -62,7 +62,7 @@ if [ "$parameter" = "--help" ]; then
         fi
         if [ "$is_gpu" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}bus${COLOR_OFF}${normal}             - Peripheral Component Interconnect (PCI) identifiers."
-        echo -e "   ${bold}${COLOR_ON5}performance${COLOR_OFF}${normal}     - Performance level (low, high, auto)."
+        echo -e "   ${bold}${COLOR_ON5}performance${COLOR_OFF}${normal}     - Performance level."
         fi
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -190,7 +190,7 @@ elif [ "$parameter" = "performance" ]; then
         echo ""
         echo "${bold}$CLI_NAME get performance [flags] [--help]${normal}"
         echo ""
-        echo "Performance level (low, high, auto)."
+        echo "Performance level."
         echo ""
         echo "FLAGS:"
         echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
