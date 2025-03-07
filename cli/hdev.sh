@@ -215,6 +215,7 @@ CHECK_ON_IMAGE_ERR_MSG="Your targeted image is missing."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PARTITION_ERR_MSG="Please, choose a valid partition index."
+CHECK_ON_PERFORMANCE_ERR_MSG="Please, choose a valid performance value."
 CHECK_ON_PORT_ERR_MSG="Please, choose a valid port index."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PROJECT_EMPTY_ERR_MSG="Please, create a project first."
@@ -1843,10 +1844,13 @@ set_help() {
     if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON1}mtu${COLOR_OFF}${normal}             - Sets a valid MTU value to a device."
     fi
+    if [ "$is_gpu" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON5}performance${COLOR_OFF}${normal}     - Change performance level to low, high, or auto."
+    fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    echo -e "                     ${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+    echo -e "                     ${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal} ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
     echo ""
     exit 1
 }
@@ -1929,6 +1933,24 @@ set_mtu_help() {
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     echo "                     ${bold}NICs${normal}"
+    echo ""
+  fi
+  exit
+}
+
+set_performance_help() {
+  if [ "$is_gpu" = "1" ]; then
+    echo ""
+    echo "${bold}$CLI_NAME set performance [--help]${normal}"
+    echo ""
+    echo "Change performance level to low, high, or auto."
+    echo ""
+    echo "FLAGS:"
+    echo "   ${bold}-v, --value${normal}     - Low, high, or auto (as seen in ${bold}$CLI_NAME get performance${normal})."
+    echo ""
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
     echo ""
   fi
   exit
@@ -4120,6 +4142,40 @@ case "$command" in
 
         #run
         $CLI_PATH/set/mtu --device $device_index --port $port_index --value $mtu_value
+        ;;
+      performance)
+        #early exit
+        if [ "$is_gpu" = "0" ]; then
+            exit 1
+        fi
+
+        valid_flags="-v --value -h --help"
+        #command_run $command_arguments_flags"@"$valid_flags
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line)
+        if [ "$flags_array" = "" ]; then
+          set_performance_help
+        else
+          #value
+          result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
+          value_found=$(echo "$result" | sed -n '1p')
+          value=$(echo "$result" | sed -n '2p')
+
+          #check on value
+          if [[ "$value" != "low" && "$value" != "high" && "$value" != "auto" ]]; then
+              echo ""
+              echo $CHECK_ON_PERFORMANCE_ERR_MSG
+              echo ""
+              exit
+          fi
+        fi
+
+        #run
+        $CLI_PATH/set/performance --value $value
         ;;
       *)
         set_help

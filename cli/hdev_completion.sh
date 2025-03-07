@@ -43,6 +43,7 @@ PROGRAM_REVERT_FLAGS=( "--device" "--remote" )
 SET_BALANCING_FLAGS=( "--value" )
 SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
+SET_PERFORMANCE_FLAGS=( "--value" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" )
 XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
@@ -249,6 +250,9 @@ _hdev_completions()
                     if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} mtu hugepages"
                     fi
+                    if [ "$is_gpu" = "1" ]; then
+                        commands="${commands} performance"
+                    fi 
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
@@ -447,6 +451,9 @@ _hdev_completions()
                             ;;
                         mtu)
                             COMPREPLY=($(compgen -W "${SET_MTU_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        performance)
+                            COMPREPLY=($(compgen -W "${SET_PERFORMANCE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                     esac
                     ;;
