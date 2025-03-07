@@ -38,11 +38,11 @@ if [ $? -eq 0 ]; then
     #print message
     if [ "$new_value" = "0" ]; then
         echo ""
-        echo "NUMA balancing is disabled!"
+        echo "NUMA balancing is ${bold}disabled!${normal}"
         echo ""
     elif [ "$new_value" = "1" ]; then
         echo ""
-        echo "NUMA balancing is enabled!"
+        echo "NUMA balancing is ${bold}enabled!${normal}"
         echo ""
     fi
 fi
