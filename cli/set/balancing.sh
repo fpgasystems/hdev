@@ -33,15 +33,16 @@ fi
 
 #set NUMA balancing
 sudo sysctl kernel.numa_balancing=$new_value >/dev/null 2>&1
-sleep 2
-
-#print message
-if [ "$new_value" = "0" ]; then
-    echo ""
-    echo "NUMA balancing is disabled!"
-    echo ""
-elif [ "$new_value" = "1" ]; then
-    echo ""
-    echo "NUMA balancing is enabled!"
-    echo ""
+if [ $? -eq 0 ]; then
+    sleep 2
+    #print message
+    if [ "$new_value" = "0" ]; then
+        echo ""
+        echo "NUMA balancing is disabled!"
+        echo ""
+    elif [ "$new_value" = "1" ]; then
+        echo ""
+        echo "NUMA balancing is enabled!"
+        echo ""
+    fi
 fi
