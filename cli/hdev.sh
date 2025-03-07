@@ -1853,13 +1853,18 @@ set_help() {
 
 set_balancing_help() {
   if [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+    current_value=$(cat /proc/sys/kernel/numa_balancing)
     echo ""
     echo "${bold}$CLI_NAME set balancing [--help]${normal}"
     echo ""
     echo "Enables or disables NUMA (Non-Uniform Memory Access) balancing."
     echo ""
     echo "FLAGS:"
-    echo "   ${bold}-v, --value${normal}     - When set to zero, NUMA balancing is disabled."
+    if [ "$current_value" = "0" ]; then
+      echo "   ${bold}-v, --value${normal}     - When set to one, NUMA balancing is enabled."
+    elif [ "$current_value" = "1" ]; then
+      echo "   ${bold}-v, --value${normal}     - When set to zero, NUMA balancing is disabled."
+    fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
