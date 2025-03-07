@@ -56,7 +56,6 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        #$CLI_PATH/hdev get bus -h
         echo ""
         echo "Please, choose a valid device index."
         echo ""
@@ -67,12 +66,15 @@ else
         device_found="1"
         device_index="1"
     elif [[ $device_found = "0" ]]; then
-        $CLI_PATH/hdev get bus -h
+        $CLI_PATH/hdev get performance -h
         exit
     fi
     #print
-    bus=$($CLI_PATH/get/get_gpu_device_param $device_index bus)
-    echo ""
-    echo "$device_index: $bus"
-    echo ""
+    device_index_gpu=$((device_index - 1))
+    level=$(rocm-smi --showperflevel | grep "GPU\[$device_index_gpu\]" | sed -E 's/.*Performance Level: (.*)/\1/')
+    if [ -n "$level" ]; then
+        echo ""
+        echo "$device_index: $level"
+        echo ""
+    fi
 fi
