@@ -276,15 +276,15 @@ if [[ $connected = "1" ]]; then
         echo ""
     fi
 else
-    if [[ $target_host = "" ]]; then
-        echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)!${normal}${COLOR_FAILED} Please, add remote hosts to your server lists.${normal}${COLOR_OFF}"
-        echo ""
-    else
-        echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
-        echo ""
-    fi
-    #echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
-    #echo ""
+    #if [[ $target_host = "" ]]; then
+    #    echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)!${normal}${COLOR_FAILED} Please, add remote hosts to your server lists.${normal}${COLOR_OFF}"
+    #    echo ""
+    #else
+    #    echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
+    #    echo ""
+    #fi
+    echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
+    echo ""
 fi
 
 #cleaning
