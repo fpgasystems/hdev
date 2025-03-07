@@ -70,8 +70,9 @@ else
 
     #print message
     if [ "$new_mtu" -eq "$mtu_value" ]; then
+        sleep 2
         echo ""
-        echo "$interface_name MTU was set to $mtu_value bytes!"
+        echo "${bold}$interface_name${normal} MTU was set to ${bold}$mtu_value${normal} bytes!"
         echo ""
     fi
 fi
