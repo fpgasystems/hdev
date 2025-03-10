@@ -4141,6 +4141,15 @@ case "$command" in
           value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
         fi
 
+        #check on interface
+        interface_name=$($CLI_PATH/get/get_nic_config $device_index $port_index DEVICE)
+        if [ "$interface_name" = "" ]; then
+            echo ""
+            echo "Please, choose a valid interface."
+            echo ""
+            exit
+        fi
+
         #run
         $CLI_PATH/set/mtu --device $device_index --port $port_index --value $mtu_value
         ;;

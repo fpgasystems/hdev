@@ -58,9 +58,10 @@ fi
 #NETWORKING_PORT_INDEX="1"
 interface_name=$($CLI_PATH/get/get_nic_config $device_index $port_index DEVICE)
 if [ "$interface_name" = "" ]; then
-    echo ""
-    echo "Please, choose a valid network device."
-    echo ""
+    #echo ""
+    #echo "Please, choose a valid network device."
+    #echo ""
+    exit
 else
     #set mtu_value
     sudo ifconfig $interface_name mtu $mtu_value up > /dev/null 2>&1
