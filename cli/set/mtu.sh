@@ -73,7 +73,8 @@ else
     if [ "$new_mtu" -eq "$mtu_value" ]; then
         sleep 2
         echo ""
-        echo "${bold}$interface_name${normal} MTU was set to ${bold}$mtu_value bytes!${normal}"
+        #echo "${bold}$interface_name${normal} MTU was set to ${bold}$mtu_value bytes!${normal}"
+        echo "$(ifconfig $interface_name)"
         echo ""
     fi
 fi
