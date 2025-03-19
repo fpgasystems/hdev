@@ -76,12 +76,11 @@ if [ "$flags" = "" ]; then
                     xdp_1="(xdp)"
                 fi
                 #format
-                iface_name_1=": $iface_name_1 $xdp_1"
+                iface_name_1=": $iface_name_1 $xdp_1"$'\n'
             fi
             name="$device_index" 
             name_length=$(( ${#name} + 1 ))
             echo "$name: $add_0 $iface_name_0"
-            #printf "%-${name_length}s %s\n" "" "$add_1" "$iface_name_1"
             printf "%-${name_length}s %s %s\n" "" "$add_1" "$iface_name_1"
         fi
     done
