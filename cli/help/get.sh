@@ -175,6 +175,8 @@ elif [ "$parameter" = "interfaces" ]; then
         echo ""
         echo "${bold}$CLI_NAME get $parameter [--help]${normal}"
         echo ""
+        echo "High-performance computing networking devices."
+        echo ""
         echo "FLAGS:"
         #echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
         #echo "   ${bold}-p, --port${normal}      - Specifies the port number for the network adapter."
