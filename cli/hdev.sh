@@ -1869,7 +1869,6 @@ set_help() {
     #print legend
     if [[ -n "$legend" ]]; then
       echo -e "$legend"
-      echo ""
     fi
     echo ""
     exit 1
