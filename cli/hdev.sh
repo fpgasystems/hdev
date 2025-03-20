@@ -1452,6 +1452,11 @@ get_clock_help() {
   exit
 }
 
+get_hugepages_help() {
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "hugepages" "-" "-" $is_build "-" "-" "-" $is_vivado_developer
+  exit    
+}
+
 get_ifconfig_help() {
   $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" "-" "-" "-" "-" "-" "-" "-"
   exit    
@@ -1891,10 +1896,12 @@ set_gh_help() {
 }
 
 set_hugepages_help() {
-  max_2M=$($CLI_PATH/common/get_max_hugepages "2M")
-  max_1G=$($CLI_PATH/common/get_max_hugepages "1G")
-  $CLI_PATH/help/set_hugepages $CLI_NAME $max_2M $max_1G
-  exit
+  if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+    max_2M=$($CLI_PATH/common/get_max_hugepages "2M")
+    max_1G=$($CLI_PATH/common/get_max_hugepages "1G")
+    $CLI_PATH/help/set_hugepages $CLI_NAME $max_2M $max_1G
+    exit
+  fi
 }
 
 set_keys_help() {
@@ -2442,6 +2449,15 @@ case "$command" in
         fi
 
         valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      hugepages)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
+          exit
+        fi
+
+        valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       ifconfig)

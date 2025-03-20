@@ -35,6 +35,9 @@ if [ "$parameter" = "--help" ]; then
         echo "ARGUMENTS:"
         #echo "   ${bold}ifconfig${normal}        - Host networking information."
         #echo "   ${bold}interface${normal}       - High-performance computing networking devices."
+        if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+        echo "   ${bold}hugepages${normal}       - Shows the number of 2MB and 1G hugepages."
+        fi
         echo "   ${bold}interfaces${normal}      - High-performance computing networking devices."
         echo "   ${bold}servers${normal}         - List of servers you can use SSH to connect to."
         if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
@@ -170,10 +173,25 @@ elif [ "$parameter" = "name" ]; then
 #    echo ""
 #    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
 #    #echo ""
+elif [ "$parameter" = "hugepages" ]; then    
+    if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+        echo ""
+        echo "${bold}$CLI_NAME get $parameter [--help]${normal}"
+        echo ""
+        echo "Shows the number of 2MB and 1G hugepages."
+        echo ""
+        echo "FLAGS:"
+        echo "   This command has no flags."
+        echo ""
+        echo "   ${bold}-h, --help${normal}      - Help to use this command."
+        echo ""
+        #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+        #echo ""
+    fi
 elif [ "$parameter" = "interfaces" ]; then    
     if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_nic" = "1" ]; then
         echo ""
-        echo "${bold}$CLI_NAME get $parameter [--help]${normal}"
+        echo "${bold}$CLI_NAME get $parameter [flags] [--help]${normal}"
         echo ""
         echo "High-performance computing networking devices."
         echo ""
