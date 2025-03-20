@@ -1829,6 +1829,10 @@ run_opennic_help() {
 # set ------------------------------------------------------------------------------------------------------------------------
 
 set_help() {
+    #legend
+    legend="                     "
+    show_nic="0"
+    #help
     echo ""
     echo "${bold}$CLI_NAME set [arguments [flags]] [--help]${normal}"
     echo ""
@@ -1848,6 +1852,7 @@ set_help() {
     fi
     if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON1}mtu${COLOR_OFF}${normal}             - Sets a valid MTU value to a device."
+    show_nic="1"
     fi
     if [ "$is_gpu" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON5}performance${COLOR_OFF}${normal}     - Change performance level to low, high, or auto."
@@ -1855,7 +1860,17 @@ set_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    echo -e "                     ${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal} ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
+    if [ "$show_nic" = "1" ]; then
+      legend="${legend}${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+    fi
+    if [ "$is_gpu" = "1" ]; then
+      legend="${legend} ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
+    fi
+    #print legend
+    if [[ -n "$legend" ]]; then
+      echo -e "$legend"
+      echo ""
+    fi
     echo ""
     exit 1
 }
