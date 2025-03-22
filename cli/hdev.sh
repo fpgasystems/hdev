@@ -991,7 +991,7 @@ project_check() {
   project_name=$(echo "$result" | sed -n '3p')
 
   #check if the project exists for WORKFLOW and commit/tag_name
-  if [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]; then
+  if [ ! "$project_name" = "" ] && [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]; then
       project_found="1"
       return 1
   fi
