@@ -48,11 +48,11 @@ if [ "$flags" = "" ]; then
 
     #print legend
     if [ -n "$legend_nic" ] && [ -n "$legend_fpga" ]; then
-        echo -e $legend_nic" "$legend_fpga
-    elif [ -n "$legend_fpga" ]; then
-        echo -e $legend_nic
+        echo -e "$legend_nic $legend_fpga"
     elif [ -n "$legend_nic" ]; then
-        echo -e $legend_fpga
+        echo -e "$legend_nic"
+    elif [ -n "$legend_fpga" ]; then
+        echo -e "$legend_fpga"
     fi
     
     echo ""
