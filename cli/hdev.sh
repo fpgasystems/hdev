@@ -1235,6 +1235,22 @@ tag_check() {
   fi
 }
 
+tag_check_pwd(){
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3
+  local tag_name_local=$4
+
+  #evaluate current directory (2) /home/jmoyapaya/my_projects/opennic/940907f
+  if [ -f "$PWD/$tag_name_local" ]; then
+    #declare -g project_found="1"
+    #declare -g project_name=$(basename "$PWD")
+    declare -g tag_found="1"
+    declare -g tag_name=$(cat "$PWD/$tag_name_local")
+    return 1
+  fi
+}
+
 value_check() {
   local CLI_PATH=$1
   local VALUE_MIN=$2
@@ -2206,6 +2222,7 @@ case "$command" in
 
         #dialogs
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "AVED_TAG"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
@@ -2313,6 +2330,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        commit_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "ONIC_SHELL_COMMIT"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
@@ -2364,6 +2382,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$XDP_BPFTOOL_REPO" "$XDP_BPFTOOL_COMMIT" "${flags_array[@]}"
+        commit_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "XDP_BPFTOOL_COMMIT"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for bpftool: $commit_name)${normal}"
@@ -3073,6 +3092,7 @@ case "$command" in
         #dialogs
         #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "AVED_TAG"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
@@ -3849,6 +3869,7 @@ case "$command" in
 
         #dialogs
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "AVED_TAG"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
@@ -3954,6 +3975,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        commit_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "ONIC_SHELL_COMMIT"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
