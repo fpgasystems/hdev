@@ -320,6 +320,22 @@ commit_check() {
   fi
 }
 
+commit_check_pwd(){
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3
+  local commit_name_local=$4
+
+  #evaluate current directory (2) /home/jmoyapaya/my_projects/opennic/940907f
+  if [ -f "$PWD/$commit_name_local" ]; then
+    #declare -g project_found="1"
+    #declare -g project_name=$(basename "$PWD")
+    declare -g commit_found="1"
+    declare -g commit_name=$(cat "$PWD/$commit_name_local")
+    return 1
+  fi
+}
+
 config_dialog() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
@@ -3375,6 +3391,7 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        commit_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "ONIC_SHELL_COMMIT"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
