@@ -77,6 +77,8 @@ if [ "$flags" = "" ]; then
                 fi
                 #format
                 iface_name_1=": $iface_name_1 $xdp_1"$'\n'
+            else
+                iface_name_1=" "$'\n'
             fi
             name="$device_index" 
             name_length=$(( ${#name} + 1 ))
