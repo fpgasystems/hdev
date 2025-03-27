@@ -2776,7 +2776,21 @@ case "$command" in
         ;;
       composer)
         if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-          $CLI_PATH/hdev_composer $CLI_PATH $CLI_NAME $command $arguments
+          #check on groups
+          vivado_developers_check "$USER"
+          
+          #check on software
+          gh_check "$CLI_PATH"
+
+          #check on flags
+          valid_flags="-m --model --project --push -t --tag -h --help"
+          flags_check $command_arguments_flags"@"$valid_flags
+
+          #inputs (split the string into an array)
+          read -r -a flags_array <<< "$flags"
+
+          #call integration
+          $CLI_PATH/hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
         fi
         ;;
       hip)
@@ -3082,7 +3096,21 @@ case "$command" in
         ;;
       composer)
         if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-          $CLI_PATH/hdev_composer $CLI_PATH $CLI_NAME $command $arguments
+          #check on groups
+          vivado_developers_check "$USER"
+          
+          #check on software
+          gh_check "$CLI_PATH"
+
+          #check on flags
+          valid_flags="-m --model --project --push -t --tag -h --help"
+          flags_check $command_arguments_flags"@"$valid_flags
+
+          #inputs (split the string into an array)
+          read -r -a flags_array <<< "$flags"
+
+          #call integration
+          $CLI_PATH/hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
         fi
         ;;
       *)
