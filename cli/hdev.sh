@@ -19,6 +19,9 @@ AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
+COMPOSER_PATH="$HDEV_PATH/composer"
+COMPOSER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_REPO)
+COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 IS_GPU_DEVELOPER="1"
 MTU_DEFAULT=$($CLI_PATH/common/get_constant $CLI_PATH MTU_DEFAULT)
@@ -67,6 +70,7 @@ is_numa=$($CLI_PATH/common/is_numa $CLI_PATH)
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+is_composer_developer=$($CLI_PATH/common/is_composer_developer)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -113,6 +117,7 @@ cli_help() {
   if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
+  echo "    ${bold}open${normal}           - Opens a windowed application for user interaction."
   #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
   if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
@@ -1623,6 +1628,13 @@ new_aved_help() {
   exit
 }
 
+new_composer_help() {
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "composer" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
+  exit
+}
+
 new_hip_help() {
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
@@ -1656,6 +1668,22 @@ new_xdp_help() {
   is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
   is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   $CLI_PATH/help/new $CLI_PATH $CLI_NAME "xdp" "0" "0" "$is_build" "0" "0" $is_nic "0" "0" $is_network_developer
+  exit
+}
+
+# open ------------------------------------------------------------------------------------------------------------------------
+
+open_help() {
+  $CLI_PATH/help/open $CLI_PATH $CLI_NAME "--help"
+  exit
+}
+
+open_composer_help() {
+  if [ "$is_composer_developer" = "1" ]; then
+    $CLI_PATH/help/open $CLI_PATH $CLI_NAME "composer"
+    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    #echo ""
+  fi
   exit
 }
 
@@ -2746,6 +2774,11 @@ case "$command" in
         #run
         $CLI_PATH/new/aved --tag $tag_name --project $new_name --push $push_option
         ;;
+      composer)
+        if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
+          $CLI_PATH/hdev_composer $CLI_PATH $CLI_NAME $command $arguments
+        fi
+        ;;
       hip)
         #early exit
         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
@@ -3042,6 +3075,21 @@ case "$command" in
       ;;
     esac
     ;;
+  open)
+    case "$arguments" in
+      -h|--help)
+        open_help
+        ;;
+      composer)
+        if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
+          $CLI_PATH/hdev_composer $CLI_PATH $CLI_NAME $command $arguments
+        fi
+        ;;
+      *)
+        open_help
+      ;;
+    esac
+    ;; 
   program)
     case "$arguments" in
       -h|--help)

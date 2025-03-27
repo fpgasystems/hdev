@@ -17,8 +17,12 @@ is_gpu_developer=${10}
 is_vivado_developer=${11}
 is_network_developer=${12}
 
+#check on composer
+is_composer_developer=$($CLI_PATH/common/is_composer_developer)
+
 #constants
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
+COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
@@ -49,6 +53,9 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Generates an AMD Versal Example Design (AVED) project."
         fi
+        if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
+        echo "   ${bold}composer${normal}        - Model-based design project for Hyperion developers."
+        fi
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
         fi
@@ -59,7 +66,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Generates an Alveo V80 RunTime (VRT) project."
         fi
         if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-        echo -e "   ${bold}xdp${normal}             - Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
+        echo "   ${bold}xdp${normal}             - Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
         fi
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -81,6 +88,24 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
+            echo ""
+        fi
+    elif [ "$parameter" = "composer" ]; then
+        if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
+            echo ""
+            echo "${bold}$CLI_NAME new composer [--help]${normal}"
+            echo ""
+            echo "Model-based design project for Hyperion developers."
+            echo ""
+            echo "FLAGS:"
+            echo "   ${bold}-m, --model${normal}     - Design reference for your application."
+            echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
+            echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account."
+            echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$COMPOSER_TAG${normal})."
+            echo ""
+            echo "   ${bold}-h, --help${normal}      - Help to use this command."
+            #echo ""
+            #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
             echo ""
         fi
     elif [ "$parameter" = "hip" ]; then
