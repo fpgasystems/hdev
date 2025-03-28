@@ -1629,9 +1629,11 @@ new_aved_help() {
 }
 
 new_composer_help() {
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "composer" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
+  if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
+    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+    is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+    $CLI_PATH/help/new $CLI_PATH $CLI_NAME "composer" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
+  fi
   exit
 }
 
@@ -1679,7 +1681,8 @@ open_help() {
 }
 
 open_composer_help() {
-  if [ "$is_composer_developer" = "1" ]; then
+  #if [ "$is_composer_developer" = "1" ]; then
+  if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
     $CLI_PATH/help/open $CLI_PATH $CLI_NAME "composer"
     #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     #echo ""
