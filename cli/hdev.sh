@@ -2775,7 +2775,7 @@ case "$command" in
         $CLI_PATH/new/aved --tag $tag_name --project $new_name --push $push_option
         ;;
       composer)
-        if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
+        if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
           #check on groups
           vivado_developers_check "$USER"
           
