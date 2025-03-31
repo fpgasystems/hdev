@@ -1620,7 +1620,7 @@ case "$command" in
           read -r -a flags_array <<< "$flags"
 
           #call integration
-          $CLI_PATH/hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
+          $CLI_PATH/_hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
         fi
         ;;
       hip)
@@ -1940,7 +1940,7 @@ case "$command" in
           read -r -a flags_array <<< "$flags"
 
           #call integration
-          $CLI_PATH/hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
+          $CLI_PATH/_hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
         fi
         ;;
       *)
