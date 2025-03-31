@@ -192,7 +192,7 @@ command_run() {
 }
 
 #hdev_dialogs
-source "$CLI_PATH/${CLI_NAME}_dialogs"
+source "$CLI_PATH/_${CLI_NAME}_dialogs"
 
 # build ------------------------------------------------------------------------------------------------------------------------
 
