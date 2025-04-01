@@ -61,17 +61,26 @@ else
         #version_found=$(echo "$result" | sed -n '1p')
         #version_name=$(echo "$result" | sed -n '2p')
 
-        version_found="0"
-        version_name=""
-        PS3=""
-        select version_name in "${VERSIONS[@]}"; do
-            if [[ -z $version_name ]]; then
-                echo "" >&/dev/null
-            else
-                version_found="1"
-                break
-            fi
-        done
+        if [[ ${#VERSIONS[@]} -eq 1 ]]; then
+            version_name="${VERSIONS[0]}"
+            version_found="1"
+            #echo ""
+            echo "$version_name"
+            #echo ""
+            sleep 2
+        else
+            version_found="0"
+            version_name=""
+            PS3=""
+            select version_name in "${VERSIONS[@]}"; do
+                if [[ -z $version_name ]]; then
+                    echo "" >&/dev/null
+                else
+                    version_found="1"
+                    break
+                fi
+            done
+        fi
 
         #set to true
         enable="1"
