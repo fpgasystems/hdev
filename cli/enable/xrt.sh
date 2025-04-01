@@ -13,7 +13,12 @@ XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 #VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #this needs to be consistent with the installed XRT versions
-VERSIONS=("2022.1" "2022.2" "2023.1" "2024.1")
+#VERSIONS=("2022.1" "2022.2" "2023.1" "2024.1")
+VERSIONS=()
+for dir in "${XRT_PATH%/*}"/xrt_*; do
+    [[ -d "$dir" ]] || continue
+    VERSIONS+=("${dir##*/xrt_}")  # Extract the version part
+done
 
 #get Xilinx opt path
 XILINX_OPT_PATH="${XRT_PATH%/xrt}"
