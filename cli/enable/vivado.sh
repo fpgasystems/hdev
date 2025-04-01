@@ -45,6 +45,12 @@ else
         result=$($CLI_PATH/common/version_dialog $VIVADO_PATH)
         version_found=$(echo "$result" | sed -n '1p')
         version_name=$(echo "$result" | sed -n '2p')
+        version_unique=$(echo "$result" | sed -n '3p')
+
+        if [ "$version_unique" = "1" ]; then
+            echo $version_name
+            sleep 2
+        fi
 
         #set to true
         enable="1"
