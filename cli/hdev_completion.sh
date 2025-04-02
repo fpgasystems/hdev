@@ -48,7 +48,7 @@ SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" )
-XDP_BUILD_FLAGS=( "--commit" "--driver" "--project" )
+XDP_BUILD_FLAGS=( "--commit" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--project" "--start" ) #"--stop"
 
