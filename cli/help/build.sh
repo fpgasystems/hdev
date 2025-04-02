@@ -49,5 +49,9 @@ fi
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""
-$CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "0" "0" "$vivado_enabled" "$gpu_enabled"
+if [ "$is_build" = "1" ]; then
+    $CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "0" "0" "1" "1"
+else
+    $CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "0" "0" "$vivado_enabled" "$gpu_enabled"
+fi
 echo ""
