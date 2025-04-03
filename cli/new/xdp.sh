@@ -58,8 +58,8 @@ echo "$commit_name_libbpf" > $DIR/XDP_LIBBPF_COMMIT
 
 #add template files
 #mkdir -p $DIR/src
-#cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
-#cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+cp $HDEV_PATH/templates/$WORKFLOW/program_add.sh $DIR/program_add
+cp $HDEV_PATH/templates/$WORKFLOW/program_delete.sh $DIR/program_delete
 #cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 cp $HDEV_PATH/templates/$WORKFLOW/Makefile $DIR/Makefile
 #cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
@@ -70,8 +70,8 @@ cp $HDEV_PATH/templates/$WORKFLOW/vars.mk $DIR/lib/vars.mk
 #cp -r $HDEV_PATH/templates/$WORKFLOW/drivers $DIR
 
 #compile files
-#chmod +x $DIR/config_add
-#chmod +x $DIR/config_delete
+chmod +x $DIR/program_add
+chmod +x $DIR/program_delete
 
 #push files
 if [ "$push_option" = "1" ]; then 
