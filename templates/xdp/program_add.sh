@@ -28,6 +28,7 @@ normal=$(tput sgr0)
 #    echo $config_id
 #}
 
+echo ""
 echo "${bold}program_add${normal}"
 echo ""
 
@@ -48,8 +49,21 @@ echo "Extracted programs: ${PROGRAMS[@]}"
 #fi
 
 #similar to common/new_dialog.sh
+echo ""
+echo "${bold}Please, type a non-existing name for your project:${normal}"
+echo ""
+new_found="0"
+new_name=""
+while true; do
+    read -p "" new_name
+    if [[ ! " ${PROGRAMS[*]} " =~ " $new_name " ]]; then
+        new_found="1"
+        break
+    fi
+done
 
-
+echo "$new_found"
+echo "$new_name"
 
 
 #author: https://github.com/jmoya82
