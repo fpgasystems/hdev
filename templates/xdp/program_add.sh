@@ -8,6 +8,7 @@ normal=$(tput sgr0)
 #MAX_PROMPT_ELEMENTS=10
 #INC_STEPS=2
 #INC_DECIMALS=2
+TEMPLATE="simple"
 
 #get_config_id() {
 #    #change directory
@@ -41,16 +42,9 @@ DIR="$(dirname "$(realpath "$0")")"
 #get built programs
 PROGRAMS=($(awk -F ':=' '/^APPS/{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' "$DIR/Makefile"))
 
-echo "Extracted programs: ${PROGRAMS[@]}"
-
-#extend with already existing user programs
-#if [ -d "$DIR/.output" ]; then
-#    PROGRAMS=($(awk -F ':=' '/^APPS/{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' "$DIR/Makefile"))
-#fi
-
 #similar to common/new_dialog.sh
 echo ""
-echo "${bold}Please, type a non-existing name for your project:${normal}"
+echo "${bold}Please, type a non-existing name for your program:${normal}"
 echo ""
 new_found="0"
 new_name=""
@@ -62,8 +56,20 @@ while true; do
     fi
 done
 
-echo "$new_found"
-echo "$new_name"
+#create a duplicate in src
+cp -r $DIR/src/$TEMPLATE $DIR/src/$new_name
 
+#src update
+#ebpf folder
+mv $DIR/src/$new_name/ebpf/$TEMPLATE.bpf.c $DIR/src/$new_name/ebpf/$new_name.bpf.c
+sed -i "s/simple/$new_name/g" "$DIR/src/$new_name/ebpf/$new_name.bpf.c"
+#Makefile
+sed -i "s/simple/$new_name/g" "$DIR/src/$new_name/Makefile"
+#c file
+mv $DIR/src/$new_name/$TEMPLATE.c $DIR/src/$new_name/$new_name.c
+sed -i "s/simple/$new_name/g" "$DIR/src/$new_name/$new_name.c"
+
+#top update
+sed -i "/^APPS := / s/$/ $new_name/" "$DIR/Makefile"
 
 #author: https://github.com/jmoya82
