@@ -238,6 +238,9 @@ fi
 awk '/^device:/, /^$/{if (!/^device:/ && $0 != "") print}' $MY_PROJECT_PATH/config_parameters > $MY_PROJECT_PATH/device_parameters
 awk '/^host:/, /^$/{if (!/^host:/ && $0 != "") print}' $MY_PROJECT_PATH/config_parameters > $MY_PROJECT_PATH/host_parameters
 
+echo "${bold}config_add${normal}"
+echo ""
+
 #device
 msg=""
 create_device_config="1"
