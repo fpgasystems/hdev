@@ -1838,6 +1838,14 @@ case "$command" in
           echo ""
           exit
         fi
+
+        #XDP programs check
+        output_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/.output"
+        if ! [ -e "$output_path" ]; then
+          echo "Your targeted XDP programs are missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
         
         #start_name dialog
         if [ "$start_found" = "0" ]; then
