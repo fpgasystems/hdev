@@ -3,68 +3,37 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#constants
-MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
-TEMPLATE="vadd"
+echo ""
+echo "${bold}program_delete${normal}"
+echo ""
 
-cd $MY_PROJECT_PATH/configs
-#exclude config_parameters (we can add other pipes for additional exclusions)
-#configs=( $(ls -d host_config_* | grep -v "config_parameters") )
+#define DIR (where the script program_delete is)
+DIR="$(dirname "$(realpath "$0")")"
 
-configs=()
-for file in host_config_*; do
-  if [[ -e $file && $file != *config_parameters* ]]; then
-    configs+=("$file")
-  fi
-done
+#get all eBPF/XDP programs
+folders=($(find "$DIR/src" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"))
 
-# Remove file extension from each element in the array
-#for ((i=0; i<${#configs[@]}; i++)); do
-#    configs[i]=${configs[i]%.cpp}
-#done
-
-#there are not configurations
-if [ ${#configs[@]} -eq 0 ]; then
+#check on folders
+if [ ${#folders[@]} -eq 0 ]; then
     exit
 fi
 
+# Display a menu using select
+PS3=""
+echo "${bold}Please, choose your program:${normal}"
 echo ""
-echo "${bold}config_delete${normal}"
-echo ""
-echo "${bold}Please, choose the configuration you want to delete:${normal}"
-echo ""
-
-#select configuration
-if [ ${#configs[@]} -eq 1 ]; then
-    config="host_config_001"
-    echo $config 
-else
-    PS3=""
-    select config in "${configs[@]}"; do
-        if [[ -z $config ]]; then
-            echo "" >&/dev/null
-        else
-            #project_found="1"
-            #project_name=${project_name::-1} # remove the last character, i.e. "/"
-            break
-        fi
-    done
-fi
-
-echo ""
-echo "${bold}You are about to delete $config. Do you want to continue (y/n)?${normal}"
-while true; do
-    read -p "" yn
-    case $yn in
-        "y") 
-            rm -f $config
-            echo ""
-            echo "The configuration ${bold}$config${normal} has been removed!"
-            echo ""
-            break
-            ;;
-        "n") 
-            break
-            ;;
-    esac
+select folder in "${folders[@]}"; do
+    if [[ -n "$folder" ]]; then
+        delete_name=$folder
+        echo ""
+        break
+    fi
 done
+
+#update Makefile
+sed -i "/^APPS := / s/\b$delete_name\b//" "$DIR/Makefile"
+
+#remove folders
+rm -rf $DIR/src/$delete_name
+rm -rf $DIR/.output/$delete_name
+rm -rf $DIR/$delete_name
