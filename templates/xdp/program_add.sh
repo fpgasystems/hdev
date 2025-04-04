@@ -5,36 +5,11 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-#MAX_PROMPT_ELEMENTS=10
-#INC_STEPS=2
-#INC_DECIMALS=2
 TEMPLATE="simple"
-
-#get_config_id() {
-#    #change directory
-#    CONFIGS_PATH=$1/configs
-#    cd $CONFIGS_PATH
-#    #get configs
-#    configs=( "host_config_"* )
-#    #get the last configuration name
-#    last_config="${configs[-1]}"
-#    #extract the number part of the configuration name
-#    number_part="${last_config##*_}"  # This will extract the part after the last underscore
-#    number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
-#    #construct the new configuration name
-#    config_id="host_config_$number"
-#    #change back directory
-#    cd ..
-#    #return
-#    echo $config_id
-#}
 
 echo ""
 echo "${bold}program_add${normal}"
 echo ""
-
-#out-of-the-box programs
-#PROGRAMS=("drop" "pass_drop" "simple")
 
 #define DIR (where the script program_add is)
 DIR="$(dirname "$(realpath "$0")")"
