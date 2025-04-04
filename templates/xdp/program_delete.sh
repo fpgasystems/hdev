@@ -32,6 +32,7 @@ done
 
 #update Makefile
 sed -i "/^APPS := / s/\b$delete_name\b//" "$DIR/Makefile"
+sed -i "/^APPS := / s/[[:space:]]\+/ /g" "$DIR/Makefile"
 
 #remove folders
 rm -rf $DIR/src/$delete_name
