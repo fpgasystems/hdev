@@ -24,7 +24,7 @@ echo "   ${bold}-i, --interface${normal} - Interface name to start your XDP/eBPF
 echo "   ${bold}-p, --project${normal}   - Specifies your XDP/eBPF project name."
 echo "       ${bold}--start${normal}     - Program name to be started on the interface."
 #echo "       ${bold}--stop${normal}      - Detaches an XDP/eBPF program from an interface$example."
-echo "       ${bold}--stop${normal}      - Stop an XDP/eBPF program running on the specified interface."
+echo "       ${bold}--stop${normal}      - Interface name running an XDP/eBPF program to be stopped."
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""
