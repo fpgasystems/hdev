@@ -1739,7 +1739,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit -i --interface -f --function -p --project --start --stop -h --help" #-i --interface
+        valid_flags="-c --commit -p --project --start --stop -h --help" #-i --interface -f --function 
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
