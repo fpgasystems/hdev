@@ -43,7 +43,6 @@ DIR="$(dirname "$(realpath "$0")")"
 PROGRAMS=($(awk -F ':=' '/^APPS/{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' "$DIR/Makefile"))
 
 #similar to common/new_dialog.sh
-echo ""
 echo "${bold}Please, type a non-existing name for your program:${normal}"
 echo ""
 new_found="0"
@@ -55,6 +54,8 @@ while true; do
         break
     fi
 done
+
+sleep 1
 
 #create a duplicate in src
 cp -r $DIR/src/$TEMPLATE $DIR/src/$new_name
@@ -71,5 +72,11 @@ sed -i "s/simple/$new_name/g" "$DIR/src/$new_name/$new_name.c"
 
 #top update
 sed -i "/^APPS := / s/$/ $new_name/" "$DIR/Makefile"
+
+sleep 2
+
+echo ""
+echo "The program ${bold}$new_name.c${normal} has been created!"
+echo ""
 
 #author: https://github.com/jmoya82

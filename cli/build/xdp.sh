@@ -54,4 +54,7 @@ echo "cd $DIR && make"
 echo ""
 cd $DIR && make
 
+echo ""
+echo "${bold}eBPF compilation is done!${normal}"
+
 #author: https://github.com/jmoya82
