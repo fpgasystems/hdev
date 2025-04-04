@@ -3,6 +3,13 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+if [ "$#" -ne 0 ]; then
+    echo ""
+    echo "Error: ${bold}$(basename "$0")${normal} does not accept parameters."
+    echo ""
+    exit 1
+fi
+
 #define DIR (where the script program_delete is)
 DIR="$(dirname "$(realpath "$0")")"
 

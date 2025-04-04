@@ -4,6 +4,13 @@ MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+if [ "$#" -ne 0 ]; then
+    echo ""
+    echo "Error: ${bold}$(basename "$0")${normal} does not accept parameters."
+    echo ""
+    exit 1
+fi
+
 #constants
 TEMPLATE="simple"
 
