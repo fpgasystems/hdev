@@ -22,13 +22,18 @@ get_config_id() {
     cd $CONFIGS_PATH
     #get configs
     configs=( "host_config_"* )
-    #get the last configuration name
-    last_config="${configs[-1]}"
-    #extract the number part of the configuration name
-    number_part="${last_config##*_}"  # This will extract the part after the last underscore
-    number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
-    #construct the new configuration name
-    config_id="host_config_$number"
+    # If no configs exist, set the first one
+    if [[ ${configs[0]} == "host_config_*" ]]; then
+        config_id="host_config_001"
+    else
+        #get the last configuration name
+        last_config="${configs[-1]}"
+        #extract the number part of the configuration name
+        number_part="${last_config##*_}"  # This will extract the part after the last underscore
+        number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
+        #construct the new configuration name
+        config_id="host_config_$number"
+    fi
     #change back directory
     cd ..
     #return
