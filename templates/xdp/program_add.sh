@@ -30,8 +30,6 @@ while true; do
     fi
 done
 
-sleep 1
-
 #create a duplicate in src
 cp -r $DIR/src/$TEMPLATE $DIR/src/$new_name
 

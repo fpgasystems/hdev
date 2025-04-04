@@ -37,3 +37,4 @@ sed -i "/^APPS := / s/\b$delete_name\b//" "$DIR/Makefile"
 rm -rf $DIR/src/$delete_name
 rm -rf $DIR/.output/$delete_name
 rm -rf $DIR/$delete_name
+sleep 2
