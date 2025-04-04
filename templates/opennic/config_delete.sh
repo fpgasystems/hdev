@@ -20,7 +20,7 @@ cd $MY_PROJECT_PATH/configs
 
 configs=()
 for file in host_config_*; do
-  if [[ -e $file && $file != *config_parameters* ]]; then
+  if [[ -e $file && $file != *config_parameters* && $file != "host_config_000" ]]; then
     configs+=("$file")
   fi
 done
@@ -71,7 +71,12 @@ while true; do
             break
             ;;
         "n") 
+            echo ""
             break
             ;;
     esac
 done
+
+#if [ "$yn" = "n" ]; then
+#    echo ""
+#fi
