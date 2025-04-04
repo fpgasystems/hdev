@@ -31,7 +31,8 @@ while true; do
 done
 
 #create a duplicate in src
-cp -r $DIR/src/$TEMPLATE $DIR/src/$new_name
+#cp -r $DIR/src/$TEMPLATE $DIR/src/$new_name
+cp -r "$(dirname "$CLI_PATH")/templates/xdp/src/$TEMPLATE" "$DIR/src/$new_name"
 
 #src update
 #ebpf folder
