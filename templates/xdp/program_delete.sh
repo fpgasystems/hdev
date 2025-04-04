@@ -3,10 +3,6 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-echo ""
-echo "${bold}program_delete${normal}"
-echo ""
-
 #define DIR (where the script program_delete is)
 DIR="$(dirname "$(realpath "$0")")"
 
@@ -17,6 +13,10 @@ folders=($(find "$DIR/src" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"))
 if [ ${#folders[@]} -eq 0 ]; then
     exit
 fi
+
+echo ""
+echo "${bold}program_delete${normal}"
+echo ""
 
 # Display a menu using select
 PS3=""
