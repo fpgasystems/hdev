@@ -26,23 +26,49 @@ echo "${bold}program_delete${normal}"
 echo ""
 
 # Display a menu using select
+delete_name=""
 PS3=""
 echo "${bold}Please, choose your program:${normal}"
 echo ""
-select folder in "${folders[@]}"; do
-    if [[ -n "$folder" ]]; then
-        delete_name=$folder
-        echo ""
-        break
-    fi
-done
+if [ ${#folders[@]} -eq 1 ]; then
+    folder=${folders[0]}
+    echo $folder
+    echo ""
+    echo "${bold}You are about to delete $folder. Do you want to continue (y/n)?${normal}"
+    while true; do
+        read -p "" yn
+        case $yn in
+            "y") 
+                #delete="1"
+                delete_name=$folder
+                echo ""
+                break
+                ;;
+            "n") 
+                echo ""
+                break
+                ;;
+        esac
+    done
+else
+    select folder in "${folders[@]}"; do
+        if [[ -n "$folder" ]]; then
+            #delete="1"
+            delete_name=$folder
+            echo ""
+            break
+        fi
+    done
+fi
 
-#update Makefile
-sed -i "/^APPS := / s/\b$delete_name\b//" "$DIR/Makefile"
-sed -i "/^APPS := / s/[[:space:]]\+/ /g" "$DIR/Makefile"
+if [ ! "$delete_name" = "" ]; then
+    #update Makefile
+    sed -i "/^APPS := / s/\b$delete_name\b//" "$DIR/Makefile"
+    sed -i "/^APPS := / s/[[:space:]]\+/ /g" "$DIR/Makefile"
 
-#remove folders
-rm -rf $DIR/src/$delete_name
-rm -rf $DIR/.output/$delete_name
-rm -rf $DIR/$delete_name
-sleep 2
+    #remove folders
+    rm -rf $DIR/src/$delete_name
+    rm -rf $DIR/.output/$delete_name
+    rm -rf $DIR/$delete_name
+    sleep 2
+fi
