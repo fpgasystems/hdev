@@ -126,7 +126,7 @@ cli_help() {
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
   if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
-  echo "    ${bold}run${normal}            - Executes the accelerated application on a given device."
+  echo "    ${bold}run${normal}            - Executes your accelerated application."
   fi
   if [ "$is_build" = "1" ]; then
   echo "    ${bold}set${normal}            - Host configuration."
