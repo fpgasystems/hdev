@@ -61,8 +61,8 @@ $CLI_PATH/common/git_clone_vrt $DIR $tag_name
 echo "$tag_name" > $DIR/VRT_TAG
 
 #move files
-mv $DIR/vrt/* $DIR/
-rm -rf $DIR/vrt
+mv $DIR/SLASH/* $DIR/
+rm -rf $DIR/SLASH
 
 #remove files
 rm $DIR/README.md
