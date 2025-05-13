@@ -1010,8 +1010,9 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-  
+
         #run
         $CLI_PATH/new/vrt --tag $tag_name --project $new_name --push $push_option
         ;;

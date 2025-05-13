@@ -9,6 +9,7 @@ CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
 CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
 CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub account (y/n)?${normal}"
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
+CHECK_ON_TEMPLATE_MSG="${bold}Please, choose your template:${normal}"
 
 #error messages
 CHECK_ON_AMI_TOOL_ERR_MSG="Please, install a valid ami_tool version."
@@ -1080,6 +1081,37 @@ template_check(){
     echo $CHECK_ON_TEMPLATE_ERR_MSG
     echo ""
     exit 1
+  fi
+}
+
+template_dialog() {
+  local CLI_PATH=$1
+  local TEMPLATES_FILE=$2
+  shift 2
+  local flags_array=("$@")
+
+  template_found=""
+  template_name=""
+
+  if [ "$flags_array" = "" ]; then
+    #new_dialog
+    echo $CHECK_ON_TEMPLATE_MSG
+    echo ""
+    result=$($CLI_PATH/common/template_dialog $CLI_PATH $TEMPLATES_FILE)
+    template_found=$(echo "$result" | sed -n '1p')
+    template_name=$(echo "$result" | sed -n '2p')
+    echo ""
+  else
+    template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+    #forgotten mandatory
+    if [[ $template_found = "0" ]]; then
+        echo $CHECK_ON_TEMPLATE_MSG
+        echo ""
+        result=$($CLI_PATH/common/template_dialog $CLI_PATH $TEMPLATES_FILE)
+        template_found=$(echo "$result" | sed -n '1p')
+        template_name=$(echo "$result" | sed -n '2p')
+        echo ""
+    fi
   fi
 }
 
