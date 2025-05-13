@@ -70,6 +70,15 @@ rm -rf $DIR/SLASH
 rm $DIR/README.md
 rm $DIR/LICENSE
 
+#create src folder
+mkdir $DIR/src
+
+#copy template files
+cp -r $DIR/examples/$template_name/* $DIR/src
+
+#delete examples
+rm -rf $DIR/examples/
+
 #temporal solution (read from mnt/scratch)
 #rm -rf $DIR/*
 #cp -rf /mnt/scratch/hacc/VRT_downloads/vrt-api/tests $DIR
