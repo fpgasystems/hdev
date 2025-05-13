@@ -955,7 +955,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-t --tag --project --push -h --help"
+        valid_flags="--tag --template --project --push -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -1002,6 +1002,7 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
+          template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
         fi
 
         #dialogs

@@ -25,6 +25,7 @@ AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
 VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
 XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
 XDP_LIBBPF_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_LIBBPF_COMMIT)
@@ -154,7 +155,8 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo "FLAGS:"
             echo "       ${bold}--project${normal}   - Specifies your VRT project name." 
             echo "       ${bold}--push${normal}      - Pushes your VRT project to your GitHub account." 
-            echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$VRT_TAG${normal})."
+            echo "       ${bold}--tag${normal}       - GitHub tag ID (default: ${bold}$VRT_TAG${normal})."
+            echo "       ${bold}--template${normal}  - According to ${bold}$VRT_REPO${normal} GitHub repository examples."
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""

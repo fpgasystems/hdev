@@ -38,6 +38,7 @@ CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
 CHECK_ON_REMOTE_FILE_ERR_MSG="Please, specify an absolute path for remote programming."
 CHECK_ON_REVERT_ERR_MSG="Please, revert your device first."
 CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
+CHECK_ON_TEMPLATE_ERR_MSG="Please, choose a valid template name."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
@@ -1062,6 +1063,23 @@ tag_check_pwd(){
     declare -g tag_found="1"
     declare -g tag_name=$(cat "$PWD/$tag_name_local")
     return 1
+  fi
+}
+
+template_check(){
+  local CLI_PATH=$1
+  local TEMPLATES_FILE=$2
+  shift 2
+  local flags_array=("$@")
+  #template_dialog_check
+  result="$("$CLI_PATH/common/template_dialog_check" "${flags_array[@]}")"
+  template_found=$(echo "$result" | sed -n '1p')
+  template_name=$(echo "$result" | sed -n '2p')
+  if ! grep -Fxq "$template_name" "$CLI_PATH/constants/$TEMPLATES_FILE"; then
+    echo ""
+    echo $CHECK_ON_TEMPLATE_ERR_MSG
+    echo ""
+    exit 1
   fi
 }
 
