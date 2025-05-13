@@ -1076,11 +1076,13 @@ template_check(){
   result="$("$CLI_PATH/common/template_dialog_check" "${flags_array[@]}")"
   template_found=$(echo "$result" | sed -n '1p')
   template_name=$(echo "$result" | sed -n '2p')
-  if ! grep -Fxq "$template_name" "$CLI_PATH/constants/$TEMPLATES_FILE"; then
-    echo ""
-    echo $CHECK_ON_TEMPLATE_ERR_MSG
-    echo ""
-    exit 1
+  if [ "$template_found" = "1" ]; then
+    if ! grep -Fxq "$template_name" "$CLI_PATH/constants/$TEMPLATES_FILE"; then
+      echo ""
+      echo $CHECK_ON_TEMPLATE_ERR_MSG
+      echo ""
+      exit 1
+    fi
   fi
 }
 
