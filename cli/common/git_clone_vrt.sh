@@ -24,7 +24,7 @@ cd $DIR
 git clone $VRT_REPO
 
 #change to repository directory
-cd $DIR/vrt
+cd $DIR/SLASH
 
 #checkout the specific tag
 git checkout tags/$AVED_TAG > /dev/null 2>&1
