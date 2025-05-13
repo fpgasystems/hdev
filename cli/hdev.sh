@@ -1014,7 +1014,7 @@ case "$command" in
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --push $push_option
+        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --template $template_name --push $push_option
         ;;
       xdp)
         #early exit

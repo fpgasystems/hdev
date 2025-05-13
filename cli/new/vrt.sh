@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --push $push_option
-#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --push            0
+#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --template $template_name --push $push_option
+#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --template     00_axilite --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -22,10 +22,11 @@ fi
 #inputs
 tag_name=$2
 new_name=$4
-push_option=$6
+template_name=$6
+push_option=$8
 
 #all inputs must be provided
-if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
+if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$template_name" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
@@ -57,8 +58,9 @@ $CLI_PATH/common/git_clone_vrt $DIR $tag_name
 #change to project directory
 #cd $DIR
 
-#save tag_name
+#save tag_name and template_name
 echo "$tag_name" > $DIR/VRT_TAG
+echo "$template_name" > $DIR/VRT_TEMPLATE
 
 #move files
 mv $DIR/SLASH/* $DIR/
