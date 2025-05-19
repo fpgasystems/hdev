@@ -52,7 +52,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo ""
         echo "ARGUMENTS:"
         if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-        echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Generates an AMD Versal Example Design (AVED) project."
+        echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Generates an Alveo Versal Example Design (AVED) project."
         fi
         if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
         echo "   ${bold}composer${normal}        - Model-based design project for Hyperion developers."
@@ -83,7 +83,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "${bold}$CLI_NAME new aved [flags] [--help]${normal}"
             echo ""
-            echo "Generates an AMD Versal Example Design (AVED) project."
+            echo "Generates an Alveo Versal Example Design (AVED) project."
             echo ""
             echo "FLAGS:"
             echo "       ${bold}--project${normal}   - Specifies your AVED project name." 
