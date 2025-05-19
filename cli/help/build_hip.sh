@@ -15,7 +15,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME build hip [flags] [--help]${normal}"
     echo ""
-    echo "HIP binaries for your projects."
+    echo "Creates HIP (Heterogeneous-computing Interface for Portability) binaries for your project."
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-p, --project${normal}   - Specifies your HIP project name."
