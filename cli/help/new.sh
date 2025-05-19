@@ -58,7 +58,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "   ${bold}composer${normal}        - Model-based design project for Hyperion developers."
         fi
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
-        echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
+        echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Generates a HIP application template targeting ROCm."
         fi
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
@@ -118,7 +118,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "${bold}$CLI_NAME new hip [--help]${normal}"
             echo ""
-            echo "Portable single-source ROCm applications."
+            echo "Generates a HIP application template targeting ROCm."
             echo ""
             echo "FLAGS"
             echo "   This command has no flags."
