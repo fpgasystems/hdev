@@ -38,7 +38,7 @@ HIP_RUN_FLAGS=( "--device" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
-OPENNIC_RUN_FLAGS=( "--commit" "--config" "--device" "--project" )
+OPENNIC_RUN_FLAGS=( "--commit" "--config" "--project" ) #"--device" 
 OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
 PROGRAM_BITSTREAM_FLAGS=( "--device" "--hotplug" "--path" "--remote" )
 PROGRAM_IMAGE_FLAGS=( "--device" "--path" "--remote" )
@@ -816,10 +816,6 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
                         aved)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                        opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac

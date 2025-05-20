@@ -134,6 +134,9 @@ echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
 #save .device_config
 cp $DIR/configs/device_config $DIR/.device_config
 
+#update shell configuration file
+sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
+
 #build
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
@@ -264,7 +267,7 @@ if [[ $connected = "1" ]]; then
     #run
     echo "${bold}$CLI_NAME run $WORKFLOW (commit ID: $commit_name_shell)${normal}"
     echo ""
-    $CLI_PATH/run/opennic --commit $commit_name_shell --config 1 --device $device_index --project $project_name
+    $CLI_PATH/run/opennic --commit $commit_name_shell --config 1 --project $project_name #--device $device_index 
     return_code=$?
 
     if [ $return_code -eq 0 ]; then

@@ -1,5 +1,4 @@
 FLAGS:
-   -c, --config    - Configuration index.
-   -d, --device    - Device Index (according to hdev examine).
+   -c, --config    - Configuration Index.
 
    -h, --help      - Help to use this command.

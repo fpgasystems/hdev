@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev run opennic --commit $commit_name --config $config_index --device $device_index --project $project_name
-#example: /opt/hdev/cli/hdev run opennic --commit      8077751 --config             1 --device             1 --project   hello_world
+#usage:       $CLI_PATH/hdev run opennic --commit $commit_name --config $config_index --project $project_name
+#example: /opt/hdev/cli/hdev run opennic --commit      8077751 --config             1 --project   hello_world
 
 #early exit
 url="${HOSTNAME}"
@@ -31,11 +31,11 @@ fi
 #inputs
 commit_name=$2
 config_index=$4
-device_index=$6
-project_name=$8
+#device_index=$6
+project_name=$6
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$config_index" = "" ] || [ "$device_index" = "" ] || [ "$project_name" = "" ]; then
+if [ "$commit_name" = "" ] || [ "$config_index" = "" ] || [ "$project_name" = "" ]; then #|| [ "$device_index" = "" ] 
     exit
 fi
 
@@ -47,8 +47,8 @@ WORKFLOW="opennic"
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 
 #get FDEV_NAME
-platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
+#platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+#FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #change directory
 echo "${bold}Changing directory:${normal}"
@@ -75,9 +75,10 @@ echo ""
 #run application
 echo "${bold}Running your OpenNIC application:${normal}"
 echo ""
-echo "./onic --config $config_index --device $device_index "
+echo "./onic --config $config_index" # --device $device_index 
 echo ""
-./onic --config "$config_index" --device "$device_index"
+#./onic --config "$config_index" --device "$device_index"
+./onic --config "$config_index"
 return_code=$?
 
 echo ""

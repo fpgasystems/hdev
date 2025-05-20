@@ -1524,7 +1524,29 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        #get devices from sh.cfg (device_dialog comes at the end)
+        device_indexes=()
+        if [ "$device_found" = "1" ]; then 
+          device_indexes=("$device_index")
+        elif [[ ( "$device_found" = "" || "$device_found" = "0" ) && -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg" ]]; then #elif [ "$device_found" = "" ] && [ -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg" ]; then
+          while IFS=":" read -r index name; do
+            if [[ ${name// /} == "onic" ]]; then
+                device_indexes+=("$index")
+            fi
+          done < <(grep -v '^\[' "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg")
+
+          #there is at least one onic device
+          if [[ ${#device_indexes[@]} -gt 0 ]]; then
+            device_found="1"
+          fi
+        fi
+
+        #final check
+        if [ "$device_found" = "" ]; then
+          device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          device_indexes=("$device_index")
+        fi
 
         #fec_dialog
         if ! (lsmod | grep -q "${ONIC_DRIVER_NAME%.ko}" 2>/dev/null); then
@@ -1554,14 +1576,17 @@ case "$command" in
         fi
         
         #bitstream check
-        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
-        bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        if ! [ -e "$bitstream_path" ]; then
-          echo "$CHECK_ON_BITSTREAM_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-          echo ""
-          exit 1
-        fi
-
+        for i in "${!device_indexes[@]}"; do
+          FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH "${device_indexes[$i]}") #$device_index
+          bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+          if ! [ -e "$bitstream_path" ]; then
+            #echo "$CHECK_ON_BITSTREAM_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+            echo "Your targeted bitstream ($FDEV_NAME) is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+            echo ""
+            exit 1
+          fi
+        done
+        
         #driver check
         driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
         if ! [ -e "$driver_path" ]; then
@@ -1573,7 +1598,10 @@ case "$command" in
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        for i in "${!device_indexes[@]}"; do
+          #$CLI_PATH/program/opennic --commit $commit_name --device $device_index --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+          $CLI_PATH/program/opennic --commit $commit_name --device ${device_indexes[$i]} --fec $fec_option --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        done
         ;;
       reset)
         #early exit
@@ -1741,7 +1769,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit -p --project --start --stop -h --help" #-i --interface -f --function 
+        valid_flags="-c --commit -i --interface -p --project --start --stop -h --help" # -f --function 
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2066,7 +2094,7 @@ case "$command" in
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           if [ "$project_found" = "1" ]; then
             config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "yes" "${flags_array[@]}"
@@ -2074,15 +2102,15 @@ case "$command" in
         fi
 
         #early onic workflow check
-        if [ "$device_found" = "1" ]; then
-          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-          if [ ! "$workflow" = "onic" ]; then
-              echo ""
-              echo "$CHECK_ON_WORKFLOW_ERR_MSG"
-              echo ""
-              exit
-          fi
-        fi
+        #if [ "$device_found" = "1" ]; then
+        #  workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        #  if [ ! "$workflow" = "onic" ]; then
+        #      echo ""
+        #      echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+        #      echo ""
+        #      exit
+        #  fi
+        #fi
 
         if [ "$project_found" = "0" ]; then
           add_echo="no"
@@ -2103,15 +2131,38 @@ case "$command" in
             echo ""
             exit
         fi
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        #get onic devices from sh.cfg (similar to hdev program opennic)
+        if [ -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg" ]; then
+          while IFS=":" read -r index name; do
+            if [[ ${name// /} == "onic" ]]; then
+                device_indexes+=("$index")
+            fi
+          done < <(grep -v '^\[' "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg")
+        else
+          echo ""
+          echo $CHECK_ON_SHELL_CFG_ERR_MSG
+          echo ""
+          exit 1
+        fi
 
         #onic workflow check
-        workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        if [ ! "$workflow" = "onic" ]; then
+        #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        #if [ ! "$workflow" = "onic" ]; then
+        #    echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+        #    echo ""
+        #    exit
+        #fi
+        for i in "${!device_indexes[@]}"; do
+          device_index_i="${device_indexes[$i]}"
+          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index_i)
+          if [ ! "$workflow" = "onic" ]; then
             echo "$CHECK_ON_WORKFLOW_ERR_MSG"
             echo ""
             exit
-        fi
+          fi
+        done
 
         #onic application check
         if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/onic" ]; then
@@ -2121,32 +2172,7 @@ case "$command" in
         fi
 
         #run
-        $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name 
-        ;;
-      xdp)
-        #early exit
-        if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
-          exit 1
-        fi
-
-        #check on groups
-        vivado_developers_check "$USER"
-        
-        #check on software
-        gh_check "$CLI_PATH"
-
-        #check on flags
-        valid_flags="-c --commit -i --interface -f --function -p --project --start --stop -h --help" #-i --interface
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #continue here
-        exit
-
-        #run
-        $CLI_PATH/run/xdp --commit $commit_name --interface $interface_name --project $project_name
+        $CLI_PATH/run/opennic --commit $commit_name --config $config_index --project $project_name 
         ;;
       *)
         run_help

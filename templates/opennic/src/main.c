@@ -9,7 +9,14 @@ int main(int argc, char *argv[]) {
     int ping_error = 0;
 
     // Check and process command-line flags
-    flags_error = flags_check(argc, argv, &config_index, &device_index);
+    flags_error = flags_check(argc, argv, &config_index); //, &device_index
+
+    // Get a valid OpenNIC device from shell configuration file
+    device_index = get_first_onic_device("sh.cfg");
+    if (device_index == -1) {
+        fprintf(stderr, "No 'onic' device found.\n");
+        return 1;
+    }
 
     if (flags_error == 0) {
         // read from device_config (index is set to zero)
@@ -17,7 +24,7 @@ int main(int argc, char *argv[]) {
         
         // read from configuration
         char *remote_server = read_parameter(config_index, "remote_server");
-        int num_pings = atoi(read_parameter(config_index, "NUM_PINGS"));
+        int num_pings = atoi(read_parameter(config_index, "NUM_PINGS"));   
         
         // Iterate over each CMAC port
         for (int i = 1; i <= num_cmac_port; i++) {

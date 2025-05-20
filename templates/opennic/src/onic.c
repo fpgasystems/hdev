@@ -4,22 +4,21 @@
 #include "onic.h"
 
 // Define valid flags
-const char *valid_flags[] = {"-c", "--config", "-d", "--device"};
+const char *valid_flags[] = {"-c", "--config"};
 
 #define NUM_FLAGS (sizeof(valid_flags) / sizeof(valid_flags[0]))
 #define MAX_LINE_LENGTH 256
 
-int flags_check(int argc, char *argv[], int *config_index, int *device_index) {
+int flags_check(int argc, char *argv[], int *config_index) {
     int flags_error = 0;
 
-    if (argc != 5) {  // 4 args + program name
+    if (argc != 3) {  // program name + 2 args
         flags_error = 1;
     }
 
     for (int i = 1; i < argc && !flags_error; i += 2) {
         int valid = 0;
 
-        // Validate the flag against valid_flags
         for (int j = 0; j < NUM_FLAGS; j++) {
             if (strcmp(argv[i], valid_flags[j]) == 0) {
                 valid = 1;
@@ -39,33 +38,21 @@ int flags_check(int argc, char *argv[], int *config_index, int *device_index) {
             break;
         }
 
-        // Handle device index conversion to int
-        if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--device") == 0) {
-            *device_index = atoi(argv[i + 1]);
-            if (*device_index <= 0) {
-                //fprintf(stderr, "Error: Invalid device index %s\n", argv[i + 1]);
-                flags_error = 1;
-                break;
-            }
-        } 
-        // Handle config index conversion to int
-        else if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--config") == 0) {
+        // Only check for config index
+        if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--config") == 0) {
             *config_index = atoi(argv[i + 1]);
             if (*config_index <= 0) {
-                //fprintf(stderr, "Error: Invalid config index %s\n", argv[i + 1]);
                 flags_error = 1;
                 break;
             }
         }
     }
 
-    // Ensure all necessary parameters were provided
-    if (*device_index == 0 || *config_index == 0) {
-        //fprintf(stderr, "Error: Missing required parameters.\n");
+    if (*config_index == 0) {
         flags_error = 1;
     }
 
-    return flags_error;  // Return 0 on success, 1 on error
+    return flags_error;
 }
 
 char* get_interface_name(char *device_ip) {
@@ -231,4 +218,47 @@ char* read_parameter(int index, const char *parameter_name) {
     // If parameter is not found, return NULL
     fclose(file);
     return NULL;
+}
+
+int get_first_onic_device(const char *sh_cfg_path) {
+    FILE *file = fopen(sh_cfg_path, "r");
+    if (!file) {
+        perror("Error opening sh.cfg");
+        return -1;
+    }
+
+    char line[MAX_LINE_LENGTH];
+    int in_workflows_section = 0;
+
+    while (fgets(line, sizeof(line), file)) {
+        char *ptr = line;
+
+        // Strip leading whitespace
+        while (*ptr == ' ' || *ptr == '\t') ptr++;
+
+        // Skip empty lines
+        if (ptr[0] == '\n' || ptr[0] == '\0')
+            continue;
+
+        // Check for section header
+        if (ptr[0] == '[') {
+            in_workflows_section = (strncmp(ptr, "[workflows]", 11) == 0);
+            continue;
+        }
+
+        if (in_workflows_section) {
+            int index;
+            char value[MAX_LINE_LENGTH];
+
+            if (sscanf(ptr, "%d: %s", &index, value) == 2) {
+                if (strcmp(value, "onic") == 0) {
+                    fclose(file);
+                    return index;
+                }
+            }
+        }
+    }
+
+    fclose(file);
+    return -1;  // Not found
 }

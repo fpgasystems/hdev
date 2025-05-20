@@ -58,6 +58,7 @@ fi
 #constants
 ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
 BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
+DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
@@ -106,6 +107,7 @@ cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 cp $HDEV_PATH/templates/$WORKFLOW/Makefile $DIR/Makefile
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
+cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
 
 #compile files
 chmod +x $DIR/config_add
@@ -130,6 +132,12 @@ done
 
 #update remote_server in config_parameters
 sed -i "/^remote_server/s/xxxx-xxxxx-xx/$target_host/" "$DIR/config_parameters"
+
+#add to sh.cfg (get index of the first FPGA)
+index=$(awk '$5 == "fpga" { print $1; exit }' "$DEVICES_LIST_FPGA")
+if [[ -n "$index" ]]; then
+    echo "$index: onic" >> "$DIR/sh.cfg"
+fi
 
 #push files
 if [ "$push_option" = "1" ]; then 

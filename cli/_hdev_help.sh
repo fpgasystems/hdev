@@ -474,7 +474,7 @@ run_help() {
       echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given device."
     fi
     if [ "$vivado_enabled" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs OpenNIC on a given device."
+      echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -715,7 +715,7 @@ validate_help() {
     vitis_enabled="1"
     fi
     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected GPU." 
+    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected device." 
     fi
     echo "" 
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -764,7 +764,7 @@ validate_hip_help() {
     echo ""
     echo "${bold}$CLI_NAME validate hip [flags] [--help]${normal}"
     echo ""
-    echo "Validates HIP on the selected GPU."
+    echo "Validates HIP on the selected device."
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
