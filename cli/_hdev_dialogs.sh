@@ -40,6 +40,7 @@ CHECK_ON_REMOTE_FILE_ERR_MSG="Please, specify an absolute path for remote progra
 CHECK_ON_REVERT_ERR_MSG="Please, revert your device first."
 CHECK_ON_SHELL_CFG_ERR_MSG="Your targeted shell configuration file is missing."
 CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
+CHECK_ON_TARGET_ERR_MSG="Please, choose a valid target name."
 CHECK_ON_TEMPLATE_ERR_MSG="Please, choose a valid template name."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
@@ -1117,6 +1118,26 @@ template_dialog() {
     fi
   fi
 }
+
+target_check(){
+  local CLI_PATH=$1
+  local TARGET_FILE=$2
+  shift 2
+  local flags_array=("$@")
+  #template_dialog_check
+  result="$("$CLI_PATH/common/target_dialog_check" "${flags_array[@]}")"
+  target_found=$(echo "$result" | sed -n '1p')
+  target_name=$(echo "$result" | sed -n '2p')
+  if [ "$target_found" = "1" ]; then
+    if ! grep -Fxq "$target_name" "$CLI_PATH/constants/$TARGET_FILE"; then
+      echo ""
+      echo $CHECK_ON_TARGET_ERR_MSG
+      echo ""
+      exit 1
+    fi
+  fi
+}
+
 
 value_check() {
   local CLI_PATH=$1

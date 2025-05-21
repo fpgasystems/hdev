@@ -443,7 +443,7 @@ case "$command" in
 
             #check if tag_name is empty
             if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
                 exit
             fi
             
@@ -453,7 +453,7 @@ case "$command" in
             if [ "$tag_found" = "0" ]; then 
                 tag_name=$VRT_TAG
             elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
                 exit
             elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
                 if [ "$exists_tag" = "0" ]; then
@@ -465,14 +465,16 @@ case "$command" in
             fi
         fi
 
-        echo "HEY I am here!"
-
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
-          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
-          template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+          #template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+          target_check "$CLI_PATH" "VRT_TARGETS" "${flags_array[@]}"
         fi
+
+        echo "HEY I am here (2)!"
+        exit
 
         #dialogs
         echo ""
@@ -1052,7 +1054,7 @@ case "$command" in
 
             #check if tag_name is empty
             if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
                 exit
             fi
             
@@ -1062,7 +1064,7 @@ case "$command" in
             if [ "$tag_found" = "0" ]; then 
                 tag_name=$VRT_TAG
             elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
                 exit
             elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
                 if [ "$exists_tag" = "0" ]; then
