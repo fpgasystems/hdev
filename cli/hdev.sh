@@ -429,60 +429,67 @@ case "$command" in
         read -r -a flags_array <<< "$flags"
 
         #check_on_tag
-        tag_found=""
-        tag_name=""
-        if [ "$flags_array" = "" ]; then
-            #commit dialog
-            tag_found="1"
-            tag_name=$VRT_TAG
-        else
-            #github_tag_dialog_check
-            result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
-            tag_found=$(echo "$result" | sed -n '1p')
-            tag_name=$(echo "$result" | sed -n '2p')
-
-            #check if tag_name is empty
-            if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
-                exit
-            fi
-            
-            #check if tag exist
-            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $VRT_REPO $tag_name)
-            
-            if [ "$tag_found" = "0" ]; then 
-                tag_name=$VRT_TAG
-            elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
-                exit
-            elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
-                if [ "$exists_tag" = "0" ]; then
-                  echo ""
-                  echo $CHECK_ON_GH_TAG_ERR_MSG
-                  echo ""
-                  exit 1
-                fi
-            fi
-        fi
+        #tag_found=""
+        #tag_name=""
+        #if [ "$flags_array" = "" ]; then
+        #    #commit dialog
+        #    tag_found="1"
+        #    tag_name=$VRT_TAG
+        #else
+        #    #github_tag_dialog_check
+        #    result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
+        #    tag_found=$(echo "$result" | sed -n '1p')
+        #    tag_name=$(echo "$result" | sed -n '2p')
+        #
+        #    #check if tag_name is empty
+        #    if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
+        #        $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+        #        exit
+        #    fi
+        #    
+        #    #check if tag exist
+        #    exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $VRT_REPO $tag_name)
+        #    
+        #    if [ "$tag_found" = "0" ]; then 
+        #        tag_name=$VRT_TAG
+        #    elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
+        #        $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+        #        exit
+        #    elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
+        #        if [ "$exists_tag" = "0" ]; then
+        #          echo ""
+        #          echo $CHECK_ON_GH_TAG_ERR_MSG
+        #          echo ""
+        #          exit 1
+        #        fi
+        #    fi
+        #fi
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
+          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-          push_check "$CLI_PATH" "${flags_array[@]}"
+          #push_check "$CLI_PATH" "${flags_array[@]}"
           #template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
           target_check "$CLI_PATH" "VRT_TARGETS" "${flags_array[@]}"
         fi
 
         echo "HEY I am here (2)!"
-        exit
+        
 
         #dialogs
+        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
+        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "VRT_TAG"
+        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
-        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
-        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        #template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+        #target_dialog
+        
+        echo "HEY I am here (3)!"
+        exit
 
         #run
         $CLI_PATH/build/vrt --project $new_name --tag $tag_name --target $target_name --push $push_option
