@@ -9,6 +9,7 @@ CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
 CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
 CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub account (y/n)?${normal}"
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
+CHECK_ON_TARGET_MSG="${bold}Please, choose your target:${normal}"
 CHECK_ON_TEMPLATE_MSG="${bold}Please, choose your template:${normal}"
 
 #error messages
@@ -1134,6 +1135,39 @@ target_check(){
       echo $CHECK_ON_TARGET_ERR_MSG
       echo ""
       exit 1
+    fi
+  fi
+}
+
+target_dialog() {
+  local CLI_PATH=$1
+  local TARGETS_FILE=$2
+  local TARGET_DEPLOY_EXCLUDE=$3
+  local is_build=$4
+  shift 4
+  local flags_array=("$@")
+
+  target_found=""
+  target_name=""
+
+  if [ "$flags_array" = "" ]; then
+    #new_dialog
+    echo $CHECK_ON_TARGET_MSG
+    echo ""
+    result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
+    target_found=$(echo "$result" | sed -n '1p')
+    target_name=$(echo "$result" | sed -n '2p')
+    echo ""
+  else
+    target_check "$CLI_PATH" "$TARGETS_FILE" "${flags_array[@]}"
+    #forgotten mandatory
+    if [[ $target_found = "0" ]]; then
+        echo $CHECK_ON_TARGET_MSG
+        echo ""
+        result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
+        target_found=$(echo "$result" | sed -n '1p')
+        target_name=$(echo "$result" | sed -n '2p')
+        echo ""
     fi
   fi
 }

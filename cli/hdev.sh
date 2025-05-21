@@ -444,7 +444,7 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         #template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
-        #target_dialog
+        target_dialog "$CLI_PATH" "VRT_TARGETS" "hw_emu" "$is_build" "${flags_array[@]}"
 
         echo "HEY I am here (3)!"
         exit
