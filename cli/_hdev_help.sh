@@ -47,6 +47,16 @@ build_opennic_help() {
     exit
 }
 
+build_vrt_help() {
+    is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+    is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+    is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+    $CLI_PATH/help/build_vrt $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_vivado_developer
+    exit
+}
+
 build_xdp_help() {
     #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
     #is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)

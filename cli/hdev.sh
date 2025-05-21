@@ -409,6 +409,82 @@ case "$command" in
         $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_build
         echo ""
         ;;
+      vrt)
+        #early exit
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
+            exit 1
+        fi
+
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="--tag --target --project -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #check_on_tag
+        tag_found=""
+        tag_name=""
+        if [ "$flags_array" = "" ]; then
+            #commit dialog
+            tag_found="1"
+            tag_name=$VRT_TAG
+        else
+            #github_tag_dialog_check
+            result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
+            tag_found=$(echo "$result" | sed -n '1p')
+            tag_name=$(echo "$result" | sed -n '2p')
+
+            #check if tag_name is empty
+            if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                exit
+            fi
+            
+            #check if tag exist
+            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $VRT_REPO $tag_name)
+            
+            if [ "$tag_found" = "0" ]; then 
+                tag_name=$VRT_TAG
+            elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                exit
+            elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
+                if [ "$exists_tag" = "0" ]; then
+                  echo ""
+                  echo $CHECK_ON_GH_TAG_ERR_MSG
+                  echo ""
+                  exit 1
+                fi
+            fi
+        fi
+
+        echo "HEY I am here!"
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+          push_check "$CLI_PATH" "${flags_array[@]}"
+          template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
+        echo ""
+        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+
+        #run
+        $CLI_PATH/build/vrt --project $new_name --tag $tag_name --target $target_name --push $push_option
+        ;;
       xdp)
         #early exit
         if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then

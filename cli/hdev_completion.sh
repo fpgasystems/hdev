@@ -48,6 +48,7 @@ SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" )
+VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 XDP_BUILD_FLAGS=( "--commit" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--project" "--start" ) #"--stop"
@@ -138,7 +139,7 @@ _hdev_completions()
                 build)
                     commands="c --help"
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} aved"
+                        commands="${commands} aved vrt"
                     fi
                     if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
@@ -317,6 +318,9 @@ _hdev_completions()
                             elif [ "$is_vivado_developer" = "1" ]; then
                                 COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --platform --help" -- "${cur}"))
                             fi
+                            ;;
+                        vrt)
+                            COMPREPLY=($(compgen -W "${VRT_BUILD_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         xdp)
                             COMPREPLY=($(compgen -W "${XDP_BUILD_FLAGS[*]} --help" -- "${cur}"))
@@ -535,6 +539,10 @@ _hdev_completions()
                                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             fi
                             ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         xdp)
                             #--commit --project
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_BUILD_FLAGS[*]}")
@@ -680,6 +688,10 @@ _hdev_completions()
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
                                 COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             fi
+                            ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
                     ;;
