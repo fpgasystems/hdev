@@ -446,11 +446,8 @@ case "$command" in
         #template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
         target_dialog "$CLI_PATH" "VRT_TARGETS" "hw_emu" "$is_build" "${flags_array[@]}"
 
-        echo "HEY I am here (3)!"
-        exit
-
         #run
-        $CLI_PATH/build/vrt --project $new_name --tag $tag_name --target $target_name --push $push_option
+        $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name
         ;;
       xdp)
         #early exit

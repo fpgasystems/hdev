@@ -18,29 +18,21 @@ if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
     exit 1
 fi
 
-echo "HEY I am here too!"
-exit
-
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
-fi
-
 #inputs
-commit_name=$2
-commit_name_driver=$3
-platform_name=$5
-project_name=$7
-vivado_version=$9
-all=${11}
+project_name=$2
+tag_name=$4
+target_name=$6
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$commit_name_driver" = "" ] || [ "$platform_name" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
+if [ "$project_name" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ]; then
     exit
 fi
+
+echo "HEY I am here too!"
+echo "project_name: $project_name"
+echo "tag_name: $tag_name"
+echo "target_name: $target_name"
+exit
 
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
