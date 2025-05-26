@@ -7,7 +7,7 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/hdev program bitstream --path      $bitstream_path --device $device_index --version $vivado_version --hotplug $hotplug_value --remote $deploy_option 
 #example: /opt/hdev/cli/hdev program bitstream --path path_to_my_shell.bit --device             1 --version          2022.1 --hotplug              1 --remote              0
 
-#arly exit
+#early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
