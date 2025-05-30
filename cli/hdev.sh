@@ -419,6 +419,8 @@ case "$command" in
         vivado_developers_check "$USER"
         
         #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
         gh_check "$CLI_PATH"
 
         #check on flags
@@ -447,7 +449,7 @@ case "$command" in
         target_dialog "$CLI_PATH" "VRT_TARGETS" "hw_emu" "$is_build" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name
+        $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version
         ;;
       xdp)
         #early exit
