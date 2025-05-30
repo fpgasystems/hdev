@@ -57,7 +57,10 @@ sed -i 's|^V80PP_PATH=$(shell realpath ../../submodules/v80-vitis-flow)$|V80PP_P
 
 #bitstream compilation is only allowed on CPU (build) servers
 compile="1"
-if [ "$target_name" = "hw_all" ]; then
+if [ "$target_name" = "emu_all" ] || [ "$target_name" = "sim_all" ]; then
+    #always allowed without user input
+    rm -rf $target_name.$VRT_TEMPLATE.$vivado_version
+elif [ "$target_name" = "hw_all" ]; then
     #check on bitstream configuration
     #are_equals="0"
     #if [ -f "$DIR/.device_config" ]; then
@@ -65,27 +68,27 @@ if [ "$target_name" = "hw_all" ]; then
     #fi
 
     #compile="0"
-    #if [ ! -e "$project_shell" ]; then
-    #    compile="1"
-    #elif [ -e "$project_shell" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_opennic.$hostname.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
-    #    #echo ""
-    #    echo "The shell ${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?"
-    #    while true; do
-    #        read -p "" yn
-    #        case $yn in
-    #            "y")
-    #                rm -f $project_shell 
-    #                compile="1"
-    #                break
-    #                ;;
-    #            "n") 
-    #                #compile="0"
-    #                break
-    #                ;;
-    #        esac
-    #    done
-    #    echo ""
-    #fi
+    if [ ! -d "$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
+        compile="1"
+    else #[ -e "$project_shell" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_opennic.$hostname.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
+        #echo ""
+        echo "The target ${bold}$target_name${normal} has already been compiled. Do you want compile it again (y/n)?"
+        while true; do
+            read -p "" yn
+            case $yn in
+                "y")
+                    rm -rf $target_name.$VRT_TEMPLATE.$vivado_version
+                    compile="1"
+                    break
+                    ;;
+                "n") 
+                    compile="0"
+                    break
+                    ;;
+            esac
+        done
+        echo ""
+    fi
 
     ##launch vivado
     #if [ "$compile" = "1" ]; then 
@@ -119,7 +122,7 @@ if [ "$target_name" = "hw_all" ]; then
     #        #echo "Subject: Good news! hdev build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
     #    fi
     #fi
-    compile="1"
+    #compile="1"
 fi
 
 if [ "$compile" = "1" ]; then
@@ -132,6 +135,9 @@ if [ "$compile" = "1" ]; then
 
     #move build folder
     mv $DIR/src/build $DIR/$target_name.$VRT_TEMPLATE.$vivado_version
+
+    #cleanup to allow re-compiling
+    rm -rf $DIR/src/hls/build_*
 fi
 
 
