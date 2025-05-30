@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev build vrt --project $project_name --tag $tag_name --target $target_name
-#example: /opt/hdev/cli/hdev build vrt --project   hello_world --tag    v1.0.0 --target       hw_all
+#usage:       $CLI_PATH/hdev build vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version
+#example: /opt/hdev/cli/hdev build vrt --project   hello_world --tag    v1.0.0 --target       hw_all --version          2024.2
 
 #early exit
 url="${HOSTNAME}"
@@ -22,9 +22,10 @@ fi
 project_name=$2
 tag_name=$4
 target_name=$6
+vivado_version=$8
 
 #all inputs must be provided
-if [ "$project_name" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ]; then
+if [ "$project_name" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ]; then
     exit
 fi
 
@@ -40,6 +41,9 @@ WORKFLOW="vrt"
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
 #SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
 #DRIVER_DIR="$DIR/open-nic-driver"
+
+#get template name
+VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
 
 #platform_name to FDEV_NAME
 #FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
@@ -119,13 +123,15 @@ if [ "$target_name" = "hw_all" ]; then
 fi
 
 if [ "$compile" = "1" ]; then
-    #compile driver
     echo "${bold}Programmable Device Image (PDI) compilation (tag ID: $tag_name)${normal}"
     echo ""
     echo "cd $DIR/src && make $target_name"
     echo ""
     cd $DIR/src && make $target_name
     echo ""
+
+    #move build folder
+    mv $DIR/src/build $DIR/$target_name.$VRT_TEMPLATE.$vivado_version
 fi
 
 
