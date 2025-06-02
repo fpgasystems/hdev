@@ -56,10 +56,10 @@ VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
 #sed -i 's|^V80PP_PATH=$(shell realpath ../../submodules/v80-vitis-flow)$|V80PP_PATH=$(shell realpath ../submodules/v80-vitis-flow)|' $DIR/src/Makefile
 
 #read first device index from sh.cfg
-device_index=$(awk -F': ' -v w="$WORKFLOW" '$2 == w { print $1; exit }' sh.cfg)
+device_index=$(awk -F': ' -v w="$WORKFLOW" '$2 == w { print $1; exit }' $DIR/sh.cfg)
 
 #run on device
-if [ -d "$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
+if [ -d "$DIR/$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
     #get substring (emu_all to emu)
     str="${target_name%%_*}"
 
