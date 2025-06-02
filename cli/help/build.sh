@@ -43,6 +43,9 @@ fi
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."
 fi
+if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}vrt${normal}${COLOR_OFF}             - Builds your Alveo V80 RunTime-based application."  
+fi
 if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
     echo -e "   ${bold}xdp${normal}             - eBPF binaries for your Express Data Path (XDP) networking applications."
 fi
