@@ -36,6 +36,12 @@ DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vrt"
 
+#check on DEVICES_LIST
+source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_FPGA"
+
+#get number of fpga and acap devices present
+MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
+
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$new_name"
 
@@ -108,8 +114,17 @@ rm -rf $DIR/examples/
 #chmod +x $DIR/05_emulation/build/v80-vitis-flow/scripts/v80++
 #mv $DIR/05_emulation $DIR/sw_emu
 
+#create device directories (it will contain system_map.xml)
+for device_index in $(seq 1 $MAX_DEVICES); do 
+    device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+    if [ "$device_type" = "asoc" ]; then
+        upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+        mkdir -p "$AMI_HOME/$upstream_port"
+    fi
+done
+
 #create directory
-mkdir -p "$AMI_HOME/c4\:00.0"
+#mkdir -p "$AMI_HOME/c4\:00.0"
 
 #get AVED example design name
 #aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
@@ -135,7 +150,7 @@ cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 #add to sh.cfg (get index of the first FPGA)
 index=$(awk '$5 == "asoc" { print $1; exit }' "$DEVICES_LIST_FPGA")
 if [[ -n "$index" ]]; then
-    echo "$index: vrt" >> "$DIR/sh.cfg"
+    echo "$index: $WORKFLOW" >> "$DIR/sh.cfg"
 fi
 
 #compile files
