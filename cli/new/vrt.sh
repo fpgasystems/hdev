@@ -32,6 +32,7 @@ fi
 
 #constants
 #AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
+DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vrt"
 
@@ -130,6 +131,12 @@ cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 #cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
+
+#add to sh.cfg (get index of the first FPGA)
+index=$(awk '$5 == "asoc" { print $1; exit }' "$DEVICES_LIST_FPGA")
+if [[ -n "$index" ]]; then
+    echo "$index: vrt" >> "$DIR/sh.cfg"
+fi
 
 #compile files
 chmod +x $DIR/config_add
