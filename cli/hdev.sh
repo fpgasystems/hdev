@@ -2254,6 +2254,14 @@ case "$command" in
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
 
+        #check on target
+        VRT_TEMPLATE=$(cat $MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/VRT_TEMPLATE)
+        if [ ! -d "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
+          echo $CHECK_ON_TARGET_BUILD_ERR_MSG
+          echo ""
+          exit
+        fi
+
         #run
         $CLI_PATH/run/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version
         ;;

@@ -66,11 +66,19 @@ if [ -d "$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
     #get upstream port
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
-    cd $DIR/$target_name.$VRT_TEMPLATE.$vivado_version/
+    echo "${bold}Changing directory:${normal}"
+    echo ""
+    echo "cd $DIR/$target_name.$VRT_TEMPLATE.$vivado_version" # --device $device_index 
+    echo ""
+    cd $DIR/$target_name.$VRT_TEMPLATE.$vivado_version
 
     #run
-    echo "$VRT_TEMPLATE $upstream_port ${VRT_TEMPLATE}_$str.vrtbin"
+    echo "${bold}Running application:${normal}"
+    echo ""
+    echo "./$VRT_TEMPLATE $upstream_port ${VRT_TEMPLATE}_$str.vrtbin"
+    echo ""
     ./$VRT_TEMPLATE $upstream_port ${VRT_TEMPLATE}_$str.vrtbin
+    echo ""
 fi
 
 #./00_axilite c4:00.0 00_axilite_emu.vrtbin
