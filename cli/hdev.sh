@@ -590,6 +590,15 @@ case "$command" in
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
+      dmesg)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
+          exit
+        fi
+
+        valid_flags="-h --help"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
       hugepages)
         #early exit
         if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then

@@ -45,6 +45,9 @@ if [ "$parameter" = "--help" ]; then
         #echo -e "   ${bold}${COLOR_ON2}clock${COLOR_OFF}${normal}           - Clock Information."
         #fi
         if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+        echo "   ${bold}dmesg${normal}           - Gets system diagnostic messages."
+        fi
+        if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
         echo "   ${bold}hugepages${normal}       - Shows the number of 2MB and 1G hugepages."
         fi
         echo "   ${bold}interfaces${normal}      - High-performance computing networking devices."
@@ -115,6 +118,19 @@ elif [ "$parameter" = "bus" ]; then
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
         $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
+        echo ""
+    fi
+elif [ "$parameter" = "dmesg" ]; then
+    if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+        echo ""
+        echo "${bold}$CLI_NAME get dmesg [--help]${normal}"
+        echo ""
+        echo "Gets system diagnostic messages."
+        echo ""
+        echo "FLAGS:"
+        echo "   This command has no flags."
+        echo ""
+        echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
     fi
 #elif [ "$parameter" = "clock" ]; then

@@ -125,6 +125,13 @@ get_bus_help() {
   exit 
 }
 
+get_dmesg_help() {
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "dmesg" "-" "-" $is_build "-" "-" "-" $is_vivado_developer
+  exit  
+}
+
 #get_clock_help() {
 #  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
 #  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
