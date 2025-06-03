@@ -125,12 +125,12 @@ get_bus_help() {
   exit 
 }
 
-get_clock_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
-  exit
-}
+#get_clock_help() {
+#  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
+#  exit
+#}
 
 get_hugepages_help() {
   $CLI_PATH/help/get $CLI_PATH $CLI_NAME "hugepages" "-" "-" $is_build "-" "-" "-" $is_vivado_developer
@@ -156,12 +156,12 @@ get_interfaces_help() {
   exit  
 }
 
-get_memory_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
-  exit
-}
+#get_memory_help() {
+#  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
+#  exit
+#}
 
 get_name_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
@@ -196,12 +196,12 @@ get_platform_help() {
   exit 
 }
 
-get_resource_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
-  exit    
-}
+#get_resource_help() {
+#  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
+#  exit    
+#}
 
 get_serial_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
@@ -211,12 +211,12 @@ get_serial_help() {
   exit  
 }
 
-get_slr_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
-  exit  
-}
+#get_slr_help() {
+#  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap "-" "-" $is_fpga "-" "-" "-" "-"
+#  exit  
+#}
 
 get_syslog_help() {
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)

@@ -165,7 +165,7 @@ _hdev_completions()
                 get)
                     commands="interfaces servers topo --help"
                     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
-                        commands="${commands} bdf clock memory name platform resource serial slr workflow"
+                        commands="${commands} bdf name platform serial workflow"
                     fi
                     if [ "$is_asoc" = "1" ]; then
                         commands="${commands} bdf name serial uuid workflow"
@@ -346,13 +346,7 @@ _hdev_completions()
                         bdf)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
-                        clock)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
-                            ;;
                         bus)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
-                            ;;
-                        memory)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         name)
@@ -370,13 +364,7 @@ _hdev_completions()
                         platform) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
-                        resource)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
-                            ;;
                         serial) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
-                            ;;
-                        slr)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         servers) 

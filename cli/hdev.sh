@@ -590,15 +590,6 @@ case "$command" in
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      clock)
-        #early exit
-        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help -d --device"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       hugepages)
         #early exit
         if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
@@ -619,15 +610,6 @@ case "$command" in
         fi
 
         valid_flags="-h --help -t --type"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      memory)
-        #early exit
-        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       name)
@@ -666,15 +648,6 @@ case "$command" in
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      resource)
-        #early exit
-        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help -d --device"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       serial)
         #early exit
         if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ]; then
@@ -686,15 +659,6 @@ case "$command" in
         ;;
       servers)
         valid_flags="-h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      slr)
-        #early exit
-        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       syslog)
