@@ -64,9 +64,6 @@ fi
 #clone repository
 $CLI_PATH/common/git_clone_vrt $DIR $tag_name
 
-#change to project directory
-#cd $DIR
-
 #save tag_name and template_name
 echo "$tag_name" > $DIR/VRT_TAG
 echo "$template_name" > $DIR/VRT_TEMPLATE
@@ -88,34 +85,6 @@ cp -r $DIR/examples/$template_name/* $DIR/src
 #delete examples
 rm -rf $DIR/examples/
 
-#temporal solution (read from mnt/scratch)
-#rm -rf $DIR/*
-#cp -rf /mnt/scratch/hacc/VRT_downloads/vrt-api/tests $DIR
-#00_example (hw)
-#cp -rf /mnt/scratch/hacc/VRT_downloads/vrt-api/tests/00_example $DIR
-#chmod +x $DIR/00_example/build_all.sh
-#chmod +x $DIR/00_example/build/v80-vitis-flow/scripts/v80++
-#mv $DIR/00_example $DIR/hw
-#01_aximm
-#chmod +x $DIR/tests/01_aximm/build_all.sh
-#chmod +x $DIR/tests/01_aximm/build/v80-vitis-flow/scripts/v80++
-#02_chain
-#chmod +x $DIR/tests/02_chain/build_all.sh
-#chmod +x $DIR/tests/02_chain/build/v80-vitis-flow/scripts/v80++
-#03_multiple_boards
-#chmod +x $DIR/tests/03_multiple_boards/build_all.sh
-#chmod +x $DIR/tests/03_multiple_boards/build/v80-vitis-flow/scripts/v80++
-#04_segmented (hw_seg)
-#cp -rf /mnt/scratch/hacc/VRT_downloads/vrt-api/tests/04_segmented $DIR
-#chmod +x $DIR/04_segmented/build_all.sh
-#chmod +x $DIR/04_segmented/build/v80-vitis-flow/scripts/v80++
-#mv $DIR/04_segmented $DIR/hw_seg
-#05_emulation (sw_emu)
-#cp -rf /mnt/scratch/hacc/VRT_downloads/vrt-api/tests/05_emulation $DIR
-#chmod +x $DIR/05_emulation/build_all.sh
-#chmod +x $DIR/05_emulation/build/v80-vitis-flow/scripts/v80++
-#mv $DIR/05_emulation $DIR/sw_emu
-
 #create device directories (it will contain system_map.xml)
 for device_index in $(seq 1 $MAX_DEVICES); do 
     device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
@@ -125,34 +94,16 @@ for device_index in $(seq 1 $MAX_DEVICES); do
     fi
 done
 
-#create directory
-#mkdir -p "$AMI_HOME/c4\:00.0"
-
-#get AVED example design name
-#aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
-
-#get SMBus version
-#smbus_version=$(find "$HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
-#smbus_version=$(basename "$smbus_version")
-
 #get tag base (from amd_v80_gen5x8_24.1_20241002 to amd_v80_gen5x8_24.1)
 tag_base="${AVED_TAG%_*}"
 
-#echo "/home/jmoyapaya/my_projects/vrt/v1.1.1/today_b/submodules/v80-vitis-flow/submodules/aved/hw/amd_v80_gen5x8_24.1/src/iprepo"
-#echo "cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo"
-
-
 #copy SMBus IP
-#cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
 cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo
 
 #add template files
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
-#cp $HDEV_PATH/templates/$WORKFLOW/get_incoming_uuid.c $DIR/sw/AMI/app/cmd_handlers/get_incoming_uuid.c
-#adds the flag -n to cmd_cfgmem_program.c (Quit after returning new_uuid)
-#cp $HDEV_PATH/templates/$WORKFLOW/cmd_cfgmem_program.c $DIR/sw/AMI/app/cmd_handlers/cmd_cfgmem_program.c
 
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 #cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
