@@ -114,7 +114,8 @@ cli_help() {
   else
   echo "    ${bold}get${normal}            - Devices and host information."
   fi
-  if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+  #if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
   echo "    ${bold}open${normal}           - Opens a windowed application for user interaction."
@@ -748,7 +749,7 @@ case "$command" in
         ;;
       aved)
         #early exit
-        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
             exit 1
         fi
 
@@ -819,7 +820,12 @@ case "$command" in
         $CLI_PATH/new/aved --tag $tag_name --project $new_name --push $push_option
         ;;
       composer)
-        if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
+        if [[ -f "$CLI_PATH/new/composer" ]]; then
+          #early exit
+          if [ "$is_build" = "1" ] || [ "$is_composer_developer" = "0" ]; then
+              exit 1
+          fi
+
           #check on groups
           vivado_developers_check "$USER"
           
@@ -839,7 +845,7 @@ case "$command" in
         ;;
       hip)
         #early exit
-        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
             exit 1
         fi
 
@@ -851,7 +857,8 @@ case "$command" in
         ;;
       opennic)
         #early exit
-        if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
+        #if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
             exit 1
         fi
 
@@ -959,7 +966,7 @@ case "$command" in
         ;;
       vrt)
         #early exit
-        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
             exit 1
         fi
 
@@ -1033,7 +1040,7 @@ case "$command" in
         ;;
       xdp)
         #early exit
-        if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
             exit 1
         fi
 

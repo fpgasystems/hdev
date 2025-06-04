@@ -11,7 +11,7 @@ is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 IS_GPU_DEVELOPER="1"
 gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
-if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
+if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
     exit 1
 fi
 

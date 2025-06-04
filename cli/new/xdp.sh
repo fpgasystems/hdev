@@ -13,7 +13,7 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+if [ "$is_build" = "1" ] || [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
     exit 1
 fi
 

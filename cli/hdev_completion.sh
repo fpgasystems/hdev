@@ -24,6 +24,7 @@ is_composer_developer=$($CLI_PATH/common/is_composer_developer)
 gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
+nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
 
 #flags
 AVED_BUILD_FLAGS=( "--project" "--tag" )
@@ -95,7 +96,7 @@ _hdev_completions()
                 commands="${commands} build"
             fi
             if [ "$is_build" = "1" ]; then
-                commands="${commands} build enable examine new"
+                commands="${commands} build enable examine" #new
             fi
             if [ "$is_fpga" = "1" ]; then
                 commands="${commands} build"
@@ -103,14 +104,17 @@ _hdev_completions()
             if [ "$is_gpu" = "1" ]; then
                 commands="${commands} build"
             fi
+            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$nic_enabled" = "1" ]); then
+                commands="${commands} new"
+            fi
             if [ "$gpu_enabled" = "1" ]; then
-                commands="${commands} build new"
+                commands="${commands} build" #new
             fi
             if [ "$vivado_enabled" = "1" ]; then
-                commands="${commands} build new"
+                commands="${commands} build" #new
             fi
             if [ ! "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-                commands="${commands} new build run"
+                commands="${commands} build run" #new
             fi
             if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                 commands="${commands} run"
@@ -182,26 +186,32 @@ _hdev_completions()
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 new)
-                    commands="--help"
-                    if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} aved vrt"
+                    if [ ! "$is_build" = "1" ]; then
+                        commands="--help"
+                    
+                        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+                            commands="${commands} aved vrt"
+                        fi
+                        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "1" ]; then
+                            commands="${commands} hip"
+                        fi
+                        if [[ -f "$CLI_PATH/open/composer" ]]; then
+                            if [ "$is_build" = "0" ] && [ "$is_composer_developer" = "1" ]; then
+                                commands="${commands} composer"
+                            fi
+                        fi
+                        #if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+                        if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "1" ]; then
+                            commands="${commands} opennic"
+                        fi
+                        if [ "$is_build" = "0" ] && [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+                            commands="${commands} xdp"
+                        fi
+                        commands_array=($commands)
+                        commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                        commands_string=$(echo "${commands_array[@]}")
+                        COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     fi
-                    if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
-                        commands="${commands} hip"
-                    fi
-                    if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-                        commands="${commands} composer"
-                    fi
-                    if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} opennic"
-                    fi
-                    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-                        commands="${commands} xdp"
-                    fi
-                    commands_array=($commands)
-                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
-                    commands_string=$(echo "${commands_array[@]}")
-                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 open)
                     commands="vivado --help"
@@ -214,29 +224,31 @@ _hdev_completions()
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 program)
-                    commands="--help"
-                    if [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} bitstream driver" #vivado
+                    if [ ! "$is_build" = "1" ]; then
+                        commands="--help"
+                        if [ "$is_vivado_developer" = "1" ]; then
+                            commands="${commands} bitstream driver" #vivado
+                        fi
+                        if [ "$is_vivado_developer" = "1" ]; then
+                            commands="${commands} opennic"
+                        fi
+                        if [ ! "$is_asoc" = "1" ]; then
+                            commands="${commands} reset"
+                        fi
+                        if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
+                            commands="${commands} revert"
+                        fi
+                        if [ "$vivado_enabled_asoc" = "1" ]; then
+                            commands="${commands} image aved"
+                        fi
+                        if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+                            commands="${commands} xdp"
+                        fi
+                        commands_array=($commands)
+                        commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                        commands_string=$(echo "${commands_array[@]}")
+                        COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     fi
-                    if [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} opennic"
-                    fi
-                    if [ ! "$is_asoc" = "1" ]; then
-                        commands="${commands} reset"
-                    fi
-                    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
-                        commands="${commands} revert"
-                    fi
-                    if [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} image aved"
-                    fi
-                    if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-                        commands="${commands} xdp"
-                    fi
-                    commands_array=($commands)
-                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
-                    commands_string=$(echo "${commands_array[@]}")
-                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 reboot)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
