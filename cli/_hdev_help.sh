@@ -592,10 +592,10 @@ set_help() {
       legend="${legend} ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
     fi
     #print legend
-    if [[ -n "$legend" ]]; then
+    if [[ "$legend" =~ [^[:space:]] ]]; then
       echo -e "$legend"
+      echo ""
     fi
-    echo ""
     exit 1
 }
 
