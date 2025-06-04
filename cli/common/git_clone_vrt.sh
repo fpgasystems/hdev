@@ -29,6 +29,16 @@ cd $DIR/SLASH
 #checkout the specific tag
 git checkout tags/$AVED_TAG > /dev/null 2>&1
 
+#update submodules
+git submodule update --init --recursive
+
+echo "target:  /home/jmoyapaya/my_projects/vrt/v1.1.1/today_9/submodules/v80-vitis-flow/submodules/aved"
+echo "current: $DIR/submodules/v80-vitis-flow/submodules/aved/"
+
+#applies the patch for original AVED
+cd $DIR/SLASH/submodules/v80-vitis-flow/submodules/aved/
+git apply ../../../../deploy/aved.patch
+
 #remove the repository (in case we add it later to our own repository)
 rm -rf .git
 

@@ -31,7 +31,9 @@ if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$template_name" = "" ] || 
 fi
 
 #constants
-#AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
+AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
+AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
+AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vrt"
@@ -133,8 +135,16 @@ done
 #smbus_version=$(find "$HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
 #smbus_version=$(basename "$smbus_version")
 
+#get tag base (from amd_v80_gen5x8_24.1_20241002 to amd_v80_gen5x8_24.1)
+tag_base="${AVED_TAG%_*}"
+
+#echo "/home/jmoyapaya/my_projects/vrt/v1.1.1/today_b/submodules/v80-vitis-flow/submodules/aved/hw/amd_v80_gen5x8_24.1/src/iprepo"
+#echo "cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo"
+
+
 #copy SMBus IP
 #cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
+cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo
 
 #add template files
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
