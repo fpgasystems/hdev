@@ -564,7 +564,7 @@ set_help() {
     echo "Devices and host configuration."
     echo ""
     echo "ARGUMENTS:"
-    if [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+    if [ "$is_build" = "0" ] && [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}balancing${normal}       - Enables or disables NUMA (Non-Uniform Memory Access) balancing."
     fi
     echo "   ${bold}gh${normal}              - Enables GitHub CLI on your host (default path: ${bold}$GITHUB_CLI_PATH${normal})."
@@ -600,7 +600,7 @@ set_help() {
 }
 
 set_balancing_help() {
-  if [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+  if [ "$is_build" = "0" ] && [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     current_value=$(cat /proc/sys/kernel/numa_balancing)
     echo ""
     echo "${bold}$CLI_NAME set balancing [--help]${normal}"

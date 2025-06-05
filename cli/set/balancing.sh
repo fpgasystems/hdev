@@ -8,9 +8,10 @@ normal=$(tput sgr0)
 #example: /opt/hdev/cli/hdev set balancing --value          1
 
 #early exit
+is_build=$($CLI_PATH/common/is_build $CLI_PATH)
 is_numa=$($CLI_PATH/common/is_numa $CLI_PATH)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$is_numa" = "0" ] || [ "$is_vivado_developer" = "0" ]; then
+if [ "$is_build" = "1" ] || [ "$is_numa" = "0" ] || [ "$is_vivado_developer" = "0" ]; then
     exit 1
 fi
 

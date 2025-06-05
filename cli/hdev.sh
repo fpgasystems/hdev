@@ -2257,7 +2257,7 @@ case "$command" in
         ;;
       balancing)
         #early exit
-        if [ "$is_numa" = "0" ] || [ "$is_vivado_developer" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$is_numa" = "0" ] || [ "$is_vivado_developer" = "0" ]; then
             exit 1
         fi
 

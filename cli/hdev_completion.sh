@@ -271,7 +271,7 @@ _hdev_completions()
                     ;;
                 set)
                     commands="gh keys --help"
-                    if [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    if [ "$is_build" = "0" ] && [ "$is_numa" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} balancing"
                     fi
                     if [ "$is_vivado_developer" = "1" ]; then
