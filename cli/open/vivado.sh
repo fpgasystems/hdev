@@ -24,7 +24,16 @@ fi
 #inputs
 path_value=$2
 
+#check on symlink
+if [ -L "$path_value" ]; then
+    path_value=$(readlink -f "$path_value")
+fi
+
 #open vivado
+echo ""
+echo "${bold}hdev open vivado${normal}"
+echo ""
+echo "vivado $path_value"
 vivado $path_value
 
 echo ""

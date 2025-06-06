@@ -140,6 +140,11 @@ if [ "$compile" = "1" ]; then
     rm -rf $DIR/src/hls/build_*
 fi
 
+#move relevant files
+if [ "$target_name" = "sim_all" ]; then
+    #$DIR/sim_all.00_axilite.2024.2/v80-vitis-flow/build/sim/sim_prj/sim_prj.xpr
+    ln -s $DIR/$target_name.$VRT_TEMPLATE.$vivado_version/v80-vitis-flow/build/sim/sim_prj/sim_prj.xpr $DIR/$target_name.$VRT_TEMPLATE.$vivado_version/sim_prj.xpr
+fi
 
 #compile driver
 #echo "${bold}Driver compilation (commit ID: $commit_name_driver)${normal}"
