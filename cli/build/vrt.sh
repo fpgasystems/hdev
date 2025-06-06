@@ -30,27 +30,14 @@ if [ "$project_name" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] |
 fi
 
 #constants
-#BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
-#BITSTREAMS_PATH="$CLI_PATH/bitstreams"
-#DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-#NUM_JOBS="8"
 WORKFLOW="vrt"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
-#SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
-#DRIVER_DIR="$DIR/open-nic-driver"
 
 #get template name
 VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
-
-#platform_name to FDEV_NAME
-#FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
-
-#define shell
-#library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-#project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #modify Makefile
 sed -i 's|^V80PP_PATH=$(shell realpath ../../submodules/v80-vitis-flow)$|V80PP_PATH=$(shell realpath ../submodules/v80-vitis-flow)|' $DIR/src/Makefile
@@ -71,7 +58,7 @@ elif [ "$target_name" = "hw_all" ] && [ "$is_build" = "1" ]; then
     #compile="0"
     if [ ! -d "$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
         compile="1"
-    else #[ -e "$project_shell" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_opennic.$hostname.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
+    else
         #echo ""
         echo "The target ${bold}$target_name${normal} has already been compiled. Do you want compile it again (y/n)?"
         while true; do
@@ -83,47 +70,12 @@ elif [ "$target_name" = "hw_all" ] && [ "$is_build" = "1" ]; then
                     break
                     ;;
                 "n") 
-                    #compile="0"
                     break
                     ;;
             esac
         done
         echo ""
     fi
-
-    ##launch vivado
-    #if [ "$compile" = "1" ]; then 
-    #    #shell compilation
-    #    echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
-    #    echo ""
-    #
-    #    #read configuration
-    #    tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
-    #    
-    #    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
-    #    cd $SHELL_BUILD_DIR
-    #    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
-    #    echo ""
-    #
-    #    #copy and send email
-    #    if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
-    #        #copy to project
-    #        cp "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" "$project_shell"
-    #
-    #        #save .device_config
-    #        cp $DIR/configs/device_config $DIR/.device_config
-    #        chmod a-w "$DIR/.device_config"
-    #
-    #        #print message
-    #        echo "${bold}${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
-    #        echo ""
-    #
-    #        #send email
-    #        #user_email=$USER@ethz.ch
-    #        #echo "Subject: Good news! hdev build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
-    #    fi
-    #fi
-    #compile="1"
 fi
 
 if [ "$compile" = "1" ]; then
