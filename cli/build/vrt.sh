@@ -56,11 +56,12 @@ VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
 sed -i 's|^V80PP_PATH=$(shell realpath ../../submodules/v80-vitis-flow)$|V80PP_PATH=$(shell realpath ../submodules/v80-vitis-flow)|' $DIR/src/Makefile
 
 #bitstream compilation is only allowed on CPU (build) servers
-compile="1"
+compile="0"
 if [ "$target_name" = "emu_all" ] || [ "$target_name" = "sim_all" ]; then
     #always allowed without user input
     rm -rf $target_name.$VRT_TEMPLATE.$vivado_version
-elif [ "$target_name" = "hw_all" ]; then
+    compile="1"
+elif [ "$target_name" = "hw_all" ] && [ "$is_build" = "1" ]; then
     #check on bitstream configuration
     #are_equals="0"
     #if [ -f "$DIR/.device_config" ]; then
@@ -82,7 +83,7 @@ elif [ "$target_name" = "hw_all" ]; then
                     break
                     ;;
                 "n") 
-                    compile="0"
+                    #compile="0"
                     break
                     ;;
             esac
@@ -138,6 +139,12 @@ if [ "$compile" = "1" ]; then
 
     #cleanup to allow re-compiling
     rm -rf $DIR/src/hls/build_*
+
+    #send email
+    if [ ! -d "$target_name.$VRT_TEMPLATE.$vivado_version" ] && [ "$target_name" = "hw_all" ]; then  
+        user_email=$USER@ethz.ch
+        echo "Subject: Good news! hdev build vrt ($target_name.$VRT_TEMPLATE.$vivado_version) is done!" | sendmail $user_email
+    fi
 fi
 
 #move relevant files
@@ -155,13 +162,16 @@ fi
 #echo ""
 
 #application compilation
-#echo "${bold}Application compilation:${normal}"
-#echo ""
-#echo "cd $DIR"
-#echo "make"
-#echo ""
-#cd $DIR
-#make
+echo "${bold}Application compilation:${normal}"
+echo ""
+echo "cd $DIR/src && make app"
+echo ""
+cd $DIR/src && make app
+echo ""
+
+#copy application files
+cp -rf "$DIR/src/build/." "$DIR/$target_name.$VRT_TEMPLATE.$vivado_version/"
+rm -rf $DIR/src/build/
 
 #copy driver
 #cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
