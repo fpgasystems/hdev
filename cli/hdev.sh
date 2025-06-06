@@ -1204,6 +1204,14 @@ case "$command" in
         #
         #fi
 
+        #check on X11 fordwarding
+        if [ -z "$DISPLAY" ]; then
+          echo ""
+          echo $CHECK_ON_X11_ERR_MSG
+          echo ""
+          exit 1
+        fi
+
         #run
         $CLI_PATH/open/vivado --path $path_value #--device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
         ;;
