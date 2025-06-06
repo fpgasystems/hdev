@@ -47,6 +47,7 @@ CHECK_ON_TEMPLATE_ERR_MSG="Please, choose a valid template name."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device(s) first."
+CHECK_ON_XPR_FILE_ERR_MSG="Please, choose a valid xpr project file."
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 

@@ -48,6 +48,7 @@ SET_BALANCING_FLAGS=( "--value" )
 SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
+VIVADO_OPEN_FLAGS=( "--path" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
@@ -425,6 +426,9 @@ _hdev_completions()
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         composer)
                             COMPREPLY=($(compgen -W "${COMPOSER_OPEN_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        vivado)
+                            COMPREPLY=($(compgen -W "${VIVADO_OPEN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                     esac
                     ;;

@@ -340,6 +340,13 @@ open_composer_help() {
   exit
 }
 
+open_vivado_help() {
+  if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "1" ]; then
+    $CLI_PATH/help/open $CLI_PATH $CLI_NAME "vivado"
+  fi
+  exit
+}
+
 # program ------------------------------------------------------------------------------------------------------------------------
 
 program_help() {
