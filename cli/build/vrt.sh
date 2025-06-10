@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev build vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version
-#example: /opt/hdev/cli/hdev build vrt --project   hello_world --tag    v1.0.0 --target       hw_all --version          2024.2
+#usage:       $CLI_PATH/hdev build vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version --all $all 
+#example: /opt/hdev/cli/hdev build vrt --project   hello_world --tag    v1.0.0 --target       hw_all --version          2024.2 --all    1
 
 #early exit
 url="${HOSTNAME}"
@@ -23,9 +23,10 @@ project_name=$2
 tag_name=$4
 target_name=$6
 vivado_version=$8
+all=${10}
 
 #all inputs must be provided
-if [ "$project_name" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ]; then
+if [ "$project_name" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
     exit
 fi
 
@@ -48,7 +49,7 @@ if [ "$target_name" = "emu_all" ] || [ "$target_name" = "sim_all" ]; then
     #always allowed without user input
     rm -rf $target_name.$VRT_TEMPLATE.$vivado_version
     compile="1"
-elif [ "$target_name" = "hw_all" ] && [ "$is_build" = "1" ]; then
+elif [ "$target_name" = "hw_all" ] && [ "$all" = "1" ]; then
     #check on bitstream configuration
     #are_equals="0"
     #if [ -f "$DIR/.device_config" ]; then

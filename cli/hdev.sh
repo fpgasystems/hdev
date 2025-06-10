@@ -449,8 +449,8 @@ case "$command" in
         #template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
         target_dialog "$CLI_PATH" "VRT_TARGETS" "hw_emu" "$is_build" "${flags_array[@]}"
 
-        #run
-        $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version
+        #run with all set to one (as compiling with hacc-build servers did not work) 
+        $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version --all 1
         ;;
       xdp)
         #early exit
