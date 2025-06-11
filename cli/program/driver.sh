@@ -18,7 +18,7 @@ is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-    exit
+    exit 1
 fi
 
 #inputs
@@ -29,12 +29,12 @@ servers_family_list=$7
 
 #all inputs must be provided (params_string can be empty)
 if [ "$driver_name" = "" ]; then
-    exit
+    exit 1
 fi
 
 #check on remote aboslute path
 if [ "$deploy_option" = "1" ] && [[ "$driver_name" == "./"* ]]; then
-    exit
+    exit 1
 fi
 
 #constants

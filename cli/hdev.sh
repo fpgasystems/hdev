@@ -1298,7 +1298,7 @@ case "$command" in
       bitstream|vivado)
         #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-          exit
+          exit 1
         fi
 
         #check on server
@@ -1327,7 +1327,7 @@ case "$command" in
           echo ""
           echo "Your targeted bitstream and device are missing."
           echo ""
-          exit
+          exit 1
         else #if [ ! "$flags_array" = "" ]; then      
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
@@ -1340,14 +1340,14 @@ case "$command" in
               echo ""
               echo "Please, choose a valid bitstream name."
               echo ""
-              exit
+              exit 1
           fi
           #forbidden combinations (2/2)
           if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
               echo ""
               echo $CHECK_ON_DEVICE_ERR_MSG
               echo ""
-              exit
+              exit 1
           fi
           #device values when there is only a device
           if [[ $multiple_devices = "0" ]]; then
@@ -1369,7 +1369,7 @@ case "$command" in
                 echo ""
                 echo $CHECK_ON_HOTPLUG_ERR_MSG
                 echo ""
-                exit
+                exit 1
             fi
           fi
         fi
@@ -1381,7 +1381,7 @@ case "$command" in
         if [ "$deploy_option" = "1" ] && [[ "$bitstream_name" == "./"* ]]; then
           echo $CHECK_ON_REMOTE_FILE_ERR_MSG
           echo ""
-          exit
+          exit 1
         fi
 
         #run
@@ -1391,7 +1391,7 @@ case "$command" in
         #early exit
         #if [ "$vivado_enabled" = "0" ]; then
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-          exit
+          exit 1
         fi
 
         #check on groups
@@ -1441,12 +1441,14 @@ case "$command" in
             #change ownership to ensure writing permissions and remove
             sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
             sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name.*
+            exit 0
           else
             echo ""
             echo $CHECK_ON_DRIVER_ERR_MSG
             echo ""
+            exit 1
           fi
-          exit
+          #exit
         fi
 
         echo ""
@@ -1459,7 +1461,7 @@ case "$command" in
         if [ "$deploy_option" = "1" ] && [[ "$driver_name" == "./"* ]]; then
           echo $CHECK_ON_REMOTE_FILE_ERR_MSG
           echo ""
-          exit
+          exit 1
         fi
 
         #check on params_string
