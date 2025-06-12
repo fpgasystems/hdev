@@ -1616,7 +1616,7 @@ case "$command" in
         fi
 
         #final check
-        if [ "$device_found" = "" ]; then
+        if [ "$device_found" = "" ] || [ "$device_found" = "0" ]; then
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           device_indexes=("$device_index")
         fi
@@ -1647,7 +1647,7 @@ case "$command" in
           #when the driver is inserted fec_option is irrelevant
           fec_option="-" 
         fi
-        
+
         #bitstream check
         for i in "${!device_indexes[@]}"; do
           FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH "${device_indexes[$i]}") #$device_index
