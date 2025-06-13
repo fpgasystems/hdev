@@ -108,7 +108,7 @@ cli_help() {
   if [ "$is_build" = "1" ]; then
   echo "    ${bold}enable${normal}         - Enables your favorite development and deployment tools."
   fi
-  echo "    ${bold}examine${normal}        - Status of the system and devices."
+  echo "    ${bold}examine${normal}        - System and device information."
   if [ "$is_build" = "1" ]; then
   echo "    ${bold}get${normal}            - Host information."
   else

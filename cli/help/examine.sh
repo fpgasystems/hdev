@@ -8,7 +8,7 @@ CLI_NAME=$1
 echo ""
 echo "${bold}$CLI_NAME examine [--help]${normal}"
 echo ""
-echo "Status of the system and devices."
+echo "System and device information."
 echo ""
 echo "ARGUMENTS"
 echo "   This command has no arguments."

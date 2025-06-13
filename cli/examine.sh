@@ -61,6 +61,19 @@ print_gpu_devices_header (){
 #declare string
 legend=""
 
+#print operating system information
+echo ""
+. /etc/os-release
+echo "${bold}${NAME} ${VERSION}${normal}"
+description=$(lsb_release -d | awk -F'\t' '{print $2}' | sed 's/^[^0-9]*//')
+codename=$(lsb_release -c | awk -F':' '{print $2}' | xargs)
+linux_kernel=$(uname -r)
+uptime_info=$(uptime -p)
+echo "Description : ${bold}$description${normal}"
+echo "Codename    : ${bold}$codename${normal}"
+echo "Linux kernel: ${bold}$linux_kernel${normal}"
+echo "Uptime      : ${bold}$uptime_info${normal}"
+
 #run get topo
 $CLI_PATH/get/topo
 
