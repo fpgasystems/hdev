@@ -15,5 +15,5 @@ echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CL
 echo "   ${bold}-p, --path${normal}      - Full path to the .pdi image to be programmed." 
 echo "   ${bold}-r, --remote${normal}    - Local or remote deployment."
 echo ""
-echo "   ${bold}-h, --help${normal}      - Help to program a bitstream."
+echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""

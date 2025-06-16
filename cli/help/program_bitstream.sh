@@ -19,5 +19,5 @@ echo "   ${bold}    --hotplug${normal}   - When set to zero, PCIe hotplug is ski
 echo "   ${bold}-p, --path${normal}      - Full path to the .bit bitstream to be programmed."
 echo "   ${bold}-r, --remote${normal}    - Local or remote deployment."
 echo ""
-echo "   ${bold}    --help${normal}      - Help to program a bitstream."
+echo "   ${bold}    --help${normal}      - Help to use this command."
 echo ""
