@@ -920,13 +920,23 @@ remote_dialog() {
   local flags_array=("$@")
 
   #combine ACAP and FPGA lists removing duplicates
-  SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
+  SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST /$CLI_PATH/constants/ASOC_SERVERS_LIST)
+
+  echo "YEP 1"
 
   if [ "$flags_array" = "" ]; then
+
+    echo "YEP 2"
+    echo $hostname
+    echo $username
+
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
+
+    echo "YEP 3"
+
     #deployment_dialog
     deploy_option="0"
     if [ "$num_remote_servers" -ge 1 ]; then
