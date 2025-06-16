@@ -2214,7 +2214,7 @@ case "$command" in
             fi
           done < <(grep -v '^\[' "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg")
         else
-          echo ""
+          #echo ""
           echo $CHECK_ON_SHELL_CFG_ERR_MSG
           echo ""
           exit 1
