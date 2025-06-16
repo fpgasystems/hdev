@@ -58,6 +58,11 @@ VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
 #read first device index from sh.cfg
 device_index=$(awk -F': ' -v w="$WORKFLOW" '$2 == w { print $1; exit }' $DIR/sh.cfg)
 
+#check on emu_all
+if [ "$target_name" = "emu_all" ]; then
+    export LD_LIBRARY_PATH=$(dirname $(which vivado))/../lib/lnx64.o:$LD_LIBRARY_PATH
+fi
+
 #run on device
 if [ -d "$DIR/$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
     #get substring (emu_all to emu)
