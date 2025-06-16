@@ -51,6 +51,7 @@ SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 VIVADO_OPEN_FLAGS=( "--path" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
+VRT_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
 XDP_BUILD_FLAGS=( "--commit" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
@@ -240,7 +241,7 @@ _hdev_completions()
                             commands="${commands} revert"
                         fi
                         if [ "$vivado_enabled_asoc" = "1" ]; then
-                            commands="${commands} image aved"
+                            commands="${commands} image aved vrt"
                         fi
                         if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                             commands="${commands} xdp"
@@ -455,6 +456,9 @@ _hdev_completions()
                         revert)
                             COMPREPLY=($(compgen -W "${PROGRAM_REVERT_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        vrt)
+                            COMPREPLY=($(compgen -W "${VRT_PROGRAM_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         xdp)
                             COMPREPLY=($(compgen -W "${XDP_PROGRAM_FLAGS[*]} --stop --help" -- "${cur}"))
                             ;;
@@ -627,6 +631,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_REVERT_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         xdp)
                             if [ "${previous_flags[0]}" = "--stop" ]; then
                                 remaining_flags=""
@@ -756,6 +764,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         xdp)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -835,6 +847,10 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         xdp)

@@ -379,6 +379,9 @@ program_help() {
     if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
     fi
+    if [ "$vivado_enabled_asoc" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Programs a VRT application to a given device."
+    fi
     if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
       echo "   ${bold}xdp${normal}             - Programs your XDP/eBPF program on a given device."
     fi
@@ -459,6 +462,15 @@ program_vivado_help() {
   #  echo ""
   #  exit
   #fi
+  exit
+}
+
+program_vrt_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+    $CLI_PATH/help/program_aved $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    echo ""
+  fi
   exit
 }
 
