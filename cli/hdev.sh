@@ -1880,6 +1880,17 @@ case "$command" in
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
+        #check on template
+        VRT_TEMPLATE=$(cat $MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/VRT_TEMPLATE)
+
+        #vrtbin check
+        vrtbin_path="$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/hw_all.$VRT_TEMPLATE.$vivado_version/${VRT_TEMPLATE}_hw.vrtbin"
+        if ! [ -e "$vrtbin_path" ]; then
+          echo "Your targeted VRT binary is missing. Please, use ${bold}$CLI_NAME build $arguments${normal} for ${bold}hw_all.${normal}"
+          echo ""
+          exit 1
+        fi
+        
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #run

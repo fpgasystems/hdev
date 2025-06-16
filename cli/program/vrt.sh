@@ -18,9 +18,6 @@ if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
     exit 1
 fi
 
-echo "HEY I am here (inside)"
-exit
-
 #inputs
 device_index=$2
 project_name=$4
@@ -35,25 +32,29 @@ if [ "$device_index" = "" ] || [ "$project_name" = "" ] || [ "$tag_name" = "" ] 
 fi
 
 #constants
-AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vrt"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
 
-#get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
+#get template name
+VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
 
-#get file_path
-pdi_project_name="${aved_name}.$vivado_version.pdi"
-file_path="$DIR/$pdi_project_name"
+#get bdf
+upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
-#program image
-$CLI_PATH/program/image --device $device_index --path $file_path --remote 0
+#partial programming
+echo "${bold}Partial programming:${normal}"
+echo ""
+echo "$(which v80-smi) partial_program -d $upstream_port -i $DIR/hw_all.$VRT_TEMPLATE.$vivado_version/${VRT_TEMPLATE}_hw.vrtbin"
+echo ""
+$(which v80-smi) partial_program -d $upstream_port -i $DIR/hw_all.$VRT_TEMPLATE.$vivado_version/${VRT_TEMPLATE}_hw.vrtbin
+
+echo ""
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/image --device $device_index --path $file_path --remote 0"
-$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
+#programming_string="$CLI_PATH/program/image --device $device_index --path $file_path --remote 0"
+#$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
