@@ -54,7 +54,7 @@ $(which v80-smi) partial_program -d $upstream_port -i $DIR/hw_all.$VRT_TEMPLATE.
 echo ""
 
 #programming remote servers (if applies)
-#programming_string="$CLI_PATH/program/image --device $device_index --path $file_path --remote 0"
-#$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
+programming_string="$CLI_PATH/program/vrt --device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote 0"
+$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
