@@ -33,7 +33,10 @@ fi
 #BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 #BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 #DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
+AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+PARTITION_INDEX="1"
+#PARTITION_TYPE="primary"
 #NUM_JOBS="8"
 WORKFLOW="vrt"
 
@@ -71,12 +74,38 @@ if [ -d "$DIR/$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
     #get upstream port
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
+    #get product_name
+    product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
+
     echo "${bold}Changing directory:${normal}"
     echo ""
     echo "cd $DIR/$target_name.$VRT_TEMPLATE.$vivado_version" # --device $device_index 
     echo ""
     cd $DIR/$target_name.$VRT_TEMPLATE.$vivado_version
 
+    if [ "$target_name" = "hw_all" ]; then
+        #program from partiton
+        #echo "${bold}Booting device from partition:${normal}"
+        #echo ""
+        #echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
+        #echo ""
+        #sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX
+        #echo ""
+        current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+        smi_bin=$(which v80-smi)
+        vrtbin_uuid=$($smi_bin inspect -i "${VRT_TEMPLATE}_${str}.vrtbin" | awk -F '|' '/Logic UUID/ { gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2 }')
+
+        #echo "$current_uuid"
+        #echo "$vrtbin_uuid"
+
+        if [ ! "$current_uuid" = "$vrtbin_uuid" ]; then
+            #similar to CHECK_ON_WORKFLOW_ERR_MSG
+            echo "Please, program your device(s) first."
+            echo ""
+            exit 1
+        fi
+    fi
+    
     #run
     echo "${bold}Running application:${normal}"
     echo ""
