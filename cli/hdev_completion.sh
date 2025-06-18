@@ -37,7 +37,7 @@ GET_INTERFACES_FLAGS=( "--type" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 HIP_RUN_FLAGS=( "--device" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
-OPENNIC_NEW_FLAGS=( "--commit" "--project" "--push" )
+OPENNIC_NEW_FLAGS=( "--commit" "--device" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
 OPENNIC_RUN_FLAGS=( "--commit" "--config" "--project" ) #"--device" 
 OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
@@ -827,6 +827,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
                         composer)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COMPOSER_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)

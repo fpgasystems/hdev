@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --push $push_option
-#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --push            0
+#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --device $device_index --push $push_option
+#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --device             1 --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -49,10 +49,11 @@ check_connectivity() {
 commit_name_shell=$2
 commit_name_driver=$3
 new_name=$5
-push_option=$7
+device_index=$7
+push_option=$9
 
 #all inputs must be provided
-if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
+if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
@@ -66,6 +67,7 @@ GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NETWORKING_DEVICE_INDEX="1"
 NETWORKING_PORT_INDEX="1"
+#ONIC_DEVICE_NAMES="$CLI_PATH/constants/ONIC_DEVICE_NAMES"
 WORKFLOW="opennic"
 
 #get devices number
@@ -134,11 +136,31 @@ done
 #update remote_server in config_parameters
 sed -i "/^remote_server/s/xxxx-xxxxx-xx/$target_host/" "$DIR/config_parameters"
 
+#get device_name
+device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+#save to 
+echo "$device_name" > $DIR/ONIC_DEVICE_NAME
+
 #add to sh.cfg (get index of the first FPGA)
-index=$(awk '$5 == "fpga" { print $1; exit }' "$DEVICES_LIST_FPGA")
-if [[ -n "$index" ]]; then
-    echo "$index: onic" >> "$DIR/sh.cfg"
-fi
+#index=$(awk -v devname="$device_name" '$6 == devname { print $1; exit }' "$DEVICES_LIST_FPGA")
+#if [[ -n "$index" ]]; then
+    echo "$device_index: onic" >> "$DIR/sh.cfg"
+#fi
+
+
+# Iterate over each ONIC device name
+
+
+
+#SH_CFG="$DIR/sh.cfg"
+## Loop through all ONIC device names
+#while IFS= read -r device_name || [[ -n "$device_name" ]]; do
+#    echo ">>> Checking: '$device_name'" >&2  # debug
+#
+#    # Check exact match on $6
+#    awk -v dev="$device_name" '$6 == dev { print $1 ": onic" }' "$DEVICES_LIST_FPGA"
+#done < "$ONIC_DEVICE_NAMES" >> "$SH_CFG"
 
 #push files
 if [ "$push_option" = "1" ]; then 

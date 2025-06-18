@@ -138,6 +138,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
             echo "FLAGS:"
             echo "   ${bold}-c, --commit${normal}    - GitHub shell and driver commit IDs (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
+            echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
             echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
             echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account." 
             echo ""
