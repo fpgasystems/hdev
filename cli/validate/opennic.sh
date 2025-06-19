@@ -84,10 +84,15 @@ hostname="${url%%.*}"
 device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
 #get platform_name
-platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+#platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
 #get FDEV_NAME
-FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+#FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
+
+#echo "device_name: $device_name"
+#echo "FDEV_NAME: $FDEV_NAME"
+#exit
 
 #set project name
 project_name="validate_opennic.$hostname.$commit_name_driver.$FDEV_NAME.$vivado_version"
@@ -106,7 +111,7 @@ fi
 if ! [ -d "$DIR" ]; then
     echo "${bold}$CLI_NAME new $WORKFLOW (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
-    $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --push 0 
+    $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --device $device_index --push 0 
 fi
 
 #cleanup
@@ -145,7 +150,7 @@ if [ -e "$library_shell" ]; then
 fi
 echo "${bold}$CLI_NAME build $WORKFLOW (commit ID for shell: $commit_name_shell)${normal}"
 echo ""
-$CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all 0 #--config "host_config_001" 
+$CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --version $vivado_version --all 0 #--platform $platform_name
 echo ""
 
 #add additional echo (1/2)

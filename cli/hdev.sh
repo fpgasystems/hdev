@@ -29,6 +29,7 @@ MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
 MTU_MIN=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MIN)
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+ONIC_DEVICE_NAMES="$CLI_PATH/constants/ONIC_DEVICE_NAMES"
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 ONIC_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
@@ -368,7 +369,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit --platform --project -h --help" 
+        valid_flags="-c --commit --project -h --help" #--platform 
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -377,7 +378,7 @@ case "$command" in
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+          #platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         fi
 
@@ -404,10 +405,13 @@ case "$command" in
             cd "$current_path"
         fi
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
-        platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_build" "${flags_array[@]}"
+        #platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_build" "${flags_array[@]}"
+
+        #get device name
+        #device_name=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DEVICE_NAME)
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_build
+        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --project $project_name --version $vivado_version --all $is_build #--platform $device_name
         echo ""
         ;;
       vrt)
@@ -877,7 +881,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit --project --push -h --help"
+        valid_flags="-c --commit -d --device --project --push -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -951,6 +955,7 @@ case "$command" in
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
@@ -959,10 +964,21 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
-  
+        
+        #get device_name
+        device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+        #check on compatible device
+        if ! grep -Fxq "$device_name" "$ONIC_DEVICE_NAMES"; then
+          echo "Sorry, this command is not available for ${bold}$device_name.${normal}"
+          echo ""
+          exit 1
+        fi
+
         #run
-        $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --push $push_option
+        $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --device $device_index --push $push_option
         ;;
       vrt)
         #early exit
@@ -2825,8 +2841,19 @@ case "$command" in
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
 
+        #get device_name
+        device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+        #check on compatible device
+        if ! grep -Fxq "$device_name" "$ONIC_DEVICE_NAMES"; then
+          echo "Sorry, this command is not available for ${bold}$device_name.${normal}"
+          echo ""
+          exit 1
+        fi
+
         #bitstream check (the bitstream must be pre-compiled for validation)
-        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+        #FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+        FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
         bitstream_path="$BITSTREAMS_PATH/$arguments/$commit_name_shell/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
         if ! [ -e "$bitstream_path" ]; then
           echo "$CHECK_ON_BITSTREAM_ERR_MSG"

@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev build opennic --commit $commit_name_shell $commit_name_driver --platform                      $platform_name --project $project_name --version $vivado_version --all $all 
-#example: /opt/hdev/cli/hdev build opennic --commit            8077751             1cf2578 --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project   hello_world --version          2022.2 --all    1 
+#usage:       $CLI_PATH/hdev build opennic --commit $commit_name_shell $commit_name_driver --project $project_name --version $vivado_version --all $all 
+#example: /opt/hdev/cli/hdev build opennic --commit            8077751             1cf2578 --project   hello_world --version          2022.2 --all    1 
 
 #early exit
 url="${HOSTNAME}"
@@ -30,13 +30,12 @@ fi
 #inputs
 commit_name=$2
 commit_name_driver=$3
-platform_name=$5
-project_name=$7
-vivado_version=$9
-all=${11}
+project_name=$5
+vivado_version=$7
+all=$9
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$commit_name_driver" = "" ] || [ "$platform_name" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
+if [ "$commit_name" = "" ] || [ "$commit_name_driver" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
     exit
 fi
 
@@ -53,8 +52,11 @@ DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
 DRIVER_DIR="$DIR/open-nic-driver"
 
-#platform_name to FDEV_NAME
-FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
+#get device name
+device_name=$(cat $DIR/ONIC_DEVICE_NAME)
+
+#device_name to FDEV_NAME
+FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
 
 #define shell
 #library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
