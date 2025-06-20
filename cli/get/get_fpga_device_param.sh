@@ -4,6 +4,10 @@
 CLI_PATH="$(dirname "$(dirname "$0")")"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
+#examples:
+#  $CLI_PATH/get/get_fpga_device_param 1 device_name 
+#  $CLI_PATH/get/get_fpga_device_param 1 device_name $CLI_PATH/cmdb/hacc-box-02.inf.ethz.ch/devices_acap_fpga
+
 #constants (id upstream_port root_port LinkCtl device_type device_name serial_number IP MAC)
 ID_COLUMN=1
 UPSTREAM_PORT_COLUMN=2
@@ -19,6 +23,11 @@ PLATFORM_COLUMN=10
 #inputs (./examine 0 root_port)
 device_index=$1
 parameter=$2
+device_list_path=$3
+
+if [ ! "$device_list_path" = "" ]; then
+  DEVICES_LIST=$device_list_path
+fi
 
 #helper functions
 get_column() {
@@ -64,12 +73,12 @@ get_column() {
 
 if [[ -f "$DEVICES_LIST" ]]; then
   #print if the first fpga/acap is valid
-  device_1=$(head -n 1 "$DEVICES_LIST")
-  upstream_port_1=$(echo "$device_1" | awk '{print $2}')
-  if [[ -n "$(lspci | grep $upstream_port_1)" ]]; then
+  #device_1=$(head -n 1 "$DEVICES_LIST")
+  #upstream_port_1=$(echo "$device_1" | awk '{print $2}')
+  #if [[ -n "$(lspci | grep $upstream_port_1)" ]]; then
     #get column for the parameter
     parameter_column=$(get_column $parameter)
     #output device parameter
     awk -v device_index="$device_index" -v parameter_column="$parameter_column" '$1 == device_index {print $parameter_column}' $DEVICES_LIST
-  fi
+  #fi
 fi

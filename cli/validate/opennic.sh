@@ -58,6 +58,7 @@ ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
+CMDB_PATH="$CLI_PATH/cmdb"
 COLOR_FAILED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FAILED)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
@@ -261,11 +262,25 @@ for server in "${remote_servers[@]}"; do
         connected="1"
         target_host="$server"
         #add to host_config_001 (this is only conceptual)
-        echo "remote_server = $target_host;" >> "$DIR/configs/host_config_001"
-        chmod a-w "$DIR/configs/host_config_001"
+        #echo "remote_server = $target_host;" >> "$DIR/configs/host_config_001"
+        #chmod a-w "$DIR/configs/host_config_001"
         break
     fi
 done
+
+#get NIC IP for remote server
+for dir in "$CMDB_PATH"/"$target_host"*; do
+  if [[ -d "$dir" ]]; then
+    full_name="$(basename "$dir")"
+    break
+  fi
+done
+target_host_ip=$($CLI_PATH/get/get_nic_device_param 1 IP $CLI_PATH/cmdb/$full_name/devices_network)
+first_ip="${target_host_ip%%/*}"
+
+#add to host_config_001
+echo "remote_server = $first_ip;" >> "$DIR/configs/host_config_001"
+chmod a-w "$DIR/configs/host_config_001"
 
 #get target remote host
 if [[ $connected = "1" ]]; then

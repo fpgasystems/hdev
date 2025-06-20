@@ -60,6 +60,7 @@ fi
 #constants
 ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
 BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
+CMDB_PATH="$CLI_PATH/cmdb"
 DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
@@ -133,8 +134,18 @@ for server in "${remote_servers[@]}"; do
     fi
 done
 
+#get NIC IP for remote server
+for dir in "$CMDB_PATH"/"$target_host"*; do
+  if [[ -d "$dir" ]]; then
+    full_name="$(basename "$dir")"
+    break
+  fi
+done
+target_host_ip=$($CLI_PATH/get/get_nic_device_param 1 IP $CLI_PATH/cmdb/$full_name/devices_network)
+first_ip="${target_host_ip%%/*}"
+
 #update remote_server in config_parameters
-sed -i "/^remote_server/s/xxxx-xxxxx-xx/$target_host/" "$DIR/config_parameters"
+sed -i "/^remote_server/s/xxxx-xxxxx-xx/$first_ip/" "$DIR/config_parameters"
 
 #get device_name
 device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
