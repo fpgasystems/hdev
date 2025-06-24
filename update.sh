@@ -114,6 +114,7 @@ if [ $update = "1" ]; then
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/get
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/help
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/new
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/open
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/program
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/run
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/set
