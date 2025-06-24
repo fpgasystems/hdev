@@ -97,9 +97,11 @@ if [ $update = "1" ]; then
   sleep 1
   cp $CLI_PATH/devices_network $UPDATES_PATH/$REPO_NAME/backup_devices_network
   sleep 1
-  cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo
-  sleep 1
+  #cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo
+  #sleep 1
   cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants
+  sleep 1
+  cp -rf $CLI_PATH/cmdb $UPDATES_PATH/$REPO_NAME/backup_cmdb
   sleep 1
   echo "Done!"
   echo ""
@@ -144,10 +146,13 @@ if [ $update = "1" ]; then
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
+  #sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
   sleep 1
   #overwrite constants
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
+  sleep 1
+  #overwrite cmdb
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_cmdb/* $installation_path/cli/cmdb
   sleep 1
   echo "Done!"
   echo ""
