@@ -120,6 +120,11 @@ if [ "$all" = "1" ]; then
             echo "${bold}${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
             echo ""
 
+            #create xpr simlink
+            #   ./open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr
+            #$DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr
+            ln -s $DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr $DIR/open_nic_shell.xpr
+
             #send email
             #user_email=$USER@ethz.ch
             #echo "Subject: Good news! hdev build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
