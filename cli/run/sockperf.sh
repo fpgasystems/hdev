@@ -28,9 +28,12 @@ if [ "$interface_name" = "" ] || [ "$server_ip" = "" ]; then
 fi
 
 #constants
-size=64 # bytes
-mps=100
-duration=10 # seconds
+COLOR_FAILED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FAILED)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
+size="64" # bytes
+mps="max"
+duration="10" # seconds
 
 # Get local IP from interface
 local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
@@ -39,24 +42,24 @@ local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
 echo ""
 echo "${bold}Running sockperf latency test:${normal}"
 echo ""
-command="sockperf ping-pong --tcp -i $server_ip --client_ip $local_ip --msg-size $size --mps max --time $duration --data-integrity"
+command="sockperf ping-pong --tcp -i $server_ip --client_ip $local_ip --msg-size $size --mps $mps --time $duration --data-integrity"
 echo "$command"
 
 output=$(eval "$command" 2>&1)
 #echo "$output"
 
 #extract values
-latency=$(echo "$output" | grep -oP 'avg-latency=\K[0-9.]+' | head -n1)
+latency=$(echo "$output" | grep -oP 'Latency is \K[0-9.]+ usec' | head -n1)
 
 #correctness check (dropped or corrupt messages)
-dropped_1=$(echo "$output" | grep -oP '# dropped messages = \K[0-9]+' | head -n1)
-duplicated_1=$(echo "$output" | grep -oP '# duplicated messages = \K[0-9]+' | head -n1)
-corrupt_1=$((dropped_1 + duplicated_1))
+dropped=$(echo "$output" | grep -oP '# dropped messages = \K[0-9]+' | head -n1)
+duplicated=$(echo "$output" | grep -oP '# duplicated messages = \K[0-9]+' | head -n1)
+corrupt=$((dropped + duplicated))
 
 echo ""
 echo "${bold}Running sockperf throughput test:${normal}"
 echo ""
-command="sockperf throughput --tcp -i $server_ip --client_ip $local_ip --msg-size 64 --mps max --time 2" #data-integrity is not working here
+command="sockperf throughput --tcp -i $server_ip --client_ip $local_ip --msg-size 64 --mps $mps --time $duration" #data-integrity is not working here
 echo "$command"
 
 output=$(eval "$command" 2>&1)
@@ -81,15 +84,16 @@ corrupt_2=$((dropped_2 + duplicated_2))
 #corrupt=$((dropped + duplicated))
 
 # Print results
-echo "Latency(us): $latency"
-echo "Bandwith(us): $bandwidth"
+echo ""
+echo "Latency: $latency"
+echo "Bandwith: $bandwidth"
 #echo "Throughput: ${throughput_mb} MB/s"
 
-if [[ "$corrupt_1" -eq 0 ]]; then
-  echo "Correctness: PASS"
+if [[ "$corrupt" -eq 0 ]]; then
+  echo -e "Correctness: ${COLOR_PASSED}${bold}PASSED${normal}${COLOR_OFF}"
 else
-  echo "Correctness: FAIL"
-  echo "Dropped: $dropped_1, Duplicated: $duplicated_1"
+  echo -e "Correctness: ${COLOR_FAILED}${bold}FAILED (Dropped: $dropped, Duplicated: $duplicated)${normal}${COLOR_OFF}"
 fi
+echo ""
 
 #author: https://github.com/jmoya82
