@@ -19,6 +19,7 @@ AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
+CMDB_PATH="$CLI_PATH/cmdb"
 COMPOSER_PATH="$HDEV_PATH/composer"
 COMPOSER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_REPO)
 COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
@@ -2407,70 +2408,18 @@ case "$command" in
           fi
         fi
 
-        echo "hey I am here"
-        exit
-
-        if [ "$project_found" = "0" ]; then
-          add_echo="no"
-        fi
-
-        #dialogs
-        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-        commit_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "ONIC_SHELL_COMMIT"
-        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
-        echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
-        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
-            echo ""
-            echo "$CHECK_ON_CONFIG_ERR_MSG"
-            echo ""
-            exit
-        fi
-        #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-
-        #get onic devices from sh.cfg (similar to hdev program opennic)
-        if [ -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg" ]; then
-          while IFS=":" read -r index name; do
-            if [[ ${name// /} == "onic" ]]; then
-                device_indexes+=("$index")
-            fi
-          done < <(grep -v '^\[' "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg")
-        else
-          #echo ""
-          echo $CHECK_ON_SHELL_CFG_ERR_MSG
-          echo ""
-          exit 1
-        fi
-
-        #onic workflow check
-        #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        #if [ ! "$workflow" = "onic" ]; then
-        #    echo "$CHECK_ON_WORKFLOW_ERR_MSG"
-        #    echo ""
-        #    exit
-        #fi
-        for i in "${!device_indexes[@]}"; do
-          device_index_i="${device_indexes[$i]}"
-          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index_i)
-          if [ ! "$workflow" = "onic" ]; then
-            echo "$CHECK_ON_WORKFLOW_ERR_MSG"
-            echo ""
-            exit
+        #get NIC IP for remote server
+        for dir in "$CMDB_PATH"/"$server_name"*; do
+          if [[ -d "$dir" ]]; then
+            full_name="$(basename "$dir")"
+            break
           fi
         done
-
-        #onic application check
-        if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/onic" ]; then
-          echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-          echo ""
-          exit 1
-        fi
+        target_host_ip=$($CLI_PATH/get/get_nic_device_param 1 IP $CLI_PATH/cmdb/$full_name/devices_network)
+        first_ip="${target_host_ip%%/*}"
 
         #run
-        $CLI_PATH/run/sockperf --interface $interface_name --server $server_ip 
+        $CLI_PATH/run/sockperf --interface $interface_name --server $first_ip 
         ;;
       vrt)
         #early exit
