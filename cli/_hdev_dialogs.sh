@@ -24,7 +24,7 @@ CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters
 CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid tag ID."
-CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
+CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on ${bold}$hostname.${normal}"
 CHECK_ON_HOTPLUG_ERR_MSG="Please, choose a valid hotplug option."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
 CHECK_ON_IMAGE_ERR_MSG="Your targeted image is missing."
@@ -45,7 +45,7 @@ CHECK_ON_TARGET_ERR_MSG="Please, choose a valid target name."
 CHECK_ON_TARGET_BUILD_ERR_MSG="Please, build your target first."
 CHECK_ON_TEMPLATE_ERR_MSG="Please, choose a valid template name."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
-CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
+CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for ${bold}$USER.${normal}."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device(s) first."
 CHECK_ON_X11_ERR_MSG="Please, login with ssh -X (or -Y) to enable X11 forwarding."
 CHECK_ON_XPR_FILE_ERR_MSG="Please, choose a valid xpr project file."
@@ -979,6 +979,16 @@ remote_check() {
   if [ "$deploy_option_found" = "1" ] && [[ "$deploy_option" =~ ^[0-9]+$ ]] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
     echo ""
     echo $CHECK_ON_REMOTE_ERR_MSG
+    echo ""
+    exit 1
+  fi
+}
+
+software_check() {
+  local app_name=$1
+  if [ -z "$(which "$app_name" 2>/dev/null)" ]; then
+    echo ""
+    echo "Sorry, ${bold}$app_name${normal} is not installed on ${bold}$hostname.${normal}"
     echo ""
     exit 1
   fi

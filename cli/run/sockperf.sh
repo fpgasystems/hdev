@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev run socketperf --interface $interface_name --remote   $remote_ip 
-#example: /opt/hdev/cli/hdev run socketperf --interface        enp196s0 --remote 10.253.74.10
+#usage:       $CLI_PATH/hdev run socketperf --interface $interface_name --server   $server_ip 
+#example: /opt/hdev/cli/hdev run socketperf --interface        enp196s0 --server 10.253.74.10
 
 #early exit
 url="${HOSTNAME}"
@@ -20,10 +20,10 @@ fi
 
 #inputs
 interface_name=$2
-remote_ip=$4
+server_ip=$4
 
 #all inputs must be provided
-if [ "$interface_name" = "" ] || [ "$remote_ip" = "" ]; then
+if [ "$interface_name" = "" ] || [ "$server_ip" = "" ]; then
     exit
 fi
 
@@ -36,7 +36,7 @@ duration=10 # seconds
 local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
 
 # Run sockperf and capture output
-command="sockperf ping-pong --tcp -i $remote_ip --client_ip $local_ip --msg-size $size --mps $mps --time $duration --data-integrity"
+command="sockperf ping-pong --tcp -i $server_ip --client_ip $local_ip --msg-size $size --mps $mps --time $duration --data-integrity"
 echo "$command"
 
 output=$(eval "$command" 2>&1)

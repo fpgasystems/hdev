@@ -48,6 +48,7 @@ SET_BALANCING_FLAGS=( "--value" )
 SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
+SOCKPERF_RUN_FLAGS=( "--interface" "--server" )
 VIVADO_OPEN_FLAGS=( "--path" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
@@ -266,6 +267,9 @@ _hdev_completions()
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
+                    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_nic" = "1" ]; then
+                        commands="${commands} sockperf"
+                    fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
@@ -475,6 +479,9 @@ _hdev_completions()
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        sockperf)
+                            COMPREPLY=($(compgen -W "${SOCKPERF_RUN_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         vrt)
                             COMPREPLY=($(compgen -W "${VRT_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -657,6 +664,10 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        revert)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SOCKPERF_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
