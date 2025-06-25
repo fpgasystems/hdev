@@ -2359,15 +2359,56 @@ case "$command" in
           echo ""
           exit 1
         else
+          #check on flags
           word_check "$CLI_PATH" "-i" "--interface" "${flags_array[@]}"
           interface_found=$word_found
           interface_name=$word_value
+
+          word_check "$CLI_PATH" "-s" "--server" "${flags_array[@]}"
+          server_found=$word_found
+          server_name=$word_value
+
+          #both flags are mandatory
+          if [[ "$interface_found" == "0" || "$server_found" == "0" ]]; then
+            run_sockperf_help
+          fi
+          
+          #check on interface
           if [[ "$interface_found" == "1" && "$interface_name" == "" ]]; then
-            #heeeeeeeeeereeeeeeeeeeeeeeeeeeeeee
-            sockperf_run_help
-            
+            run_sockperf_help
+          elif [ "$interface_found" == "1" ]; then
+            if ! ifconfig "$interface_name" >/dev/null 2>&1; then
+              echo ""
+              echo $CHECK_ON_IFACE_ERR_MSG
+              echo ""
+              exit 1
+            fi
+          fi
+
+          #check on server
+          if [[ "$server_found" == "1" && "$server_name" == "" ]]; then
+            run_sockperf_help
+          elif [ "$server_found" == "1" ]; then
+            server_names=()
+            for dir in $(find "$CLI_PATH/cmdb" -mindepth 1 -maxdepth 1 -type d); do
+              basename=$(basename "$dir")
+              short_name=${basename%%.*}
+              server_names+=("$short_name")
+            done
+
+            #check if the server exists
+            if [[ ! " ${server_names[@]} " =~ " ${server_name} " ]]; then
+              echo ""
+              echo $CHECK_ON_SERVER_ERR_MSG
+              echo ""
+              exit 1
+            fi
+
           fi
         fi
+
+        echo "hey I am here"
+        exit
 
         if [ "$project_found" = "0" ]; then
           add_echo="no"
