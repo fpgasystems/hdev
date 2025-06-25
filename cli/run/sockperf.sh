@@ -56,7 +56,7 @@ corrupt_1=$((dropped_1 + duplicated_1))
 echo ""
 echo "${bold}Running sockperf throughput test:${normal}"
 echo ""
-command="sockperf throughput --tcp -i $server_ip --client_ip $local_ip --msg-size 64 --mps max --time 2"
+command="sockperf throughput --tcp -i $server_ip --client_ip $local_ip --msg-size 64 --mps max --time 2" #data-integrity is not working here
 echo "$command"
 
 output=$(eval "$command" 2>&1)
