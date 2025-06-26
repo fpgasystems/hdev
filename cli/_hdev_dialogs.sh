@@ -27,6 +27,7 @@ CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid tag ID."
 CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on ${bold}$hostname.${normal}"
 CHECK_ON_HOTPLUG_ERR_MSG="Please, choose a valid hotplug option."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
+CHECK_ON_IP_ERR_MSG="Please, choose a valid IP address."
 CHECK_ON_IMAGE_ERR_MSG="Your targeted image is missing."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
@@ -577,6 +578,24 @@ iface_check() {
       echo ""
       exit
   fi
+}
+
+ipv4_check() {
+    local ip=$1
+
+    # Basic format check: 4 numbers separated by dots
+    if [[ $ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+        # Check each octet is <= 255
+        IFS='.' read -r o1 o2 o3 o4 <<< "$ip"
+        for octet in $o1 $o2 $o3 $o4; do
+            if ((octet < 0 || octet > 255)); then
+                return 1
+            fi
+        done
+        return 0
+    else
+        return 1
+    fi
 }
 
 new_dialog() {
