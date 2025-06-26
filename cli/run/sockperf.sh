@@ -34,8 +34,9 @@ COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
 size="64" # bytes
 mps="max"
 duration="10" # seconds
+corrupt="1"
 
-# Get local IP from interface
+#get local IP from interface
 local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
 
 # Run sockperf and capture output

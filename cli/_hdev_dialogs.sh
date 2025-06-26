@@ -41,6 +41,7 @@ CHECK_ON_REMOTE_FILE_ERR_MSG="Please, specify an absolute path for remote progra
 CHECK_ON_REVERT_ERR_MSG="Please, revert your device first."
 CHECK_ON_SERVER_ERR_MSG="Please, choose a valid server name."
 CHECK_ON_SHELL_CFG_ERR_MSG="Your targeted shell configuration file is missing."
+CHECK_ON_SOCKPERF_SERVER_ERR_MSG="Please, start your sockperf server first."
 CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_TARGET_ERR_MSG="Please, choose a valid target name."
 CHECK_ON_TARGET_BUILD_ERR_MSG="Please, build your target first."

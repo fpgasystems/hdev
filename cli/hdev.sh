@@ -2418,6 +2418,18 @@ case "$command" in
         target_host_ip=$($CLI_PATH/get/get_nic_device_param 1 IP $CLI_PATH/cmdb/$full_name/devices_network)
         first_ip="${target_host_ip%%/*}"
 
+        #get local IP from interface
+        local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
+
+        #check on server (attempt a minimal ping-pong run)
+        output=$(sockperf ping-pong --tcp -i "$first_ip" --client_ip "$local_ip" --msg-size 64 --mps 1 --time 1)
+        if echo "$output" | grep -q "sockperf: ERROR"; then
+          echo ""
+          echo $CHECK_ON_SOCKPERF_SERVER_ERR_MSG
+          echo ""
+          exit 1
+        fi
+
         #run
         $CLI_PATH/run/sockperf --interface $interface_name --server $first_ip 
         ;;
