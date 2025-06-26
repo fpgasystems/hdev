@@ -66,29 +66,12 @@ output=$(eval "$command" 2>&1)
 #echo "$output"
 
 #extract values
-#message_rate=$(echo "$output" | grep -oP 'Message Rate is \K[0-9.]+' | head -n1)
 bandwidth=$(echo "$output" | grep -oP 'BandWidth is \K[0-9.]+ MBps \([0-9.]+ Mbps\)' | head -n1)
 
-#correctness check (dropped or corrupt messages)
-dropped_2=$(echo "$output" | grep -oP '# dropped messages = \K[0-9]+' | head -n1)
-duplicated_2=$(echo "$output" | grep -oP '# duplicated messages = \K[0-9]+' | head -n1)
-corrupt_2=$((dropped_2 + duplicated_2))
-
-
-# Throughput in MBps: (received messages * msg size) / duration / 1024 / 1024
-#throughput_mb=$(awk -v r="$received" -v s="$size" -v d="$duration" 'BEGIN { printf "%.4f", (r * s) / d / 1024 / 1024 }')
-
-# Correctness check (dropped or corrupt messages)
-#dropped=$(echo "$output" | grep -oP '# dropped messages = \K[0-9]+' | head -n1)
-#duplicated=$(echo "$output" | grep -oP '# duplicated messages = \K[0-9]+' | head -n1)
-#corrupt=$((dropped + duplicated))
-
-# Print results
+#print results
 echo ""
 echo "Latency: $latency"
 echo "Bandwith: $bandwidth"
-#echo "Throughput: ${throughput_mb} MB/s"
-
 if [[ "$corrupt" -eq 0 ]]; then
   echo -e "Correctness: ${COLOR_PASSED}${bold}PASSED${normal}${COLOR_OFF}"
 else
