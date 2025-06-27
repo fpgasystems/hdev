@@ -37,6 +37,7 @@ ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
+SOCKPERF_MIN=$($CLI_PATH/common/get_constant $CLI_PATH SOCKPERF_MIN)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
@@ -2424,7 +2425,10 @@ case "$command" in
         elif [ "$size_found" == "0" ]; then
           size_value="1024"
         elif [ "$size_found" == "1" ]; then
-          if ! pow2_check "$size_value" "64" "262144"; then
+          safe_msg_size=$(( $(cat /proc/sys/net/core/wmem_max) / 4 ))
+          SOCKPERF_MIN=${SOCKPERF_MIN//[!0-9]/}
+
+          if (( size_value < SOCKPERF_MIN || size_value > safe_msg_size )); then
             echo ""
             echo "Please, choose a valid size value."
             echo ""

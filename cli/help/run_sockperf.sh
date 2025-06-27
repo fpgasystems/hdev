@@ -15,6 +15,11 @@ CLI_NAME=$2
 #target_host_ip=$($CLI_PATH/get/get_nic_device_param 1 IP $CLI_PATH/cmdb/$full_name/devices_network)
 #first_ip="${target_host_ip%%/*}"
 
+SOCKPERF_MIN=$($CLI_PATH/common/get_constant $CLI_PATH SOCKPERF_MIN)
+
+#get maximum message size
+safe_msg_size=$(( $(cat /proc/sys/net/core/wmem_max) / 4 ))
+
 echo ""
 echo "${bold}$CLI_NAME run sockperf [flags] [--help]${normal}"
 echo ""
@@ -23,7 +28,7 @@ echo ""
 echo "FLAGS:"
 echo "   ${bold}-i, --interface${normal} - Local interface (according to ${bold}$CLI_NAME get interfaces${normal})."
 echo "   ${bold}    --server${normal}    - Remote sockperf server IP."
-echo "   ${bold}    --size${normal}      - Message size in bytes (power of two between 64 and 262144 inclusive)."
+echo "   ${bold}    --size${normal}      - Message size in bytes (between ${bold}$SOCKPERF_MIN${normal} and ${bold}$safe_msg_size${normal})."
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""
