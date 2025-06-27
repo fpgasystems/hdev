@@ -769,6 +769,27 @@ port_check() {
   fi
 }
 
+pow2_check() {
+    local value=$1
+    local minimum=$2
+    local maximum=$3
+
+    # Check if value is a number
+    [[ "$value" =~ ^[0-9]+$ ]] || return 1
+
+    # Check range
+    if (( value < $minimum || value > $maximum )); then
+        return 1
+    fi
+
+    # Check if it's a power of two using bitwise trick: value & (value - 1) == 0
+    if (( (value & (value - 1)) == 0 )); then
+        return 0
+    else
+        return 1
+    fi
+}
+
 project_dialog() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
