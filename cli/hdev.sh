@@ -2347,7 +2347,7 @@ case "$command" in
         software_check "sockperf"
 
         #check on flags
-        valid_flags="-i --interface -s --server -h --help"
+        valid_flags="-i --interface --server --size -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2365,9 +2365,13 @@ case "$command" in
           interface_found=$word_found
           interface_name=$word_value
 
-          word_check "$CLI_PATH" "-s" "--server" "${flags_array[@]}"
+          word_check "$CLI_PATH" "--server" "--server" "${flags_array[@]}"
           server_found=$word_found
           server_ip=$word_value
+
+          word_check "$CLI_PATH" "--size" "--size" "${flags_array[@]}"
+          size_found=$word_found
+          size_value=$word_value
 
           #both flags are mandatory
           if [[ "$interface_found" == "0" || "$server_found" == "0" ]]; then
@@ -2414,6 +2418,20 @@ case "$command" in
           fi
         fi
 
+        #check on size
+        if [[ "$size_found" == "1" && "$size_value" == "" ]]; then
+          run_sockperf_help
+        elif [ "$size_found" == "0" ]; then
+          size_value="1024"
+        elif [ "$size_found" == "1" ]; then
+          if ! pow2_check "$size_value" "64" "262144"; then
+            echo ""
+            echo "Please, choose a valid size value."
+            echo ""
+            exit 1
+          fi
+        fi
+
         #get NIC IP for remote server
         #for dir in "$CMDB_PATH"/"$server_name"*; do
         #  if [[ -d "$dir" ]]; then
@@ -2428,7 +2446,9 @@ case "$command" in
         local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
 
         #check on server (attempt a minimal ping-pong run)
+        #echo "sockperf ping-pong --tcp -i "$server_ip" --client_ip "$local_ip" --msg-size 64 --mps 1 --time 1"
         output=$(sockperf ping-pong --tcp -i "$server_ip" --client_ip "$local_ip" --msg-size 64 --mps 1 --time 1)
+        #echo $output
         if echo "$output" | grep -q "sockperf: ERROR"; then
           echo ""
           echo $CHECK_ON_SOCKPERF_SERVER_ERR_MSG
@@ -2436,8 +2456,11 @@ case "$command" in
           exit 1
         fi
 
+        #size_value="64"
+        
+
         #run
-        $CLI_PATH/run/sockperf --interface $interface_name --server $server_ip 
+        $CLI_PATH/run/sockperf --interface $interface_name --server $server_ip --size $size_value
         ;;
       vrt)
         #early exit
