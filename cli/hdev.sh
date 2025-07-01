@@ -2453,8 +2453,11 @@ case "$command" in
         echo "$command"
 
         output=$(eval "$command" 2>&1)
+
         #echo $output
         if echo "$output" | grep -q "sockperf: ERROR"; then
+          echo ""
+          echo $output
           echo ""
           echo $CHECK_ON_SOCKPERF_SERVER_ERR_MSG
           echo ""
