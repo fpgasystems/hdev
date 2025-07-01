@@ -2374,9 +2374,29 @@ case "$command" in
           size_found=$word_found
           size_value=$word_value
 
-          #both flags are mandatory
-          if [[ "$interface_found" == "0" || "$server_found" == "0" ]]; then
+          #check on flags
+          if [[ "$interface_found" == "0" && "$server_found" == "0" ]]; then
             run_sockperf_help
+          elif [[ "$interface_found" == "0" && "$server_found" == "1" ]]; then
+            if [ "$server_ip" == "" ]; then
+              run_sockperf_help
+            else
+              #check on IP
+              if ! ipv4_check "$server_ip"; then
+                  echo ""
+                  echo $CHECK_ON_IP_ERR_MSG
+                  echo ""
+                  exit 1
+              fi
+
+              #kill server first
+              #sudo $CLI_PATH/common/pkill "sockperf server"
+
+              #start server
+              sockperf server --tcp -i $server_ip
+              echo ""
+              exit 0
+            fi
           fi
           
           #check on interface
@@ -2395,21 +2415,6 @@ case "$command" in
           if [[ "$server_found" == "1" && "$server_ip" == "" ]]; then
             run_sockperf_help
           elif [ "$server_found" == "1" ]; then
-            #server_names=()
-            #for dir in $(find "$CLI_PATH/cmdb" -mindepth 1 -maxdepth 1 -type d); do
-            #  basename=$(basename "$dir")
-            #  short_name=${basename%%.*}
-            #  server_names+=("$short_name")
-            #done
-
-            #check if the server exists
-            #if [[ ! " ${server_names[@]} " =~ " ${server_name} " ]]; then
-            #  echo ""
-            #  echo $CHECK_ON_SERVER_ERR_MSG
-            #  echo ""
-            #  exit 1
-            #fi
-
             if ! ipv4_check "$server_ip"; then
                 echo ""
                 echo $CHECK_ON_IP_ERR_MSG
@@ -2436,22 +2441,18 @@ case "$command" in
           fi
         fi
 
-        #get NIC IP for remote server
-        #for dir in "$CMDB_PATH"/"$server_name"*; do
-        #  if [[ -d "$dir" ]]; then
-        #    full_name="$(basename "$dir")"
-        #    break
-        #  fi
-        #done
-        #target_host_ip=$($CLI_PATH/get/get_nic_device_param 1 IP $CLI_PATH/cmdb/$full_name/devices_network)
-        #first_ip="${target_host_ip%%/*}"
-
         #get local IP from interface
         local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
 
         #check on server (attempt a minimal ping-pong run)
         #echo "sockperf ping-pong --tcp -i "$server_ip" --client_ip "$local_ip" --msg-size 64 --mps 1 --time 1"
-        output=$(sockperf ping-pong --tcp -i "$server_ip" --client_ip "$local_ip" --msg-size 64 --mps 1 --time 1)
+        echo ""
+        echo "${bold}Checking on sockperf server:${normal}"
+        echo ""
+        command="sockperf ping-pong --tcp -i "$server_ip" --client_ip "$local_ip" --msg-size 64 --mps 100 --time 10"
+        echo "$command"
+
+        output=$(eval "$command" 2>&1)
         #echo $output
         if echo "$output" | grep -q "sockperf: ERROR"; then
           echo ""
@@ -2459,9 +2460,6 @@ case "$command" in
           echo ""
           exit 1
         fi
-
-        #size_value="64"
-        
 
         #run
         $CLI_PATH/run/sockperf --interface $interface_name --server $server_ip --size $size_value

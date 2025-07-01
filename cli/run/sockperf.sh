@@ -44,45 +44,67 @@ local_ip=$(ifconfig $interface_name | grep 'inet ' | awk '{print $2}')
 echo ""
 echo "${bold}Running sockperf latency test:${normal}"
 echo ""
-command="sockperf ping-pong --tcp -i $server_ip --client_ip $local_ip --msg-size $size_value --mps 1 --time $duration --data-integrity"
+command="sockperf ping-pong --tcp -i $server_ip --client_ip $local_ip --msg-size $size_value --mps=max --time $duration --data-integrity"
 echo "$command"
 
-output=$(eval "$command" 2>&1)
+output_latency=$(eval "$command" 2>&1)
 #echo "$output"
 
+#check if server is down
+if echo "$output_latency" | grep -q "Is the server down?"; then
+  echo ""
+  echo $output_latency
+  echo ""
+  echo -e "${COLOR_FAILED}${bold}sockperf test FAILED!${normal}${COLOR_OFF}"
+  echo ""
+  exit 1
+fi
+
 #extract values
-latency=$(echo "$output" | grep -oP 'Latency is \K[0-9.]+ usec' | head -n1)
+latency=$(echo "$output_latency" | grep -oP 'Latency is \K[0-9.]+ usec' | head -n1)
 
 #correctness check (dropped or corrupt messages)
-dropped=$(echo "$output" | grep -oP '# dropped messages = \K[0-9]+' | head -n1)
-duplicated=$(echo "$output" | grep -oP '# duplicated messages = \K[0-9]+' | head -n1)
+dropped=$(echo "$output_latency" | grep -oP '# dropped messages = \K[0-9]+' | head -n1)
+duplicated=$(echo "$output_latency" | grep -oP '# duplicated messages = \K[0-9]+' | head -n1)
 corrupt=$((dropped + duplicated))
 
 echo ""
 echo "${bold}Running sockperf throughput test:${normal}"
 echo ""
-command="sockperf throughput --tcp -i $server_ip --client_ip $local_ip --msg-size $size_value --mps max --time $duration" #data-integrity is not working here
+command="sockperf throughput --tcp -i $server_ip --client_ip $local_ip --msg-size $size_value --mps=max --time $duration" #data-integrity is not working here
 echo "$command"
 
-output=$(eval "$command" 2>&1)
+output_bw=$(eval "$command" 2>&1)
 #echo "$output"
 
+#check if server is down
+if echo "$output_bw" | grep -q "Is the server down?"; then
+  echo ""
+  echo $output_bw
+  echo ""
+  echo -e "${COLOR_FAILED}${bold}sockperf test FAILED!${normal}${COLOR_OFF}"
+  echo ""
+  exit 1
+fi
+
 #extract values
-bandwidth=$(echo "$output" | grep -oP 'BandWidth is \K[0-9.]+ MBps \([0-9.]+ Mbps\)' | head -n1)
+bandwidth=$(echo "$output_bw" | grep -oP 'BandWidth is \K[0-9.]+ MBps \([0-9.]+ Mbps\)' | head -n1)
 
 #print results
 if [ ! "$latency" = "" ] && [ ! "$bandwidth" = "" ]; then
   echo ""
-  echo "Latency: $latency"
-  echo "Bandwith: $bandwidth"
+  echo "${bold}Message size (bytes):${normal} $size_value"
+  echo "${bold}Latency:${normal} $latency"
+  echo "${bold}Bandwith:${normal} $bandwidth"
   if [[ "$corrupt" -eq 0 ]]; then
-    echo -e "Correctness: ${COLOR_PASSED}${bold}PASSED${normal}${COLOR_OFF}"
+    echo -e "${bold}Correctness:${normal} ${COLOR_PASSED}${bold}PASSED${normal}${COLOR_OFF}"
   else
-    echo -e "Correctness: ${COLOR_FAILED}${bold}FAILED (Dropped: $dropped, Duplicated: $duplicated)${normal}${COLOR_OFF}"
+    echo -e "${bold}Correctness:${normal} ${COLOR_FAILED}${bold}FAILED (Dropped: $dropped, Duplicated: $duplicated)${normal}${COLOR_OFF}"
   fi
   echo ""
 else
   echo ""
+  echo "${bold}Message size (bytes):${normal} $size_value"
   echo -e "${COLOR_FAILED}${bold}sockperf test FAILED!${normal}${COLOR_OFF}"
   echo ""
 fi
