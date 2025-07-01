@@ -48,7 +48,6 @@ command="sockperf ping-pong --tcp -i $server_ip --client_ip $local_ip --msg-size
 echo "$command"
 
 output_latency=$(eval "$command" 2>&1)
-#echo "$output"
 
 #check if server is down
 if echo "$output_latency" | grep -q "Is the server down?"; then
@@ -75,7 +74,6 @@ command="sockperf throughput --tcp -i $server_ip --client_ip $local_ip --msg-siz
 echo "$command"
 
 output_bw=$(eval "$command" 2>&1)
-#echo "$output"
 
 #check if server is down
 if echo "$output_bw" | grep -q "Is the server down?"; then
