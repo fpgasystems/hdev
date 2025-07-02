@@ -2393,6 +2393,13 @@ case "$command" in
               #sudo $CLI_PATH/common/pkill "sockperf server"
 
               #start server
+              echo ""
+              echo "${bold}Running sockperf server:${normal}"
+              echo ""
+              echo "sudo $CLI_PATH/common/pkill "sockperf server""
+              echo "sockperf server --tcp -i $server_ip"
+              echo ""
+              sudo $CLI_PATH/common/pkill "sockperf server"
               sockperf server --tcp -i $server_ip
               echo ""
               exit 0
@@ -2459,8 +2466,8 @@ case "$command" in
           echo ""
           echo $output
           echo ""
-          echo $CHECK_ON_SOCKPERF_SERVER_ERR_MSG
-          echo ""
+          #echo $CHECK_ON_SOCKPERF_SERVER_ERR_MSG
+          #echo ""
           exit 1
         fi
 
