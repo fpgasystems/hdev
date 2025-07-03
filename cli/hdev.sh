@@ -625,7 +625,7 @@ case "$command" in
           exit
         fi
 
-        valid_flags="-h --help -t --type"
+        valid_flags="-h --help" # -t --type
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       name)
