@@ -765,6 +765,9 @@ validate_help() {
     echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-built Alveo Versal Example Design (AVED) validation."
     fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
+    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected device." 
+    fi
     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
     fi
@@ -772,8 +775,8 @@ validate_help() {
     echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected device."
     vitis_enabled="1"
     fi
-    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected device." 
+    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Validates V80 RunTime (V80) on the selected device."
     fi
     echo "" 
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -856,6 +859,15 @@ validate_vitis_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use Vitis validation."
     echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
+    echo ""
+  fi
+  exit
+}
+
+validate_vrt_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+    $CLI_PATH/help/validate_vrt $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""
   fi

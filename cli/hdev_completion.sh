@@ -54,6 +54,7 @@ VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 VRT_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
+VRT_VALIDATE_FLAGS=( "--device" "--tag" "--target" )
 XDP_BUILD_FLAGS=( "--commit" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--project" "--start" ) #"--stop"
@@ -299,8 +300,8 @@ _hdev_completions()
                     ;;
                 validate)
                     commands="docker --help"
-                    if [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} aved"
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+                        commands="${commands} aved vrt"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
@@ -529,6 +530,9 @@ _hdev_completions()
                         vitis) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
+                        vrt)
+                            COMPREPLY=($(compgen -W "${VRT_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                     esac
                     ;;
             esac
@@ -698,6 +702,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_VALIDATE_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_VALIDATE_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                     esac
                     ;;
             esac
@@ -817,6 +825,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_VALIDATE_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_VALIDATE_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac

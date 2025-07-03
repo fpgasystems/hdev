@@ -3039,6 +3039,65 @@ case "$command" in
         valid_flags="-d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
+      vrt)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+          exit
+        fi
+
+        #check on server
+        fpga_check "$CLI_PATH" "$hostname"
+        
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+        ami_check "$AMI_TOOL_PATH"
+      
+        #check on flags
+        valid_flags="-d --device --tag --target -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #check on driver (on the contrary to OpenNIC, the driver must be present--at system level--before programming)
+        if ! lsmod | grep -q ${AVED_DRIVER_NAME%.ko}; then
+          echo ""
+          echo "Your targeted driver ($AVED_DRIVER_NAME) is missing."
+          echo ""
+          exit
+        fi
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          target_check "$CLI_PATH" "VRT_TARGETS" "${flags_array[@]}"
+          #project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          #remote_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
+        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "VRT_TAG"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
+        echo ""
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
+
+        echo "Here 1"
+        echo "$device_index"
+        echo "$tag_name"
+        echo "$target_name"
+
+        #run
+        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name
+        ;;
       *)
         validate_help
         ;;
