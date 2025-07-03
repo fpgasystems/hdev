@@ -27,24 +27,36 @@ read -a flags <<< "$@"
 #check on flags
 if [ "$flags" = "" ]; then
     #legend 1
-    if [ "$is_nic" = "1" ]; then
-        legend_nic="${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
-    fi
+    #if [ "$is_nic" = "1" ]; then
+    #    legend_nic="${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+    #fi
 
     #legend 2
-    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
-        legend_fpga="${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
-    fi
+    #if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
+    #    legend_fpga="${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
+    #fi
 
     #generate file
     if [ "$is_nic" = "1" ]; then
         $CLI_PATH/get/ifconfig > $TMP_PATH/interfaces.txt
-        awk -v COLOR_ON1="$COLOR_ON1" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON1 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
+        filtered_output=$(grep ') :' "$TMP_PATH/interfaces.txt")
+        if [ ! -z "$filtered_output" ]; then
+            echo ""
+            echo "$filtered_output" | awk -v COLOR_ON1="$COLOR_ON1" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON1 $0 COLOR_OFF}'
+            legend_nic="${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+        fi
     fi
     if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
         $CLI_PATH/get/network > $TMP_PATH/interfaces.txt
-        awk -v COLOR_ON2="$COLOR_ON2" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON2 $0 COLOR_OFF}' $TMP_PATH/interfaces.txt
+        filtered_output=$(grep ') :' "$TMP_PATH/interfaces.txt")
+        if [ ! -z "$filtered_output" ]; then
+            echo ""
+            echo "$filtered_output" | awk -v COLOR_ON2="$COLOR_ON2" -v COLOR_OFF="$COLOR_OFF" '{print COLOR_ON2 $0 COLOR_OFF}'
+            legend_fpga="${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
+        fi
     fi
+
+    echo ""
 
     #print legend
     if [ -n "$legend_nic" ] && [ -n "$legend_fpga" ]; then
