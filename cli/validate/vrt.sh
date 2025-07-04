@@ -41,10 +41,10 @@ hostname="${url%%.*}"
 template_name="00_axilite"
 
 #get device_name
-device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+#device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
 #set project name
-project_name="validate_vrt.$hostname.$tag_name.$device_name.$vivado_version"
+project_name="validate_vrt.$hostname.$tag_name.$target_name.$vivado_version"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
@@ -60,5 +60,8 @@ if ! [ -d "$DIR" ]; then
     echo ""
     $CLI_PATH/new/vrt --tag $tag_name --project $project_name --template $template_name --push 0
 fi
+
+#update shell configuration file
+sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
 
 #author: https://github.com/jmoya82
