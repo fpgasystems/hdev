@@ -3090,13 +3090,8 @@ case "$command" in
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
 
-        echo "Here 1"
-        echo "$device_index"
-        echo "$tag_name"
-        echo "$target_name"
-
         #run
-        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name
+        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version
         ;;
       *)
         validate_help

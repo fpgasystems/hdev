@@ -5,8 +5,8 @@ CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name
-#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all
+#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name --version $vivado_version
+#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all --version          2024.2
 
 #early exit
 url="${HOSTNAME}"
@@ -22,42 +22,43 @@ fi
 device_index=$2
 tag_name=$4
 target_name=$6
+vivado_version=$8
 
 #all inputs must be provided
-if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ]; then
+if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ]; then
     exit
 fi
-
-echo "Here 2"
-echo "$device_index"
-echo "$tag_name"
-echo "$target_name"
-exit
 
 #constants
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vrt"
 
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
+#get template name
+template_name="00_axilite"
+
+#get device_name
+device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+#set project name
+project_name="validate_vrt.$hostname.$tag_name.$device_name.$vivado_version"
+
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
 
-#get template name
-VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
+#remove in the beginning
+if [ -d "$DIR" ]; then
+    rm -rf "$DIR"
+fi
 
-#get bdf
-upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-
-#partial programming
-echo "${bold}Partial programming:${normal}"
-echo ""
-echo "$(which v80-smi) partial_program -d $upstream_port -i $DIR/hw_all.$VRT_TEMPLATE.$vivado_version/${VRT_TEMPLATE}_hw.vrtbin"
-echo ""
-$(which v80-smi) partial_program -d $upstream_port -i $DIR/hw_all.$VRT_TEMPLATE.$vivado_version/${VRT_TEMPLATE}_hw.vrtbin
-
-echo ""
-
-#programming remote servers (if applies)
-programming_string="$CLI_PATH/program/vrt --device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote 0"
-$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
+#new
+if ! [ -d "$DIR" ]; then
+    echo "${bold}$CLI_NAME new $WORKFLOW (tag ID: $tag_name)${normal}"
+    echo ""
+    $CLI_PATH/new/vrt --tag $tag_name --project $project_name --template $template_name --push 0
+fi
 
 #author: https://github.com/jmoya82
