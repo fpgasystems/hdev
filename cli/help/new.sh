@@ -155,6 +155,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo "Generates an Alveo V80 RunTime (VRT) project."
             echo ""
             echo "FLAGS:"
+            echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
             echo "       ${bold}--project${normal}   - Specifies your VRT project name." 
             echo "       ${bold}--push${normal}      - Pushes your VRT project to your GitHub account." 
             echo "       ${bold}--tag${normal}       - GitHub tag ID (default: ${bold}$VRT_TAG${normal})."

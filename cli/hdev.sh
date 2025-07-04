@@ -40,6 +40,7 @@ ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 SOCKPERF_MIN=$($CLI_PATH/common/get_constant $CLI_PATH SOCKPERF_MIN)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
+VRT_DEVICE_NAMES="$CLI_PATH/constants/VRT_DEVICE_NAMES"
 VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
 VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
 XDP_BPFTOOL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH XDP_BPFTOOL_COMMIT)
@@ -995,7 +996,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="--tag --template --project --push -h --help"
+        valid_flags="-d --device --tag --template --project --push -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -1041,8 +1042,10 @@ case "$command" in
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-          push_check "$CLI_PATH" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+          push_check "$CLI_PATH" "${flags_array[@]}"
+          #template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
         fi
 
         #dialogs
@@ -1050,11 +1053,22 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 
+        #get device_name
+        device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+        #check on compatible device
+        if ! grep -Fxq "$device_name" "$VRT_DEVICE_NAMES"; then
+          echo "Sorry, this command is not available for ${bold}$device_name.${normal}"
+          echo ""
+          exit 1
+        fi
+
         #run
-        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --template $template_name --push $push_option
+        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --device $device_index --template $template_name --push $push_option
         ;;
       xdp)
         #early exit

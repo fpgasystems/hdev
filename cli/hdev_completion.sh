@@ -50,7 +50,7 @@ SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 SOCKPERF_RUN_FLAGS=( "--interface" "--server" "--size" )
 VIVADO_OPEN_FLAGS=( "--path" )
-VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" )
+VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--device" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 VRT_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
@@ -917,6 +917,14 @@ _hdev_completions()
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}")
 
             case "${COMP_WORDS[COMP_CWORD-10]}" in
+                new)
+                    case "${COMP_WORDS[COMP_CWORD-9]}" in
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-9]}" in
                         opennic)
@@ -950,6 +958,14 @@ _hdev_completions()
             previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}" "${COMP_WORDS[COMP_CWORD-10]}")
 
             case "${COMP_WORDS[COMP_CWORD-12]}" in
+                new)
+                    case "${COMP_WORDS[COMP_CWORD-11]}" in
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-11]}" in
                         opennic)

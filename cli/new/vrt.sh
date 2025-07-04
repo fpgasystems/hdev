@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --template $template_name --push $push_option
-#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --template     00_axilite --push            0
+#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --device $device_index --template $template_name --push $push_option
+#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --device             1 --template     00_axilite --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -22,11 +22,12 @@ fi
 #inputs
 tag_name=$2
 new_name=$4
-template_name=$6
-push_option=$8
+device_index=$6
+template_name=$8
+push_option=${10}
 
 #all inputs must be provided
-if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$template_name" = "" ] || [ "$push_option" = "" ]; then
+if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [ "$template_name" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
@@ -104,16 +105,21 @@ cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-fl
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
-cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
-
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
+cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
 #cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
 
+#get device_name
+device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+#save to 
+echo "$device_name" > $DIR/VRT_DEVICE_NAME
+
 #add to sh.cfg (get index of the first FPGA)
-index=$(awk '$5 == "asoc" { print $1; exit }' "$DEVICES_LIST_FPGA")
-if [[ -n "$index" ]]; then
-    echo "$index: $WORKFLOW" >> "$DIR/sh.cfg"
-fi
+#index=$(awk '$5 == "asoc" { print $1; exit }' "$DEVICES_LIST_FPGA")
+#if [[ -n "$index" ]]; then
+    echo "$device_index: $WORKFLOW" >> "$DIR/sh.cfg"
+#fi
 
 #compile files
 chmod +x $DIR/config_add
