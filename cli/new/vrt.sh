@@ -104,6 +104,7 @@ cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-fl
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
 
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 #cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
