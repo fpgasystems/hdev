@@ -64,4 +64,24 @@ fi
 #update shell configuration file
 sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
 
+#build
+$CLI_PATH/build/vrt --project $project_name --tag $tag_name --target "app" --version $vivado_version --all 0
+
+#copy pre-compiled files
+cp -rf $CLI_PATH/bitstreams/vrt/$tag_name/$target_name.$template_name.$vivado_version $DIR
+
+#change mode
+chmod +x $DIR/$target_name.$template_name.$vivado_version/$template_name
+
+#program (hw_all)
+if [ "$target_name" = "hw_all" ]; then
+    $CLI_PATH/program/vrt --device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote 0
+fi
+
+#run
+$CLI_PATH/run/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version
+
+#remove at the end
+rm -rf $DIR
+
 #author: https://github.com/jmoya82
