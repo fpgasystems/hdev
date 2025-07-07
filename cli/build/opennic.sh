@@ -43,13 +43,14 @@ fi
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
+LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH LOCAL_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_JOBS="8"
 WORKFLOW="opennic"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
-SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
+#SHELL_BUILD_DIR="$DIR/open-nic-shell/script" 
 DRIVER_DIR="$DIR/open-nic-driver"
 
 #get device name
@@ -102,13 +103,33 @@ if [ "$all" = "1" ]; then
         #read configuration
         tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
         
-        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
-        cd $SHELL_BUILD_DIR
-        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
+        #copy and compile on local
+        echo "${bold}Change to LOCAL_PATH:${normal}"
         echo ""
-
+        echo "cp -rf $DIR/* $LOCAL_PATH/$project_name/"
+        echo "cd $LOCAL_PATH/$project_name/open-nic-shell/script"
+        echo ""
+        mkdir -p $LOCAL_PATH/$project_name/
+        cp -rf $DIR/* $LOCAL_PATH/$project_name/
+        cd $LOCAL_PATH/$project_name/open-nic-shell/script
+        
+        #run compilation
+        echo "${bold}Running vivado:${normal}"
+        echo ""
+        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
+        echo ""
+        #cd $SHELL_BUILD_DIR
+        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
+        
         #copy and send email
-        if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
+        #if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
+        if [ -f "$LOCAL_PATH/$project_name/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
+            #copy back
+            cp -rf $LOCAL_PATH/$project_name/open-nic-shell/* $DIR/open-nic-shell
+            
+            #remove temporal project on local
+            rm -rf $LOCAL_PATH/$project_name
+            
             #copy to project
             cp "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" "$project_shell"
 
