@@ -50,7 +50,6 @@ WORKFLOW="opennic"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
-#SHELL_BUILD_DIR="$DIR/open-nic-shell/script" 
 DRIVER_DIR="$DIR/open-nic-driver"
 
 #get device name
@@ -60,7 +59,6 @@ device_name=$(cat $DIR/ONIC_DEVICE_NAME)
 FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
 
 #define shell
-#library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #bitstream compilation is only allowed on CPU (build) servers
@@ -118,11 +116,9 @@ if [ "$all" = "1" ]; then
         echo ""
         echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
         echo ""
-        #cd $SHELL_BUILD_DIR
         vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
         
         #copy and send email
-        #if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
         if [ -f "$LOCAL_PATH/$project_name/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
             #copy back
             cp -rf $LOCAL_PATH/$project_name/open-nic-shell/* $DIR/open-nic-shell
@@ -138,12 +134,11 @@ if [ "$all" = "1" ]; then
             chmod a-w "$DIR/.device_config"
 
             #print message
+            echo ""
             echo "${bold}${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
             echo ""
 
             #create xpr simlink
-            #   ./open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr
-            #$DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr
             ln -s $DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr $DIR/open_nic_shell.xpr
 
             #send email
