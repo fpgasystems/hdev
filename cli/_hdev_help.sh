@@ -789,7 +789,7 @@ validate_help() {
 }
 
 validate_aved_help() {
-  if [ "$vivado_enabled_asoc" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME validate aved [flags] [--help]${normal}"
     echo ""
