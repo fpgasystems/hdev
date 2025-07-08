@@ -55,7 +55,9 @@ local_timestamp=$(date -d "$local_commit_date" +%s)
 
 #compare the timestamps and confirm update
 update="0"
-if [ "$local_timestamp" -lt "$remote_timestamp" ]; then
+if [ ! $pullrq_id = "none" ]; then
+    update="1"
+elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
     echo "${bold}hdev update${normal}"
     echo ""
