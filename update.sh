@@ -67,7 +67,7 @@ elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
     echo "${bold}hdev update${normal}"
     echo ""
-    echo "This will update $REPO_NAME to its latest version. Would you like to continue (y/n)?"
+    echo "This will update $REPO_NAME to its latest version. ${bold}Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 else
