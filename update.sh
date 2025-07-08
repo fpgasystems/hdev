@@ -60,7 +60,7 @@ if [ ! $pullrq_id = "none" ]; then
     echo ""
     echo "${bold}hdev update${normal}"
     echo ""
-    echo "This will set $REPO_NAME to its pull request ${bold}$pullrq_id.${normal} Would you like to continue (y/n)?"
+    echo "This will set $REPO_NAME to its pull request ${bold}#$pullrq_id. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
@@ -203,7 +203,7 @@ if [ $update = "1" ]; then
   sleep 1
 
   if [ ! $pullrq_id = "none" ]; then
-    echo "$REPO_NAME was set to pull request ${bold} $pullrq_id (commit ID: $remote_commit_id)!${normal}"
+    echo "$REPO_NAME was set to pull request ${bold}#$pullrq_id (commit ID: $remote_commit_id)!${normal}"
     echo ""
   else
     echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
