@@ -151,7 +151,7 @@ cli_help() {
   if [ "$is_build" = "1" ]; then
   echo "                     ${bold}This is a build server${normal}"
   elif [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
-  echo "                     ${bold}This is a deployment server${normal}"  
+  echo "                     ${bold}This is a deployment server HOLA!${normal}"  
   fi
   echo ""
   exit 1
