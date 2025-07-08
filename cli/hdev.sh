@@ -2863,10 +2863,10 @@ case "$command" in
 
         #echo "Here 5"
 
-        echo "pullrq_id: $pullrq_id"
-        echo "pullrq_found: $pullrq_found"
-        echo "exists_pr: $exists_pr"
-        exit
+        #echo "pullrq_id: $pullrq_id"
+        #echo "pullrq_found: $pullrq_found"
+        #echo "exists_pr: $exists_pr"
+        #exit
 
         #get update.sh
         cd $UPDATES_PATH

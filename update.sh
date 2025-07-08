@@ -75,13 +75,18 @@ if [ $update = "1" ]; then
   cd $UPDATES_PATH
   git clone $REPO_URL #https://github.com/fpgasystems/hdev.git
 
-  #process pull request
-  if [ ! $pullrq_id = "none" ]; then
-    echo "Pulling PR $pullrq_id"
-  fi
-
   #change to directory
   cd $UPDATES_PATH/$REPO_NAME
+
+  #process pull request
+  if [ ! $pullrq_id = "none" ]; then
+    echo ""
+    echo "${bold}Processing pull-request:${normal}"
+    echo ""
+    echo "$GITHUB_CLI_PATH/gh pr checkout $pullrq_id"
+    echo ""
+    $GITHUB_CLI_PATH/gh pr checkout $pullrq_id
+  fi
 
   #get commit ID
   remote_commit_id=$(git rev-parse --short HEAD)
