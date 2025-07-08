@@ -33,6 +33,7 @@ if [ "$pullrq_id" = "" ]; then
 fi
 
 #constants
+GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 
@@ -57,6 +58,7 @@ local_timestamp=$(date -d "$local_commit_date" +%s)
 update="0"
 if [ ! $pullrq_id = "none" ]; then
     update="1"
+    echo ""
 elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
     echo "${bold}hdev update${normal}"
