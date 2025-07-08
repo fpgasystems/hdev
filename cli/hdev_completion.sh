@@ -19,6 +19,7 @@ is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_composer_developer=$($CLI_PATH/common/is_composer_developer)
+is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #evaluate integrations
 gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
@@ -132,7 +133,10 @@ _hdev_completions()
 
             # Check on groups
             if [ "$is_sudo" = "1" ]; then
-                commands="${commands} reboot update"
+                commands="${commands} reboot"
+            fi
+            if [ "$is_hdev_developer" = "1" ]; then
+                commands="${commands} update"
             fi
             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                 commands="${commands} reboot"
@@ -296,7 +300,7 @@ _hdev_completions()
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 update)
-                    COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "--pullrq --help" -- ${cur}))
                     ;;
                 validate)
                     commands="docker --help"

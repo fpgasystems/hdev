@@ -735,15 +735,15 @@ set_performance_help() {
 # update ------------------------------------------------------------------------------------------------------------------------
 
 update_help() {
-  if [ "$is_sudo" = "1" ]; then
+  if [ "$is_hdev_developer" = "1" ]; then
     #$CLI_PATH/help/update $CLI_NAME
     echo ""
-    echo "${bold}$CLI_NAME update [--help]${normal}"
+    echo "${bold}$CLI_NAME update [flags] [--help]${normal}"
     echo ""
-    echo "Updates $CLI_NAME to its latest version."
+    echo "Updates $CLI_NAME to the latest release. Use --pullrq to test a pull request."
     echo ""
-    echo "ARGUMENTS"
-    echo "   This command has no arguments."
+    echo "FLAGS"
+    echo "   ${bold}-p, --pullrq${normal}    - Pull request ID."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""

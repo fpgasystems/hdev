@@ -24,6 +24,7 @@ COMPOSER_PATH="$HDEV_PATH/composer"
 COMPOSER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_REPO)
 COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
 IS_GPU_DEVELOPER="1"
 MTU_DEFAULT=$($CLI_PATH/common/get_constant $CLI_PATH MTU_DEFAULT)
 MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
@@ -75,6 +76,7 @@ is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_composer_developer=$($CLI_PATH/common/is_composer_developer)
+is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -138,8 +140,8 @@ cli_help() {
   else
   echo "    ${bold}set${normal}            - Devices and host configuration."
   fi
-  if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}update${normal}         - Updates $CLI_NAME to its latest version."
+  if [ "$is_hdev_developer" = "1" ]; then
+  echo "    ${bold}update${normal}         - Updates $CLI_NAME to the latest release. Use --pullrq to test a pull request."
   fi
   echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
   echo ""
@@ -2782,16 +2784,89 @@ case "$command" in
         ;;
       *)
         #early exit
-        if [ "$is_sudo" = "0" ]; then
+        if [ "$is_hdev_developer" = "0" ]; then
           exit
         fi
         
-        if [ "$#" -ne 1 ]; then
-          update_help
-          exit 1
+        #if [ "$#" -ne 1 ]; then
+        #  update_help
+        #  exit 1
+        #fi
+
+        #check on software
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-p --pullrq --help"
+        #flags_check $command_arguments_flags"@"$valid_flags
+        #if [[ ! " $valid_flags " =~ " $arguments " ]]; then
+        #  update_help
+        #fi
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$@"
+
+        #echo "flags_array: ${flags_array[@]}"
+        #echo "arguments: ${arguments[@]}"
+
+        #checks (command line 2/2)
+        #if [ "$flags_array" = "update" ]; then
+        exists_pr="0"
+        if [ "$arguments" = "" ]; then
+
+          #echo "Here 1"
+          pullrq_found="1"
+          pullrq_id="none"
+        else
+
+          #echo "Here 2"
+
+          #check on pull request
+          if [[ ! " $valid_flags " =~ " $arguments " ]]; then
+            update_help
+          fi
+
+          #echo "Here 3"
+          #echo "0: ${flags_array[0]}"
+          #echo "1: ${flags_array[1]}"
+          #echo "2: ${flags_array[2]}"
+          #echo "3: ${flags_array[3]}"
+
+          #word_check "$CLI_PATH" "-p" "--pullrq" "${flags_array[@]}"
+          #pullrq_found=$word_found
+          #pullrq_id=$word_value
+
+          if [[ ${flags_array[1]} = "-p" || ${flags_array[1]} = "--pullrq" ]]; then
+            pullrq_found="1"
+            pullrq_id=${flags_array[2]}
+          fi 
+
+          #check on pullrq_id
+          if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
+            echo ""
+            echo $CHECK_ON_PR_ERR_MSG
+            echo ""
+            exit 1
+          fi
+
+          #check if PR exist
+          exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $HDEV_REPO $pullrq_id)
+          if [ "$exists_pr" = "0" ]; then
+            echo ""
+            echo $CHECK_ON_PR_ERR_MSG
+            echo ""
+            exit 1
+          fi
         fi
 
-        sudo_check $USER
+        #sudo_check $USER
+
+        #echo "Here 5"
+
+        echo "pullrq_id: $pullrq_id"
+        echo "pullrq_found: $pullrq_found"
+        echo "exists_pr: $exists_pr"
+        exit
 
         #get update.sh
         cd $UPDATES_PATH
@@ -2804,7 +2879,7 @@ case "$command" in
         rm -rf $UPDATES_PATH/$REPO_NAME
         
         #run up to date update 
-        $HDEV_PATH/update
+        $HDEV_PATH/update --pullrq $pullrq_id
         ;;
     esac
     ;;

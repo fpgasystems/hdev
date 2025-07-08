@@ -6,6 +6,9 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#usage:       $CLI_PATH/hdev update --pullrq $pullrq_id
+#example: /opt/hdev/cli/hdev update --pullrq         17
+
 #helper functions
 chmod_x() {
     path="$1"
@@ -16,8 +19,16 @@ chmod_x() {
 }
 
 #early exit
-is_sudo=$($CLI_PATH/common/is_sudo $USER)
-if [ "$is_sudo" = "0" ]; then
+is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
+if [ "$is_hdev_developer" = "0" ]; then
+    exit
+fi
+
+#inputs
+pullrq_id=$2
+
+#all inputs must be provided
+if [ "$pullrq_id" = "" ]; then
     exit
 fi
 
@@ -63,6 +74,11 @@ if [ $update = "1" ]; then
   #checkout
   cd $UPDATES_PATH
   git clone $REPO_URL #https://github.com/fpgasystems/hdev.git
+
+  #process pull request
+  if [ ! $pullrq_id = "none" ]; then
+    echo "Pulling PR $pullrq_id"
+  fi
 
   #change to directory
   cd $UPDATES_PATH/$REPO_NAME
