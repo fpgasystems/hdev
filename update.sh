@@ -57,7 +57,11 @@ local_timestamp=$(date -d "$local_commit_date" +%s)
 #compare the timestamps and confirm update
 update="0"
 if [ ! $pullrq_id = "none" ]; then
-    update="1"
+    echo ""
+    echo "${bold}hdev update${normal}"
+    echo ""
+    echo "This will set $REPO_NAME to its pull request ${bold}$pullrq_id.${normal} Would you like to continue (y/n)?"
+    update=$($CLI_PATH/common/push_dialog)
     echo ""
 elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
@@ -198,8 +202,13 @@ if [ $update = "1" ]; then
   rm -rf $UPDATES_PATH/$REPO_NAME
   sleep 1
 
-  echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
-  echo ""
+  if [ ! $pullrq_id = "none" ]; then
+    echo "$REPO_NAME was set to pull request ${bold} $pullrq_id (commit ID: $remote_commit_id)!${normal}"
+    echo ""
+  else
+    echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+    echo ""
+  fi
 fi
 
 #author: https://github.com/jmoya82
