@@ -159,7 +159,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo "       ${bold}--project${normal}   - Specifies your VRT project name." 
             echo "       ${bold}--push${normal}      - Pushes your VRT project to your GitHub account." 
             echo "       ${bold}--tag${normal}       - GitHub tag ID (default: ${bold}$VRT_TAG${normal})."
-            echo "       ${bold}--template${normal}  - According to ${bold}$VRT_REPO${normal} GitHub repository examples."
+            echo "       ${bold}--template${normal}  - Based on ${bold}$VRT_REPO${normal} GitHub repository examples."
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
