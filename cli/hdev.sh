@@ -3166,9 +3166,11 @@ case "$command" in
         fi
 
         #checks (command line)
+        pullrq_found="0"
+        pullrq_id="none"
+        exists_pr="0"
         if [ ! "$flags_array" = "" ]; then
           #check on PR
-          exists_pr="0"
           if [ "$is_hdev_developer" = "1" ]; then
             word_check "$CLI_PATH" "-p" "--pullrq" "${flags_array[@]}"
             pullrq_found=$word_found
@@ -3217,18 +3219,8 @@ case "$command" in
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
 
-        echo "HEY"
-        echo "pullrq_id: $pullrq_id"
-        echo "pullrq_found: $pullrq_found"
-        echo "exists_pr: $exists_pr"
-        echo "tag_found: $tag_found"
-        echo "tag_name: $tag_name"
-        echo "device_index: $device_index"
-        echo "device_check: $device_check"
-        exit
-
         #run
-        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version
+        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version --pullrq $pullrq_id
         ;;
       *)
         validate_help

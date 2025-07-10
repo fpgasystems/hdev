@@ -5,8 +5,8 @@ CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name --version $vivado_version
-#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all --version          2024.2
+#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name --version $vivado_version --pullrq $pullrq_id
+#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all --version          2024.2 --pullrq          1
 
 #early exit
 url="${HOSTNAME}"
@@ -23,9 +23,16 @@ device_index=$2
 tag_name=$4
 target_name=$6
 vivado_version=$8
+pullrq_id=${10}
+
+echo "HEY"
+echo "device_index: $device_index"
+echo "tag_name: $tag_name"
+echo "target_name: $target_name"
+echo "pullrq_id: $pullrq_id"
 
 #all inputs must be provided
-if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ]; then
+if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ] || [ "$pullrq_id" = "" ]; then
     exit
 fi
 
