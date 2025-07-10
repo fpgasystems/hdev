@@ -55,7 +55,11 @@ VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--device" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 VRT_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
-VRT_VALIDATE_FLAGS=( "--device" "--tag" "--target" )
+if [ "$is_hdev_developer" = "1" ]; then
+    VRT_VALIDATE_FLAGS=( "--device" "--tag" "--target" "--pullrq" )
+else
+    VRT_VALIDATE_FLAGS=( "--device" "--tag" "--target" )
+fi
 XDP_BUILD_FLAGS=( "--commit" "--project" )
 XDP_NEW_FLAGS=( "--commit" "--project" "--push" )
 XDP_PROGRAM_FLAGS=( "--commit" "--interface" "--project" "--start" ) #"--stop"
@@ -707,7 +711,15 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
+                            
+                            #echo "HEY"
+                            #echo "${previous_flags[*]}"
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_VALIDATE_FLAGS[*]}")
+                            if [[ " ${previous_flags[*]} " == *"--pullrq"* ]]; then
+                                remaining_flags=("${remaining_flags[@]/--tag}")
+                            elif [[ " ${previous_flags[*]} " == *"--tag"* ]]; then
+                                remaining_flags=("${remaining_flags[@]/--pullrq}")
+                            fi
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -833,6 +845,11 @@ _hdev_completions()
                             ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_VALIDATE_FLAGS[*]}")
+                            if [[ " ${previous_flags[*]} " == *"--pullrq"* ]]; then
+                                remaining_flags=("${remaining_flags[@]/--tag}")
+                            elif [[ " ${previous_flags[*]} " == *"--tag"* ]]; then
+                                remaining_flags=("${remaining_flags[@]/--pullrq}")
+                            fi
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
