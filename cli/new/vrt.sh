@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --device $device_index --template $template_name --push $push_option
-#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --device             1 --template     00_axilite --push            0
+#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --device $device_index --template $template_name --push $push_option --pullrq $pullrq_id
+#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --device             1 --template     00_axilite --push            0 --pullrq          1
 
 #early exit
 url="${HOSTNAME}"
@@ -25,9 +25,10 @@ new_name=$4
 device_index=$6
 template_name=$8
 push_option=${10}
+pullrq_id=${12}
 
 #all inputs must be provided
-if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [ "$template_name" = "" ] || [ "$push_option" = "" ]; then
+if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [ "$template_name" = "" ] || [ "$push_option" = "" ] || [ "$pullrq_id" = "" ]; then
     exit
 fi
 
@@ -62,8 +63,10 @@ else
     mkdir -p $DIR
 fi
 
+echo "HEY: $pullrq_id"
+
 #clone repository
-$CLI_PATH/common/git_clone_vrt $DIR $tag_name
+$CLI_PATH/common/git_clone_vrt $DIR $tag_name $pullrq_id
 
 #save tag_name and template_name
 echo "$tag_name" > $DIR/VRT_TAG

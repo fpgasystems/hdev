@@ -65,7 +65,7 @@ fi
 if ! [ -d "$DIR" ]; then
     echo "${bold}$CLI_NAME new $WORKFLOW (tag ID: $tag_name)${normal}"
     echo ""
-    $CLI_PATH/new/vrt --tag $tag_name --project $project_name --device $device_index --template $template_name --push 0
+    $CLI_PATH/new/vrt --tag $tag_name --project $project_name --device $device_index --template $template_name --push 0 --pullrq $pullrq_id
 fi
 
 #update shell configuration file

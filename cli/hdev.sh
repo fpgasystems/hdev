@@ -3188,7 +3188,7 @@ case "$command" in
             fi
 
             #check if PR exist
-            exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $HDEV_REPO $pullrq_id)
+            exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $VRT_REPO $pullrq_id)
             if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
               echo ""
               echo $CHECK_ON_PR_ERR_MSG
