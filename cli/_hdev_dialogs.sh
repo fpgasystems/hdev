@@ -1296,13 +1296,13 @@ word_check() {
   word_value=$(echo "$result" | sed -n '2p')
 
   #forbidden combinations
-  if [ "$word_found" = "1" ] && [ "$word_value" = "" ]; then
-    echo ""
-    #echo "Please, choose a valid ${word_2#--} name."
-    echo "Please, choose a valid parameter value."
-    echo ""
-    exit 1
-  fi
+  #if [ "$word_found" = "1" ] && [ "$word_value" = "" ]; then
+  #  echo ""
+  #  #echo "Please, choose a valid ${word_2#--} name."
+  #  echo "Please, choose a valid parameter value."
+  #  echo ""
+  #  exit 1
+  #fi
 }
 
 xrt_check() {
