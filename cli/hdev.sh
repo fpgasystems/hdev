@@ -3176,9 +3176,6 @@ case "$command" in
             pullrq_found=$word_found
             pullrq_id=$word_value
 
-            echo "pullrq_found: $pullrq_found"
-            echo "pullrq_id: $pullrq_id"
-
             #check on pullrq_id
             if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
               echo ""

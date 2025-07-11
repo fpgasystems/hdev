@@ -25,12 +25,6 @@ target_name=$6
 vivado_version=$8
 pullrq_id=${10}
 
-echo "HEY"
-echo "device_index: $device_index"
-echo "tag_name: $tag_name"
-echo "target_name: $target_name"
-echo "pullrq_id: $pullrq_id"
-
 #all inputs must be provided
 if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ] || [ "$pullrq_id" = "" ]; then
     exit
