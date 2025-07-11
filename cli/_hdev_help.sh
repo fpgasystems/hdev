@@ -735,7 +735,7 @@ set_performance_help() {
 # update ------------------------------------------------------------------------------------------------------------------------
 
 update_help() {
-  if [ "$is_hdev_developer" = "1" ]; then
+  if [ "$is_sudo" = "1" ]; then
     #$CLI_PATH/help/update $CLI_NAME
     echo ""
     echo "${bold}$CLI_NAME update [flags] [--help]${normal}"

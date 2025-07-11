@@ -140,7 +140,7 @@ cli_help() {
   else
   echo "    ${bold}set${normal}            - Devices and host configuration."
   fi
-  if [ "$is_hdev_developer" = "1" ]; then
+  if [ "$is_sudo" = "1" ]; then
   echo "    ${bold}update${normal}         - Update ${bold}$CLI_NAME${normal} to latest release (default), or test a pull request."
   fi
   echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
@@ -2784,7 +2784,7 @@ case "$command" in
         ;;
       *)
         #early exit
-        if [ "$is_hdev_developer" = "0" ]; then
+        if [ "$is_sudo" = "0" ]; then
           exit
         fi
         

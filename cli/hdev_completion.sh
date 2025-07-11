@@ -139,7 +139,7 @@ _hdev_completions()
             if [ "$is_sudo" = "1" ]; then
                 commands="${commands} reboot"
             fi
-            if [ "$is_hdev_developer" = "1" ]; then
+            if [ "$is_sudo" = "1" ]; then
                 commands="${commands} update"
             fi
             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
