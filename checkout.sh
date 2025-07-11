@@ -58,14 +58,14 @@ local_timestamp=$(date -d "$local_commit_date" +%s)
 update="0"
 if [ ! $pullrq_id = "none" ]; then
     echo ""
-    echo "${bold}hdev update${normal}"
+    echo "${bold}hdev checkout${normal}"
     echo ""
     echo "This will set $REPO_NAME to its pull request ${bold}#$pullrq_id. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
-    echo "${bold}hdev update${normal}"
+    echo "${bold}hdev checkout${normal}"
     echo ""
     echo "This will update $REPO_NAME to its latest version. ${bold}Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
