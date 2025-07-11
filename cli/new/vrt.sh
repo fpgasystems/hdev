@@ -63,8 +63,6 @@ else
     mkdir -p $DIR
 fi
 
-echo "HEY: $pullrq_id"
-
 #clone repository
 $CLI_PATH/common/git_clone_vrt $DIR $tag_name $pullrq_id
 
