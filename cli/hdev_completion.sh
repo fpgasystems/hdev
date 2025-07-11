@@ -140,7 +140,7 @@ _hdev_completions()
                 commands="${commands} reboot"
             fi
             if [ "$is_sudo" = "1" ]; then
-                commands="${commands} update"
+                commands="${commands} checkout"
             fi
             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                 commands="${commands} reboot"
@@ -303,7 +303,7 @@ _hdev_completions()
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
-                update)
+                checkout)
                     COMPREPLY=($(compgen -W "--pullrq --help" -- ${cur}))
                     ;;
                 validate)

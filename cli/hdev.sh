@@ -111,6 +111,9 @@ cli_help() {
   echo ""
   echo "COMMANDS:"
   echo "    ${bold}build${normal}          - Creates binaries, bitstreams, and drivers for your accelerated applications."
+  if [ "$is_sudo" = "1" ]; then
+  echo "    ${bold}checkout${normal}       - Update ${bold}$CLI_NAME${normal} to latest release (default), or checkout a pull request for testing."
+  fi
   if [ "$is_build" = "1" ]; then
   echo "    ${bold}enable${normal}         - Enables your favorite development and deployment tools."
   fi
@@ -140,9 +143,9 @@ cli_help() {
   else
   echo "    ${bold}set${normal}            - Devices and host configuration."
   fi
-  if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}update${normal}         - Update ${bold}$CLI_NAME${normal} to latest release (default), or test a pull request."
-  fi
+  #if [ "$is_sudo" = "1" ]; then
+  #echo "    ${bold}update${normal}         - Update ${bold}$CLI_NAME${normal} to latest release (default), or test a pull request."
+  #fi
   echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
   echo ""
   echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
@@ -2777,40 +2780,26 @@ case "$command" in
       ;;  
     esac
     ;;
-  update)
+  checkout)
     case "$arguments" in
       -h|--help)
-        update_help
+        checkout_help
         ;;
       *)
         #early exit
         if [ "$is_sudo" = "0" ]; then
           exit
         fi
-        
-        #if [ "$#" -ne 1 ]; then
-        #  update_help
-        #  exit 1
-        #fi
 
         #check on software
         gh_check "$CLI_PATH"
 
         #check on flags
         valid_flags="-p --pullrq --help"
-        #flags_check $command_arguments_flags"@"$valid_flags
-        #if [[ ! " $valid_flags " =~ " $arguments " ]]; then
-        #  update_help
-        #fi
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$@"
 
-        #echo "flags_array: ${flags_array[@]}"
-        #echo "arguments: ${arguments[@]}"
-
-        #checks (command line 2/2)
-        #if [ "$flags_array" = "update" ]; then
         exists_pr="0"
         if [ "$arguments" = "" ]; then
 
@@ -2823,23 +2812,12 @@ case "$command" in
 
           #check on pull request
           if [[ ! " $valid_flags " =~ " $arguments " ]]; then
-            update_help
+            checkout_help
           fi
-
-          #echo "Here 3"
-          #echo "0: ${flags_array[0]}"
-          #echo "1: ${flags_array[1]}"
-          #echo "2: ${flags_array[2]}"
-          #echo "3: ${flags_array[3]}"
 
           word_check "$CLI_PATH" "-p" "--pullrq" "${flags_array[@]}"
           pullrq_found=$word_found
           pullrq_id=$word_value
-
-          #if [[ ${flags_array[1]} = "-p" || ${flags_array[1]} = "--pullrq" ]]; then
-          #  pullrq_found="1"
-          #  pullrq_id=${flags_array[2]}
-          #fi 
 
           #check on pullrq_id
           if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
@@ -2859,27 +2837,18 @@ case "$command" in
           fi
         fi
 
-        #sudo_check $USER
-
-        #echo "Here 5"
-
-        #echo "pullrq_id: $pullrq_id"
-        #echo "pullrq_found: $pullrq_found"
-        #echo "exists_pr: $exists_pr"
-        #exit
-
-        #get update.sh
+        #get checkout.sh
         cd $UPDATES_PATH
         git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
 
-        #copy update
-        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
+        #copy checkout
+        sudo mv $UPDATES_PATH/$REPO_NAME/checkout.sh $HDEV_PATH/checkout
         
         #remove temporal copy
         rm -rf $UPDATES_PATH/$REPO_NAME
         
-        #run up to date update 
-        $HDEV_PATH/update --pullrq $pullrq_id
+        #run up to date checkout 
+        $HDEV_PATH/checkout --pullrq $pullrq_id
         ;;
     esac
     ;;
