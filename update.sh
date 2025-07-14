@@ -6,8 +6,9 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev checkout --pullrq $pullrq_id
-#example: /opt/hdev/cli/hdev checkout --pullrq         17
+#usage:       $CLI_PATH/hdev update --pullrq $pullrq_id
+#example: /opt/hdev/cli/hdev update --pullrq       none
+#         /opt/hdev/cli/hdev update --pullrq          1
 
 #helper functions
 chmod_x() {
@@ -58,16 +59,16 @@ local_timestamp=$(date -d "$local_commit_date" +%s)
 update="0"
 if [ ! $pullrq_id = "none" ]; then
     echo ""
-    echo "${bold}hdev checkout${normal}"
+    echo "${bold}hdev pullrq${normal}"
     echo ""
-    echo "This will set $REPO_NAME to its pull request ${bold}#$pullrq_id. Would you like to continue (y/n)?${normal}"
+    echo "This will checkout ${bold}$REPO_NAME${normal} to its pull request ${bold}#$pullrq_id. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
-    echo "${bold}hdev checkout${normal}"
+    echo "${bold}hdev update${normal}"
     echo ""
-    echo "This will update $REPO_NAME to its latest version. ${bold}Would you like to continue (y/n)?${normal}"
+    echo "This will update ${bold}$REPO_NAME${normal} to its latest version. ${bold}Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 else

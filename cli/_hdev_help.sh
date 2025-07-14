@@ -67,17 +67,17 @@ build_xdp_help() {
     exit
 }
 
-# checkout -----------------------------------------------------------------------------------------------------------------------
+# pullrq -----------------------------------------------------------------------------------------------------------------------
 
-checkout_help() {
+pullrq_help() {
   if [ "$is_sudo" = "1" ]; then
     echo ""
-    echo "${bold}$CLI_NAME checkout [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME pullrq [flags] [--help]${normal}"
     echo ""
     echo "Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
     echo ""
     echo "FLAGS:"
-    echo "   ${bold}-p, --pullrq${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
+    echo "   ${bold}-n, --number${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""

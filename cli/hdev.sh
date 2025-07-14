@@ -111,9 +111,6 @@ cli_help() {
   echo ""
   echo "COMMANDS:"
   echo "    ${bold}build${normal}          - Creates binaries, bitstreams, and drivers for your accelerated applications."
-  if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}checkout${normal}       - Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
-  fi
   if [ "$is_build" = "1" ]; then
   echo "    ${bold}enable${normal}         - Enables your favorite development and deployment tools."
   fi
@@ -131,6 +128,9 @@ cli_help() {
   #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
   if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
+  fi
+  if [ "$is_sudo" = "1" ]; then
+  echo "    ${bold}pullrq${normal}         - Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
@@ -2780,10 +2780,10 @@ case "$command" in
       ;;  
     esac
     ;;
-  checkout)
+  pullrq)
     case "$arguments" in
       -h|--help)
-        checkout_help
+        pullrq_help
         ;;
       *)
         #early exit
@@ -2795,21 +2795,21 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-p --pullrq --help"
+        valid_flags="-n --number --help"
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$@"
 
         exists_pr="0"
         if [ "$arguments" = "" ]; then
-          checkout_help
+          pullrq_help
         else
           #check on pull request
           if [[ ! " $valid_flags " =~ " $arguments " ]]; then
-            checkout_help
+            pullrq_help
           fi
 
-          word_check "$CLI_PATH" "-p" "--pullrq" "${flags_array[@]}"
+          word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
           pullrq_found=$word_found
           pullrq_id=$word_value
 
@@ -2832,17 +2832,17 @@ case "$command" in
           fi
         fi
 
-        #get checkout.sh
+        #get update.sh
         cd $UPDATES_PATH
         git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
 
-        #copy checkout
+        #copy update
         sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
         
         #remove temporal copy
         rm -rf $UPDATES_PATH/$REPO_NAME
         
-        #run up to date checkout 
+        #run up to date update with pullrq 
         $HDEV_PATH/update --pullrq $pullrq_id
         ;;
     esac

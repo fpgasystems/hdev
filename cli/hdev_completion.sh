@@ -137,7 +137,7 @@ _hdev_completions()
 
             # Check on groups
             if [ "$is_sudo" = "1" ]; then
-                commands="${commands} reboot update checkout"
+                commands="${commands} reboot update pullrq"
             fi
             #if [ "$is_sudo" = "1" ]; then
             #    commands="${commands} checkout"
@@ -303,8 +303,8 @@ _hdev_completions()
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
-                checkout)
-                    COMPREPLY=($(compgen -W "--pullrq --help" -- ${cur}))
+                pullrq)
+                    COMPREPLY=($(compgen -W "--number --help" -- ${cur}))
                     ;;
                 update)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
