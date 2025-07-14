@@ -112,7 +112,7 @@ cli_help() {
   echo "COMMANDS:"
   echo "    ${bold}build${normal}          - Creates binaries, bitstreams, and drivers for your accelerated applications."
   if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}checkout${normal}       - Update ${bold}$CLI_NAME${normal} to latest release (default), or checkout a pull request for testing."
+  echo "    ${bold}checkout${normal}       - Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
   fi
   if [ "$is_build" = "1" ]; then
   echo "    ${bold}enable${normal}         - Enables your favorite development and deployment tools."

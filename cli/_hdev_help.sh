@@ -74,7 +74,7 @@ checkout_help() {
     echo ""
     echo "${bold}$CLI_NAME checkout [flags] [--help]${normal}"
     echo ""
-    echo "Update ${bold}$CLI_NAME${normal} to latest release (default), or checkout a pull request for testing."
+    echo "Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-p, --pullrq${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
