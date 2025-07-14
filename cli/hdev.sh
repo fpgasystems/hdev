@@ -2802,14 +2802,8 @@ case "$command" in
 
         exists_pr="0"
         if [ "$arguments" = "" ]; then
-
-          #echo "Here 1"
-          pullrq_found="1"
-          pullrq_id="none"
+          checkout_help
         else
-
-          #echo "Here 2"
-
           #check on pull request
           if [[ ! " $valid_flags " =~ " $arguments " ]]; then
             checkout_help
