@@ -2876,7 +2876,7 @@ case "$command" in
         rm -rf $UPDATES_PATH/$REPO_NAME
         
         #run up to date update 
-        $HDEV_PATH/update
+        $HDEV_PATH/update --pullrq "none"
         ;;
     esac
     ;;
