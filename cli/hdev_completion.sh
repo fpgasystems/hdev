@@ -137,11 +137,11 @@ _hdev_completions()
 
             # Check on groups
             if [ "$is_sudo" = "1" ]; then
-                commands="${commands} reboot"
+                commands="${commands} reboot update checkout"
             fi
-            if [ "$is_sudo" = "1" ]; then
-                commands="${commands} checkout"
-            fi
+            #if [ "$is_sudo" = "1" ]; then
+            #    commands="${commands} checkout"
+            #fi
             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                 commands="${commands} reboot"
             fi
@@ -305,6 +305,9 @@ _hdev_completions()
                     ;;
                 checkout)
                     COMPREPLY=($(compgen -W "--pullrq --help" -- ${cur}))
+                    ;;
+                update)
+                    COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 validate)
                     commands="docker --help"

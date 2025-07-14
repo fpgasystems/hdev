@@ -143,9 +143,9 @@ cli_help() {
   else
   echo "    ${bold}set${normal}            - Devices and host configuration."
   fi
-  #if [ "$is_sudo" = "1" ]; then
-  #echo "    ${bold}update${normal}         - Update ${bold}$CLI_NAME${normal} to latest release (default), or test a pull request."
-  #fi
+  if [ "$is_sudo" = "1" ]; then
+  echo "    ${bold}update${normal}         - Updates ${bold}$CLI_NAME${normal} to its latest version."
+  fi
   echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
   echo ""
   echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
@@ -2843,13 +2843,46 @@ case "$command" in
         git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
 
         #copy checkout
-        sudo mv $UPDATES_PATH/$REPO_NAME/checkout.sh $HDEV_PATH/checkout
+        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
         
         #remove temporal copy
         rm -rf $UPDATES_PATH/$REPO_NAME
         
         #run up to date checkout 
-        $HDEV_PATH/checkout --pullrq $pullrq_id
+        $HDEV_PATH/update --pullrq $pullrq_id
+        ;;
+    esac
+    ;;
+  update)
+    case "$arguments" in
+      -h|--help)
+        update_help
+        ;;
+      *)
+        #early exit
+        if [ "$is_sudo" = "0" ]; then
+          exit
+        fi
+        
+        if [ "$#" -ne 1 ]; then
+          update_help
+          exit 1
+        fi
+
+        sudo_check $USER
+
+        #get update.sh
+        cd $UPDATES_PATH
+        git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
+
+        #copy update
+        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
+        
+        #remove temporal copy
+        rm -rf $UPDATES_PATH/$REPO_NAME
+        
+        #run up to date update 
+        $HDEV_PATH/update
         ;;
     esac
     ;;

@@ -753,22 +753,22 @@ set_performance_help() {
 
 # update ------------------------------------------------------------------------------------------------------------------------
 
-#update_help() {
-#  if [ "$is_sudo" = "1" ]; then
-#    #$CLI_PATH/help/update $CLI_NAME
-#    echo ""
-#    echo "${bold}$CLI_NAME update [flags] [--help]${normal}"
-#    echo ""
-#    echo "Update ${bold}$CLI_NAME${normal} to latest release (default), or test a pull request."
-#    echo ""
-#    echo "FLAGS:"
-#    echo "   ${bold}-p, --pullrq${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
-#    echo ""
-#    echo "   ${bold}-h, --help${normal}      - Help to use this command."
-#    echo ""
-#  fi
-#  exit
-#}
+update_help() {
+  if [ "$is_sudo" = "1" ]; then
+    #$CLI_PATH/help/update $CLI_NAME
+    echo ""
+    echo "${bold}$CLI_NAME update [--help]${normal}"
+    echo ""
+    echo "Updates ${bold}$CLI_NAME${normal} to its latest version."
+    echo ""
+    echo "FLAGS:"
+    echo "   This command has no flags."
+    echo ""
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+  fi
+  exit
+}
 
 # validate -----------------------------------------------------------------------------------------------------------------------
 
