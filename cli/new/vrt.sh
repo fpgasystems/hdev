@@ -64,7 +64,7 @@ else
 fi
 
 #clone repository
-$CLI_PATH/common/git_clone_vrt $DIR $tag_name $pullrq_id
+$CLI_PATH/common/git_clone_vrt $CLI_PATH $DIR $tag_name $pullrq_id
 
 #save tag_name and template_name
 echo "$tag_name" > $DIR/VRT_TAG

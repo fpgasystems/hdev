@@ -4,9 +4,10 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #inputs
-DIR=$1
-AVED_TAG=$2
-pullrq_id=$3
+CLI_PATH=$1
+DIR=$2
+AVED_TAG=$3
+pullrq_id=$4
 
 #constants
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
