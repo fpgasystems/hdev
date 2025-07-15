@@ -111,7 +111,8 @@ if [ -d "$DIR/$target_name.$VRT_TEMPLATE.$vivado_version" ]; then
     echo ""
     echo "./$VRT_TEMPLATE $upstream_port ${VRT_TEMPLATE}_$str.vrtbin"
     echo ""
-    ./$VRT_TEMPLATE $upstream_port ${VRT_TEMPLATE}_$str.vrtbin
+    ./$VRT_TEMPLATE $upstream_port ${VRT_TEMPLATE}_$str.vrtbin > "$DIR/.output"
+    cat "$DIR/.output"
     echo ""
 fi
 
