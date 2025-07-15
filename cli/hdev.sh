@@ -3215,7 +3215,7 @@ case "$command" in
         target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version --number $pullrq_id
+        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version --number $pullrq_id --remove "1"
         ;;
       *)
         validate_help

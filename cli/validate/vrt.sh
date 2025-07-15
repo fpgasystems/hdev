@@ -5,8 +5,8 @@ CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name --version $vivado_version --number $pullrq_id
-#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all --version          2024.2 --number          1
+#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name --version $vivado_version --number $pullrq_id --remove $remove_project
+#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all --version          2024.2 --number          1 --remove               1
 
 #early exit
 url="${HOSTNAME}"
@@ -24,9 +24,10 @@ tag_name=$4
 target_name=$6
 vivado_version=$8
 pullrq_id=${10}
+remove_project=${12}
 
 #all inputs must be provided
-if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ] || [ "$pullrq_id" = "" ]; then
+if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$target_name" = "" ] || [ "$vivado_version" = "" ] || [ "$pullrq_id" = "" ] || [ "$remove_project" = "" ]; then
     exit
 fi
 
@@ -44,8 +45,14 @@ template_name="00_axilite"
 #get device_name
 #device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
+#set project PR label
+pullrq_id_str=""
+if [ ! "$pullrq_id" = "none" ]; then
+    pullrq_id_str=".PR#$pullrq_id"
+fi
+
 #set project name
-project_name="validate_vrt.$hostname.$tag_name.$target_name.$vivado_version"
+project_name="validate_vrt.$hostname.$tag_name.$target_name.$vivado_version$pullrq_id_str"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
@@ -83,6 +90,12 @@ fi
 $CLI_PATH/run/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version
 
 #remove at the end
-rm -rf $DIR
+if [ "$remove_project" = "1" ]; then
+    echo "${bold}Deleting project:${normal}"
+    echo ""
+    echo "rm -rf $DIR"
+    echo ""
+    rm -rf $DIR
+fi
 
 #author: https://github.com/jmoya82
