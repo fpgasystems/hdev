@@ -5,8 +5,8 @@ CLI_NAME="hdev"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name --version $vivado_version --pullrq $pullrq_id
-#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all --version          2024.2 --pullrq          1
+#usage:       $CLI_PATH/hdev validate vrt --device $device_index --tag $tag_name --target $target_name --version $vivado_version --number $pullrq_id
+#example: /opt/hdev/cli/hdev validate vrt --device             1 --tag    v1.1.1 --target       hw_all --version          2024.2 --number          1
 
 #early exit
 url="${HOSTNAME}"
@@ -59,7 +59,7 @@ fi
 if ! [ -d "$DIR" ]; then
     echo "${bold}$CLI_NAME new $WORKFLOW (tag ID: $tag_name)${normal}"
     echo ""
-    $CLI_PATH/new/vrt --tag $tag_name --project $project_name --device $device_index --template $template_name --push 0 --pullrq $pullrq_id
+    $CLI_PATH/new/vrt --tag $tag_name --project $project_name --device $device_index --template $template_name --push 0 --number $pullrq_id
 fi
 
 #update shell configuration file

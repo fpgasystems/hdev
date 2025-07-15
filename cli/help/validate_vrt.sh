@@ -19,7 +19,7 @@ echo ""
 echo "FLAGS:"
 echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
 if [ "$is_hdev_developer" = "1" ]; then
-echo "   ${bold}-p, --pullrq${normal}    - ${bold}$VRT_REPO${normal} GitHub repository pull request ID."
+echo "   ${bold}-n, --number${normal}    - ${bold}$VRT_REPO${normal} GitHub repository pull request ID."
 fi
 echo "   ${bold}    --tag${normal}       - GitHub tag ID (default: ${bold}$VRT_TAG${normal})."
 echo "   ${bold}    --target${normal}    - Sets the build target to $targets"

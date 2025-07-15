@@ -6,9 +6,9 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev update --pullrq $pullrq_id
-#example: /opt/hdev/cli/hdev update --pullrq       none
-#         /opt/hdev/cli/hdev update --pullrq          1
+#usage:       $CLI_PATH/hdev update --number $pullrq_id
+#example: /opt/hdev/cli/hdev update --number       none
+#         /opt/hdev/cli/hdev update --number          1
 
 #helper functions
 chmod_x() {

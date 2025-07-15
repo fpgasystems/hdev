@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --device $device_index --template $template_name --push $push_option --pullrq $pullrq_id
-#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --device             1 --template     00_axilite --push            0 --pullrq          1
+#usage:       $CLI_PATH/hdev new vrt --tag                            $tag_name --project   $new_name --device $device_index --template $template_name --push $push_option --number $pullrq_id
+#example: /opt/hdev/cli/hdev new vrt --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --device             1 --template     00_axilite --push            0 --number          1
 
 #early exit
 url="${HOSTNAME}"

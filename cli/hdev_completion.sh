@@ -56,7 +56,7 @@ VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 VRT_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
 if [ "$is_hdev_developer" = "1" ]; then
-    VRT_VALIDATE_FLAGS=( "--device" "--tag" "--target" "--pullrq" )
+    VRT_VALIDATE_FLAGS=( "--device" "--tag" "--target" "--number" )
 else
     VRT_VALIDATE_FLAGS=( "--device" "--tag" "--target" )
 fi
@@ -718,10 +718,10 @@ _hdev_completions()
                             #echo "HEY"
                             #echo "${previous_flags[*]}"
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_VALIDATE_FLAGS[*]}")
-                            if [[ " ${previous_flags[*]} " == *"--pullrq"* ]]; then
+                            if [[ " ${previous_flags[*]} " == *"--number"* ]]; then
                                 remaining_flags=("${remaining_flags[@]/--tag}")
                             elif [[ " ${previous_flags[*]} " == *"--tag"* ]]; then
-                                remaining_flags=("${remaining_flags[@]/--pullrq}")
+                                remaining_flags=("${remaining_flags[@]/--number}")
                             fi
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
@@ -848,10 +848,10 @@ _hdev_completions()
                             ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_VALIDATE_FLAGS[*]}")
-                            if [[ " ${previous_flags[*]} " == *"--pullrq"* ]]; then
+                            if [[ " ${previous_flags[*]} " == *"--number"* ]]; then
                                 remaining_flags=("${remaining_flags[@]/--tag}")
                             elif [[ " ${previous_flags[*]} " == *"--tag"* ]]; then
-                                remaining_flags=("${remaining_flags[@]/--pullrq}")
+                                remaining_flags=("${remaining_flags[@]/--number}")
                             fi
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;

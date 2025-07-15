@@ -2843,7 +2843,7 @@ case "$command" in
         rm -rf $UPDATES_PATH/$REPO_NAME
         
         #run up to date update with pullrq 
-        $HDEV_PATH/update --pullrq $pullrq_id
+        $HDEV_PATH/update --number $pullrq_id
         ;;
     esac
     ;;
@@ -2876,7 +2876,7 @@ case "$command" in
         rm -rf $UPDATES_PATH/$REPO_NAME
         
         #run up to date update 
-        $HDEV_PATH/update --pullrq "none"
+        $HDEV_PATH/update --number "none"
         ;;
     esac
     ;;
@@ -3145,7 +3145,7 @@ case "$command" in
       
         #check on flags
         #if [ "$is_hdev_developer" = "1" ]; then
-          valid_flags="-d --device -p --pullrq --tag --target -h --help"
+          valid_flags="-d --device -n --number --tag --target -h --help"
         #else
         #  valid_flags="-d --device --tag --target -h --help"
         #fi
@@ -3169,7 +3169,7 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           #check on PR
           if [ "$is_hdev_developer" = "1" ]; then
-            word_check "$CLI_PATH" "-p" "--pullrq" "${flags_array[@]}"
+            word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
             pullrq_found=$word_found
             pullrq_id=$word_value
 
@@ -3215,7 +3215,7 @@ case "$command" in
         target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version --pullrq $pullrq_id
+        $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version --number $pullrq_id
         ;;
       *)
         validate_help
