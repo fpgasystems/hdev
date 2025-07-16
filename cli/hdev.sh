@@ -1073,7 +1073,7 @@ case "$command" in
         fi
 
         #run
-        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --device $device_index --template $template_name --push $push_option
+        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --device $device_index --template $template_name --push $push_option --number "none"
         ;;
       xdp)
         #early exit
