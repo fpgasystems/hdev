@@ -58,28 +58,40 @@ project_name="validate_vrt.$hostname.$tag_name.$target_name.$vivado_version$pull
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
 
 #remove in the beginning
-if [ -d "$DIR" ]; then
-    rm -rf "$DIR"
-fi
+#if [ -d "$DIR" ]; then
+#    rm -rf "$DIR"
+#fi
 
 #new
 if ! [ -d "$DIR" ]; then
     echo "${bold}$CLI_NAME new $WORKFLOW (tag ID: $tag_name)${normal}"
     echo ""
     $CLI_PATH/new/vrt --tag $tag_name --project $project_name --device $device_index --template $template_name --push 0 --number $pullrq_id
+
+    #update shell configuration file
+    sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
+
+    #build
+    $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target "app" --version $vivado_version --all 0
+
+    #copy pre-compiled files
+    cp -rf $CLI_PATH/bitstreams/vrt/$tag_name/$target_name.$template_name.$vivado_version $DIR
+
+    #change mode
+    chmod +x $DIR/$target_name.$template_name.$vivado_version/$template_name
 fi
 
 #update shell configuration file
-sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
+#sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
 
 #build
-$CLI_PATH/build/vrt --project $project_name --tag $tag_name --target "app" --version $vivado_version --all 0
+#$CLI_PATH/build/vrt --project $project_name --tag $tag_name --target "app" --version $vivado_version --all 0
 
 #copy pre-compiled files
-cp -rf $CLI_PATH/bitstreams/vrt/$tag_name/$target_name.$template_name.$vivado_version $DIR
+#cp -rf $CLI_PATH/bitstreams/vrt/$tag_name/$target_name.$template_name.$vivado_version $DIR
 
 #change mode
-chmod +x $DIR/$target_name.$template_name.$vivado_version/$template_name
+#chmod +x $DIR/$target_name.$template_name.$vivado_version/$template_name
 
 #program (hw_all)
 if [ "$target_name" = "hw_all" ]; then
