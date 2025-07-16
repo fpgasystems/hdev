@@ -63,6 +63,10 @@ device_index=$(awk -F': ' -v w="$WORKFLOW" '$2 == w { print $1; exit }' $DIR/sh.
 
 #check on emu_all
 if [ "$target_name" = "emu_all" ] || [ "$target_name" = "sim_all" ]; then
+    echo "${bold}Exporting LD_LIBRARY_PATH:${normal}"
+    echo ""
+    echo "export LD_LIBRARY_PATH=$(dirname $(which vivado))/../lib/lnx64.o:$LD_LIBRARY_PATH"
+    echo ""
     export LD_LIBRARY_PATH=$(dirname $(which vivado))/../lib/lnx64.o:$LD_LIBRARY_PATH
 fi
 
