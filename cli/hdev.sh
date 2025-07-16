@@ -3216,12 +3216,6 @@ case "$command" in
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
 
-        echo "device_index: $device_index"
-        echo "tag_name: $tag_name"
-        echo "target_name: $target_name"
-        echo "vivado_version: $vivado_version"
-        echo "pullrq_id: $pullrq_id"
-
         #run
         $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version --number $pullrq_id --remove "1"
         ;;
