@@ -3171,7 +3171,7 @@ case "$command" in
           if [ "$is_hdev_developer" = "1" ]; then
             word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
             pullrq_found=$word_found
-            pullrq_id=$word_value
+            #pullrq_id=$word_value
 
             #check on pullrq_id
             if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
@@ -3179,6 +3179,8 @@ case "$command" in
               echo $CHECK_ON_PR_ERR_MSG
               echo ""
               exit 1
+            elif [ "$pullrq_found" == "1" ]; then
+              pullrq_id=$word_value
             fi
 
             #check if PR exist
@@ -3213,6 +3215,12 @@ case "$command" in
         echo ""
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         target_dialog "$CLI_PATH" "VRT_TARGETS" "none" "$is_build" "${flags_array[@]}"
+
+        echo "device_index: $device_index"
+        echo "tag_name: $tag_name"
+        echo "target_name: $target_name"
+        echo "vivado_version: $vivado_version"
+        echo "pullrq_id: $pullrq_id"
 
         #run
         $CLI_PATH/validate/vrt --device $device_index --tag $tag_name --target $target_name  --version $vivado_version --number $pullrq_id --remove "1"
