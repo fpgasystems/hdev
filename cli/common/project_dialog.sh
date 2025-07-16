@@ -18,12 +18,12 @@ projects=( *"/" )
 j=0
 for i in "${projects[@]}"
 do
-    if [[ $i =~ "common/" || $i =~ ^validate_.* ]]; then
-        echo "" >&/dev/null
-    else
+    #if [[ $i =~ "common/" || $i =~ ^validate_.* ]]; then
+    #    echo "" >&/dev/null
+    #else
         aux[j]=$i
         j=$(($j + 1))
-    fi
+    #fi
 done
 
 # Check if there is only one directory
