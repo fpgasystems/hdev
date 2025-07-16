@@ -48,7 +48,7 @@ template_name="00_axilite"
 #set project PR label
 pullrq_id_str=""
 if [ ! "$pullrq_id" = "none" ]; then
-    pullrq_id_str=".PR#$pullrq_id"
+    pullrq_id_str=".PR_$pullrq_id"
 fi
 
 #set project name
@@ -72,13 +72,19 @@ if ! [ -d "$DIR" ]; then
     sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
 
     #build
-    $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target "app" --version $vivado_version --all 0
+    if [ "$pullrq_id" = "none" ]; then
+        #build
+        $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target "app" --version $vivado_version --all 0
 
-    #copy pre-compiled files
-    cp -rf $CLI_PATH/bitstreams/vrt/$tag_name/$target_name.$template_name.$vivado_version $DIR
+        #copy pre-compiled files
+        cp -rf $CLI_PATH/bitstreams/vrt/$tag_name/$target_name.$template_name.$vivado_version $DIR
 
-    #change mode
-    chmod +x $DIR/$target_name.$template_name.$vivado_version/$template_name
+        #change mode
+        chmod +x $DIR/$target_name.$template_name.$vivado_version/$template_name
+    else
+        #build
+        $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version --all 1
+    fi
 fi
 
 #update shell configuration file
