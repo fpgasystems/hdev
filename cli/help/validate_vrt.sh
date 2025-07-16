@@ -9,7 +9,7 @@ VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
 VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
-targets="${bold}sim_all, emu_all,${normal} or ${bold}hw_all.${normal}"
+targets="${bold}emu_all, sim_all,${normal} or ${bold}hw_all.${normal}"
 
 echo ""
 echo "${bold}$CLI_NAME validate vrt [flags] [--help]${normal}"
