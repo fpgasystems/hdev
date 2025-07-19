@@ -139,7 +139,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
             echo "Create machine and deep learning applications with TensorFlow."
             echo ""
-            echo "FLAGS"
+            echo "FLAGS:"
             echo "       ${bold}--project${normal}   - Specifies your TensorFlow project name." 
             echo "       ${bold}--push${normal}      - Pushes the project to your GitHub account." 
             echo ""
