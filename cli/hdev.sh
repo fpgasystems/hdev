@@ -972,6 +972,17 @@ case "$command" in
         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
           exit 1
         fi
+
+        #check on software
+        gh_check "$CLI_PATH"
+        tf_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="--project --push -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
         
         echo "HEY! Continue here"
         
