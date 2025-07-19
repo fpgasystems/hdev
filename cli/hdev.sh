@@ -40,6 +40,7 @@ ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 SOCKPERF_MIN=$($CLI_PATH/common/get_constant $CLI_PATH SOCKPERF_MIN)
 REPO_NAME="hdev"
+TENSORFLOW_COMMIT=$(cat $HDEV_PATH/COMMIT)
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 VRT_DEVICE_NAMES="$CLI_PATH/constants/VRT_DEVICE_NAMES"
 VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
@@ -984,8 +985,24 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
         
-        echo "HEY! Continue here"
+        #echo "HEY! Continue here $TENSORFLOW_COMMIT"
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$TENSORFLOW_COMMIT" "${flags_array[@]}"
+          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          push_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $TENSORFLOW_COMMIT)${normal}"
+        echo ""
+        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$TENSORFLOW_COMMIT" "${flags_array[@]}"
+        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$TENSORFLOW_COMMIT" "${flags_array[@]}"
         
+        #run
+        $CLI_PATH/new/tensorflow --commit $TENSORFLOW_COMMIT --project $new_name --push $push_option
         ;;
       vrt)
         #early exit
