@@ -571,7 +571,7 @@ run_tensorflow_help() {
     echo ""
     echo "Runs your TensorFlow application on a given device."
     echo ""
-    echo "FLAGS"
+    echo "FLAGS:"
     echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
     echo "   ${bold}-p, --project${normal}   - Specifies your TensorFlow project name."
     echo ""

@@ -50,6 +50,7 @@ SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 SOCKPERF_RUN_FLAGS=( "--interface" "--server" "--size" )
 TENSORFLOW_RUN_FLAGS=( "--device" "--project" )
+TENSORFLOW_NEW_FLAGS=( "--project" "--push" )
 VIVADO_OPEN_FLAGS=( "--path" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--device" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
@@ -423,7 +424,7 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         tensorflow)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "${TENSORFLOW_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         vrt)
                             COMPREPLY=($(compgen -W "${VRT_NEW_FLAGS[*]} --help" -- "${cur}"))
@@ -593,6 +594,10 @@ _hdev_completions()
                             ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        tensorflow)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${TENSORFLOW_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         xdp)
