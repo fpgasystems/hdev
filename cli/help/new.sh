@@ -62,7 +62,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
         if [ "$gpu_enabled" = "1" ]; then
-        echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Generates a TensorFlow application."
+        echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Create a new machine learning and deep learning application with TensorFlow."
         fi
         if [ "$vivado_enabled_asoc" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Generates an Alveo V80 RunTime (VRT) project."
@@ -137,10 +137,11 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
             echo "${bold}$CLI_NAME new tensorflow [--help]${normal}"
             echo ""
-            echo "Generates a TensorFlow application template targeting ROCm."
+            echo "Create a new machine learning and deep learning application with TensorFlow."
             echo ""
             echo "FLAGS"
-            echo "   This command has no flags."
+            echo "       ${bold}--project${normal}   - Specifies your TensorFlow project name." 
+            echo "       ${bold}--push${normal}      - Pushes the project to your GitHub account." 
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
