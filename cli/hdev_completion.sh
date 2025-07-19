@@ -36,7 +36,6 @@ COMPOSER_NEW_FLAGS=( "--model" "--project" "--push" "--tag" )
 COMPOSER_OPEN_FLAGS=( "--project" "--tag" )
 #GET_INTERFACES_FLAGS=( "--type" )
 GET_PERFORMANCE_FLAGS=( "--device" )
-HIP_RUN_FLAGS=( "--device" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--device" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
@@ -50,6 +49,7 @@ SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 SOCKPERF_RUN_FLAGS=( "--interface" "--server" "--size" )
+TENSORFLOW_RUN_FLAGS=( "--device" "--project" )
 VIVADO_OPEN_FLAGS=( "--path" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--device" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
@@ -158,9 +158,6 @@ _hdev_completions()
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
                         commands="${commands} aved vrt"
                     fi
-                    if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
-                        commands="${commands} hip"
-                    fi
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
@@ -205,7 +202,7 @@ _hdev_completions()
                             commands="${commands} aved vrt"
                         fi
                         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "1" ]; then
-                            commands="${commands} hip"
+                            commands="${commands} tensorflow"
                         fi
                         if [[ -f "$CLI_PATH/open/composer" ]]; then
                             if [ "$is_build" = "0" ] && [ "$is_composer_developer" = "1" ]; then
@@ -271,7 +268,7 @@ _hdev_completions()
                         commands="${commands} aved vrt"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-                        commands="${commands} hip"
+                        commands="${commands} tensorflow"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
@@ -315,7 +312,7 @@ _hdev_completions()
                         commands="${commands} aved vrt"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-                        commands="${commands} hip"
+                        commands="${commands} tensorflow"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
@@ -339,9 +336,6 @@ _hdev_completions()
                             ;;
                         c)
                             COMPREPLY=($(compgen -W "--source --help" -- ${cur}))
-                            ;;
-                        hip)
-                            COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
                             ;;
                         opennic)
                             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
@@ -422,14 +416,14 @@ _hdev_completions()
                         aved)
                             COMPREPLY=($(compgen -W "${AVED_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
-                        hip)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
-                            ;;
                         composer)
                             COMPREPLY=($(compgen -W "${COMPOSER_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        tensorflow)
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         vrt)
                             COMPREPLY=($(compgen -W "${VRT_NEW_FLAGS[*]} --help" -- "${cur}"))
@@ -485,14 +479,14 @@ _hdev_completions()
                         aved)
                             COMPREPLY=($(compgen -W "${AVED_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
-                        hip)
-                            COMPREPLY=($(compgen -W "${HIP_RUN_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         sockperf)
                             COMPREPLY=($(compgen -W "${SOCKPERF_RUN_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        tensorflow)
+                            COMPREPLY=($(compgen -W "${TENSORFLOW_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         vrt)
                             COMPREPLY=($(compgen -W "${VRT_RUN_FLAGS[*]} --help" -- "${cur}"))
@@ -532,11 +526,11 @@ _hdev_completions()
                         docker)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
-                        hip)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
-                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        tensorflow)
+                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         vitis) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
@@ -673,16 +667,16 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
-                        hip)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${HIP_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         sockperf)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SOCKPERF_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        tensorflow)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${TENSORFLOW_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)

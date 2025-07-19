@@ -30,13 +30,6 @@ build_c_help() {
     exit
 }
 
-build_hip_help() {
-    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-    is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-    $CLI_PATH/help/build_hip $CLI_NAME $is_build $is_gpu $IS_GPU_DEVELOPER
-    exit
-}
-
 build_opennic_help() {
     is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
     is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
@@ -306,13 +299,6 @@ new_composer_help() {
   exit
 }
 
-new_hip_help() {
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
-  exit
-}
-
 new_opennic_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
@@ -320,6 +306,13 @@ new_opennic_help() {
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer
+  exit
+}
+
+new_tensorflow_help() {
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "tensorflow" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
   exit
 }
 
@@ -525,13 +518,13 @@ run_help() {
     if [ "$vivado_enabled_asoc" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Runs AVED on a given device."
     fi
-    if [ "$gpu_enabled" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given device."
-    fi
     if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi
     echo "   ${bold}sockperf${normal}        - Network performance assessment with sockperf."
+    if [ "$gpu_enabled" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Runs your TensorFlow application on a given device."
+    fi
     if [ "$vivado_enabled_asoc" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Runs your V80 RunTime (VRT) application."
     fi
@@ -553,25 +546,6 @@ run_aved_help() {
   exit
 }
 
-run_hip_help() {
-  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-    echo ""
-    echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
-    echo ""
-    echo "Runs your HIP application on a given device."
-    echo ""
-    echo "FLAGS"
-    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
-    echo "   ${bold}-p, --project${normal}   - Specifies your HIP project name."
-    echo ""
-    echo "   ${bold}-h, --help${normal}      - Help to use this command."
-    echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
-    echo ""
-  fi
-  exit
-}
-
 run_opennic_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
@@ -586,6 +560,25 @@ run_sockperf_help() {
     $CLI_PATH/help/run_sockperf $CLI_PATH $CLI_NAME
     #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     #echo ""
+  fi
+  exit
+}
+
+run_tensorflow_help() {
+  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+    echo ""
+    echo "${bold}$CLI_NAME run tensorflow [flags] [--help]${normal}"
+    echo ""
+    echo "Runs your TensorFlow application on a given device."
+    echo ""
+    echo "FLAGS"
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo "   ${bold}-p, --project${normal}   - Specifies your TensorFlow project name."
+    echo ""
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
+    echo ""
   fi
   exit
 }
@@ -784,11 +777,11 @@ validate_help() {
     echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-built Alveo Versal Example Design (AVED) validation."
     fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
-    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected device." 
-    fi
     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
+    fi
+    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Validates TensorFlow on the selected device." 
     fi
     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected device."
@@ -817,7 +810,7 @@ validate_aved_help() {
     echo "FLAGS:"
     echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
     echo ""
-    echo "   ${bold}-h, --help${normal}      - Help to use HIP validation."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""
@@ -839,28 +832,28 @@ validate_docker_help() {
   exit 1
 }
 
-validate_hip_help() {
-  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-    echo ""
-    echo "${bold}$CLI_NAME validate hip [flags] [--help]${normal}"
-    echo ""
-    echo "Validates HIP on the selected device."
-    echo ""
-    echo "FLAGS:"
-    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
-    echo ""
-    echo "   ${bold}-h, --help${normal}      - Help to use HIP validation."
-    echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
+validate_opennic_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""
   fi
   exit
 }
 
-validate_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-    $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
+validate_tensorflow_help() {
+  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+    echo ""
+    echo "${bold}$CLI_NAME validate tensorflow [flags] [--help]${normal}"
+    echo ""
+    echo "Validates TensorFlow on the selected device."
+    echo ""
+    echo "FLAGS:"
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo ""
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
     echo ""
   fi
   exit

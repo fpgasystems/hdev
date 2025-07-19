@@ -58,11 +58,11 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
         if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
         echo "   ${bold}composer${normal}        - Model-based design project for Hyperion developers."
         fi
-        if [ "$gpu_enabled" = "1" ]; then
-        echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Generates a HIP application template targeting ROCm."
-        fi
         if [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
+        fi
+        if [ "$gpu_enabled" = "1" ]; then
+        echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Generates a TensorFlow application."
         fi
         if [ "$vivado_enabled_asoc" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Generates an Alveo V80 RunTime (VRT) project."
@@ -114,21 +114,6 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
             echo ""
         fi
-    elif [ "$parameter" = "hip" ]; then
-        if [ "$gpu_enabled" = "1" ]; then
-            echo ""
-            echo "${bold}$CLI_NAME new hip [--help]${normal}"
-            echo ""
-            echo "Generates a HIP application template targeting ROCm."
-            echo ""
-            echo "FLAGS"
-            echo "   This command has no flags."
-            echo ""
-            echo "   ${bold}-h, --help${normal}      - Help to use this command."
-            echo ""
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
-            echo ""
-        fi
     elif [ "$parameter" = "opennic" ]; then
         if [ "$vivado_enabled" = "1" ]; then
             echo ""
@@ -145,6 +130,21 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
+            echo ""
+        fi
+    elif [ "$parameter" = "tensorflow" ]; then
+        if [ "$gpu_enabled" = "1" ]; then
+            echo ""
+            echo "${bold}$CLI_NAME new tensorflow [--help]${normal}"
+            echo ""
+            echo "Generates a TensorFlow application template targeting ROCm."
+            echo ""
+            echo "FLAGS"
+            echo "   This command has no flags."
+            echo ""
+            echo "   ${bold}-h, --help${normal}      - Help to use this command."
+            echo ""
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
             echo ""
         fi
     elif [ "$parameter" = "vrt" ]; then

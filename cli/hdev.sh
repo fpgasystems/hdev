@@ -345,15 +345,6 @@ case "$command" in
         $CLI_PATH/build/c --source $cfile_path
         echo ""
         ;;
-      hip)
-        #early exit
-        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
-          exit 1
-        fi
-
-        valid_flags="-p --project -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       opennic)
         #early exit
         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
@@ -855,18 +846,6 @@ case "$command" in
           $CLI_PATH/_hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
         fi
         ;;
-      hip)
-        #early exit
-        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
-            exit 1
-        fi
-
-        if [ "$#" -ne 2 ]; then
-          new_hip_help
-          exit 1
-        fi
-        $CLI_PATH/new/hip
-        ;;
       opennic)
         #early exit
         #if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
@@ -987,6 +966,15 @@ case "$command" in
 
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --device $device_index --push $push_option
+        ;;
+      tensorflow)
+        #early exit
+        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
+          exit 1
+        fi
+        
+        echo "HEY! Continue here"
+        
         ;;
       vrt)
         #early exit
@@ -2222,19 +2210,6 @@ case "$command" in
         #run
         $CLI_PATH/run/opennic --config $config_index --device $device_index --project $project_name --tag $tag_name 
         ;;
-      hip)
-        #early exit
-        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
-          exit
-        fi
-
-        #check on server
-        gpu_check "$CLI_PATH" "$hostname"
-
-        #check on flags
-        valid_flags="-d --device -p --project -h --help" 
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       opennic)
         #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
@@ -2492,6 +2467,15 @@ case "$command" in
 
         #run
         $CLI_PATH/run/sockperf --interface $interface_name --server $server_ip --size $size_value
+        ;;
+      tensorflow)
+        #early exit
+        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
+          exit 1
+        fi
+        
+        echo "HEY! Continue here"
+        
         ;;
       vrt)
         #early exit
@@ -2939,18 +2923,6 @@ case "$command" in
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      hip)
-        #early exit
-        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
-          exit
-        fi
-
-        #create workflow directory
-        mkdir -p "$MY_PROJECTS_PATH/$arguments"
-
-        valid_flags="-d --device -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       opennic)
         #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
@@ -3115,6 +3087,23 @@ case "$command" in
 
         #run
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
+        ;;
+      tensorflow)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
+          exit
+        fi
+
+        #create workflow directory
+        mkdir -p "$MY_PROJECTS_PATH/$arguments"
+
+        #valid_flags="-d --device -h --help"
+        #command_run $command_arguments_flags"@"$valid_flags
+
+        echo "HEY! Continue here"
+
+        exit
+
         ;;
       vitis)
         #early exit

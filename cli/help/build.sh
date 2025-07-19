@@ -37,9 +37,6 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}aved${normal}${COLOR_OFF}            - AVED's hardware and software generation."  
 fi
 echo "   ${bold}c${normal}               - C and C++ binaries."
-if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON5}hip${normal}${COLOR_OFF}             - Compiles a HIP project for ROCm GPUs."  
-fi
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."
 fi
