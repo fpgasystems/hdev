@@ -29,6 +29,62 @@ if [ "$TENSORFLOW_COMMIT" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "
     exit
 fi
 
-echo "Inside!"
+#constants
+MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+WORKFLOW="tensorflow"
+
+#define directories
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$TENSORFLOW_COMMIT/$new_name"
+
+#create directories
+mkdir -p $DIR
+
+#change directory
+cd $MY_PROJECTS_PATH/$WORKFLOW/$TENSORFLOW_COMMIT
+
+#create repository
+if [ "$push_option" = "1" ]; then 
+    gh repo create $new_name --public --clone
+    echo ""
+else
+    mkdir -p $DIR
+fi
+
+#save TENSORFLOW_COMMIT
+echo "$TENSORFLOW_COMMIT" > $DIR/TF_COMMIT
+
+#add template files
+cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
+cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
+cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
+cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
+
+#compile files
+chmod +x $DIR/config_add
+chmod +x $DIR/config_delete
+
+#push files
+if [ "$push_option" = "1" ]; then 
+    cd $DIR
+    #update README.md 
+    if [ -e README.md ]; then
+        rm README.md
+    fi
+    echo "# "$new_name >> README.md
+    #add gitignore
+    echo ".DS_Store" >> .gitignore
+    #add, commit, push
+    git add .
+    git commit -m "First commit"
+    git push --set-upstream origin master
+    echo ""
+fi
+
+#print message
+sleep 2.5
+echo "The project ${bold}$DIR${normal} has been created!"
+echo ""
 
 #author: https://github.com/jmoya82
