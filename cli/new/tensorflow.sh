@@ -57,6 +57,7 @@ echo "$TENSORFLOW_COMMIT" > $DIR/TF_COMMIT
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+cp $HDEV_PATH/templates/$WORKFLOW/data_add.sh $DIR/data_add
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 cp -r $HDEV_PATH/templates/$WORKFLOW/data $DIR
 cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
@@ -65,6 +66,7 @@ cp $HDEV_PATH/templates/$WORKFLOW/kn.cfg $DIR/kn.cfg
 #compile files
 chmod +x $DIR/config_add
 chmod +x $DIR/config_delete
+chmod +x $DIR/data_add
 
 #push files
 if [ "$push_option" = "1" ]; then 
