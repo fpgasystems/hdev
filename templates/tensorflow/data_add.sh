@@ -4,10 +4,25 @@ MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-# Check for correct number of arguments
-if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 host_config_idx"
-  exit 1
+#inputs
+CONFIG_IDX="$1"
+
+if [ "$CONFIG_IDX" = "" ] && [ -f "./configs/host_config_000" ]; then
+    ./config_add
+    CONFIG_IDX="1"
+    #config_string="001"
+    
+    #cleanup data
+    rm -rf ./data/input_000
+    rm -f ./data/output.npy
+else
+    # Check for correct number of arguments
+    if [ "$#" -ne 1 ]; then
+        echo ""
+        echo "Usage: $0 host_config_idx"
+        echo ""
+        exit 1
+    fi
 fi
 
 get_config_string() {
@@ -16,8 +31,7 @@ get_config_string() {
 }
 
 #inputs
-CONFIG_IDX="$1"
-HOST_CONFIG="host_config_${CONFIG_IDX}"
+#CONFIG_IDX="$1"
 
 #constants
 MAX_STR_LENGTH=3
@@ -26,18 +40,20 @@ MAX_STR_LENGTH=3
 config_string=$(get_config_string "$CONFIG_IDX")
 
 #ensure running config_add
-if [ -f "./configs/host_config_000" ]; then
-    ./config_add
-    config_string="001"
+#if [ -f "./configs/host_config_000" ]; then
+#    ./config_add
+#    config_string="001"
     
-    #cleanup data
-    rm -rf ./data/input_000
-    rm -f ./data/output.npy
-fi
+#    #cleanup data
+#    rm -rf ./data/input_000
+#    rm -f ./data/output.npy
+#fi
 
 #check on host_config
 if [ ! -f "./configs/host_config_$config_string" ]; then
+    echo ""
     echo "Host configuration not found!"
+    echo ""
     exit 1
 fi
 
@@ -50,7 +66,7 @@ data_type=$(awk -F '=' '/^precision/ {gsub(/ /, "", $2); gsub(/;/, "", $2); prin
 #get size from a host configuration
 size=$(grep '^N' ./configs/host_config_$config_string | cut -d'=' -f2 | tr -d ' ;')
 
-if [ ! -f "./data/input_$config_string" ]; then
+if [ ! -d "./data/input_$config_string" ]; then
     #create directory
     mkdir -p ./data/input_$config_string
     cd ./data/input_$config_string
