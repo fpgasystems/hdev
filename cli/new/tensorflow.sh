@@ -58,8 +58,9 @@ cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
+cp -r $HDEV_PATH/templates/$WORKFLOW/data $DIR
 cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
-cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
+cp $HDEV_PATH/templates/$WORKFLOW/kn.cfg $DIR/kn.cfg
 
 #compile files
 chmod +x $DIR/config_add
