@@ -4,4 +4,4 @@ block_size    32,64,128,256            "Threads per block (CUDA concept) — opt
 
 host:
 MAX_N         1000                     "Maximum number of vector elements"
-N             10,100,500,MAX_N         "Vector elements"
+N             100:250:MAX_N            "Vector elements"

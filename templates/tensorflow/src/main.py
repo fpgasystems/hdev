@@ -43,5 +43,5 @@ c_np = vadd(a_np, b_np, gpu_device=gpu_device)
 
 # Save result
 print("Result of vector addition:", c_np)
-np.save("output_add.npy", c_np)
+np.save("../data/output.npy", c_np)
 print("Output saved to output_add.npy")
