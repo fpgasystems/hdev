@@ -29,6 +29,10 @@ config_string=$(get_config_string "$CONFIG_IDX")
 if [ -f "./configs/host_config_000" ]; then
     ./config_add
     config_string="001"
+    
+    #cleanup data
+    rm -rf ./data/input_000
+    rm -f ./data/output.npy
 fi
 
 #check on host_config
@@ -37,25 +41,29 @@ if [ ! -f "./configs/host_config_$config_string" ]; then
     exit 1
 fi
 
-# Print contents
-cat kn.cfg
-echo
-
-echo "===== $DEVICE_CONFIG ====="
-cat "./configs/device_config"
-echo
-
-echo "===== $HOST_CONFIG ====="
-cat "./configs/host_config_$config_string"
-
 #get the number of inputs to generate
 num_input_signals=$(grep -o "\.npy" kn.cfg | wc -l)
 
+#get data_type (precision) from device_config
+data_type=$(awk -F '=' '/^precision/ {gsub(/ /, "", $2); gsub(/;/, "", $2); print $2}' ./configs/device_config)
+
+#get size from a host configuration
+size=$(grep '^N' ./configs/host_config_$config_string | cut -d'=' -f2 | tr -d ' ;')
+
 if [ ! -f "./data/input_$config_string" ]; then
+    #create directory
     mkdir -p ./data/input_$config_string
     cd ./data/input_$config_string
 
     #run Python
-    python3 ../../src/data_add.py $num_input_signals fp32 850
-
+    echo ""
+    echo "${bold}Creating data:${normal}"
+    echo ""
+    echo "python3 ../../src/data_add.py $num_input_signals $data_type $size"
+    echo ""
+    python3 ../../src/data_add.py $num_input_signals $data_type $size
+    
+    sleep 2
+    echo "Done!"
+    echo ""
 fi
