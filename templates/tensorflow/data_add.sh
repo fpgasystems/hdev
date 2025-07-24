@@ -23,6 +23,7 @@ else
         echo ""
         exit 1
     fi
+    add_echo="1"
 fi
 
 get_config_string() {
@@ -72,7 +73,9 @@ if [ ! -d "./data/input_$config_string" ]; then
     cd ./data/input_$config_string
 
     #run Python
-    echo ""
+    if [ "$add_echo" = "1" ]; then
+        echo ""
+    fi
     echo "${bold}Creating data:${normal}"
     echo ""
     echo "python3 ../../src/data_add.py $num_input_signals $data_type $size"
