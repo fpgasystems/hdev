@@ -47,3 +47,15 @@ echo
 
 echo "===== $HOST_CONFIG ====="
 cat "./configs/host_config_$config_string"
+
+#get the number of inputs to generate
+num_input_signals=$(grep -o "\.npy" kn.cfg | wc -l)
+
+if [ ! -f "./data/input_$config_string" ]; then
+    mkdir -p ./data/input_$config_string
+    cd ./data/input_$config_string
+
+    #run Python
+    python3 ../../src/data_add.py $num_input_signals fp32 850
+
+fi

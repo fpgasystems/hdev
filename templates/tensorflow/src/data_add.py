@@ -1,16 +1,36 @@
 import numpy as np
 import os
+import sys
 
-# Create /data folder if it doesn't exist
-os.makedirs("data", exist_ok=True)
+# --- Read arguments ---
+if len(sys.argv) != 4:
+    print("Usage: python data_add.py <num_input_signals> <dtype> <size>")
+    sys.exit(1)
 
-# Define the shape and values (you can change these)
-size = 1000  # number of elements
-input1 = np.random.rand(size).astype(np.float32)
-input2 = np.random.rand(size).astype(np.float32)
+num_inputs = int(sys.argv[1])
+dtype_str = sys.argv[2]
+size = int(sys.argv[3])  # <== Read size from argument
 
-# Save the arrays
-np.save("data/input1.npy", input1)
-np.save("data/input2.npy", input2)
+# --- Map string to NumPy dtype ---
+dtype_map = {
+    "fp32": np.float32,
+    "fp64": np.float64,
+    "int32": np.int32,
+    "int64": np.int64,
+    "bf16": np.float16  # Approximate bfloat16 with float16
+}
+if dtype_str not in dtype_map:
+    print(f"Unsupported dtype: {dtype_str}")
+    sys.exit(1)
+dtype = dtype_map[dtype_str]
 
-print("Generated input1.npy and input2.npy in /data")
+# --- Generate inputs ---
+#os.makedirs("data", exist_ok=True)
+
+for i in range(1, num_inputs + 1):
+    arr = np.random.rand(size).astype(dtype)
+    filename = f"input{i}.npy"
+    np.save(filename, arr)
+    #print(f"Saved {filename} with shape ({size},) and dtype {dtype_str}")
+
+#print(f"Generated {num_inputs} inputs in /data/")
