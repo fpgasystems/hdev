@@ -4,6 +4,7 @@ import sys
 import numpy as np
 import tensorflow as tf
 from vadd import vadd
+from device import Device
 
 if len(sys.argv) != 4:
     print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy>")
@@ -43,5 +44,5 @@ c_np = vadd(a_np, b_np, gpu_device=gpu_device)
 
 # Save result
 print("Result of vector addition:", c_np)
-np.save("../data/output.npy", c_np)
+np.save("./data/output.npy", c_np)
 print("Output saved to output_add.npy")
