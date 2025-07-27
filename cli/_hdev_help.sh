@@ -523,7 +523,7 @@ run_help() {
     fi
     echo "   ${bold}sockperf${normal}        - Network performance assessment with sockperf."
     if [ "$gpu_enabled" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Runs your TensorFlow application on a given device."
+      echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Runs your TensorFlow application."
     fi
     if [ "$vivado_enabled_asoc" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Runs your V80 RunTime (VRT) application."
@@ -569,10 +569,10 @@ run_tensorflow_help() {
     echo ""
     echo "${bold}$CLI_NAME run tensorflow [flags] [--help]${normal}"
     echo ""
-    echo "Runs your TensorFlow application on a given device."
+    echo "Runs your TensorFlow application."
     echo ""
     echo "FLAGS:"
-    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo "   ${bold}-c, --config${normal}    - Configuration Index."
     echo "   ${bold}-p, --project${normal}   - Specifies your TensorFlow project name."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
