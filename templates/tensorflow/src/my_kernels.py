@@ -1,4 +1,4 @@
-# my_modules.py
+# my_kernels.py
 
 import tensorflow as tf
 

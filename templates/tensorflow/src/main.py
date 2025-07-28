@@ -38,10 +38,14 @@ if a_np.shape != b_np.shape:
     print("Input arrays must have the same shape.")
     sys.exit(1)
 
-# Call vector add
+# Call vector add on GPU 0
 c_np = vadd(a_np, b_np, gpu_device=gpu_device)
-
-# Save result
 print("Result of vector addition:", c_np)
-np.save("./data/output.npy", c_np)
+np.save("./data/output_add.npy", c_np)
 print("Output saved to output_add.npy")
+
+# Call vector sub on GPU 1
+cc_np = vsub(a_np, b_np, gpu_device="/GPU:1")
+print("Result of vector subtraction:", cc_np)
+np.save("./data/output_sub.npy", cc_np)
+print("Output saved to output_sub.npy")
