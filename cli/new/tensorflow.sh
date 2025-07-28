@@ -62,6 +62,8 @@ cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 cp -r $HDEV_PATH/templates/$WORKFLOW/data $DIR
 cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
 cp $HDEV_PATH/templates/$WORKFLOW/kn.cfg $DIR/kn.cfg
+cp $HDEV_PATH/templates/$WORKFLOW/vadd.cfg $DIR/vadd.cfg
+cp $HDEV_PATH/templates/$WORKFLOW/vsub.cfg $DIR/vsub.cfg
 
 #compile files
 chmod +x $DIR/config_add

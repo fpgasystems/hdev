@@ -59,7 +59,17 @@ if [ ! -f "./configs/host_config_$config_string" ]; then
 fi
 
 #get the number of inputs to generate
-num_input_signals=$(grep -o "\.npy" kn.cfg | wc -l)
+#num_input_signals=$(grep -o "\.npy" kn.cfg | wc -l)
+
+#read kernel names into an array
+kernels=($(grep -E '^[0-9]+:' kn.cfg | cut -d: -f2- | sed 's/^[ \t]*//'))
+
+# Loop through each kernel
+num_input_signals=0
+for kernel in "${kernels[@]}"; do
+    count=$(grep -E "^sp=${kernel}\.in[0-9]+:.*\.npy" "${kernel}.cfg" | wc -l)
+    ((num_input_signals += count))
+done
 
 #get data_type (precision) from device_config
 data_type=$(awk -F '=' '/^precision/ {gsub(/ /, "", $2); gsub(/;/, "", $2); print $2}' ./configs/device_config)

@@ -4,7 +4,6 @@ import sys
 import numpy as np
 import tensorflow as tf
 from vadd import vadd
-from device import Device
 
 if len(sys.argv) != 4:
     print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy>")
