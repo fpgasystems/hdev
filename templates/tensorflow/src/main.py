@@ -3,7 +3,7 @@
 import sys
 import numpy as np
 import tensorflow as tf
-from my_kernels import vadd,vsub
+from my_kernels import run,vadd,vsub
 
 if len(sys.argv) != 4:
     print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy>")
@@ -49,3 +49,7 @@ cc_np = vsub(a_np, b_np, gpu_device="/GPU:1")
 print("Result of vector subtraction:", cc_np)
 np.save("./data/output_sub.npy", cc_np)
 print("Output saved to output_sub.npy")
+
+#test
+test = run("vadd", a_np, b_np, gpu_device="/GPU:0")
+print("Result of run:", test)
