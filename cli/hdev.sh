@@ -2574,7 +2574,7 @@ case "$command" in
         #check on data
         config_string=$($CLI_PATH/common/get_config_string $config_index)
         if [ ! -e "$MY_PROJECTS_PATH/$arguments/$TENSORFLOW_COMMIT/$project_name/data/input_$config_string" ]; then
-          echo ""
+          #echo ""
           echo "$CHECK_ON_DATA_ERR_MSG"
           echo ""
           exit
