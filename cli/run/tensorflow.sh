@@ -42,22 +42,31 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-#display configuration
-echo "${bold}Kernel configuration:${normal}"
+#display device configuration
+echo "${bold}Device configuration:${normal}"
 #echo ""
 #echo "cat $DIR/kn.cfg"
 echo ""
-cat $DIR/kn.cfg
+cat $DIR/configs/device_config
 echo ""
 echo ""
 
-#get config name
+#display host configuration
 config_string=$($CLI_PATH/common/get_config_string $config_index)
 config_name="host_config_$config_string"
 
 echo "${bold}You are running $config_name:${normal}"
 echo ""
 cat $DIR/configs/$config_name
+echo ""
+
+#display kernel configuration
+echo "${bold}Kernel configuration:${normal}"
+#echo ""
+#echo "cat $DIR/kn.cfg"
+echo ""
+cat $DIR/kn.cfg
+echo ""
 echo ""
 
 #run application
