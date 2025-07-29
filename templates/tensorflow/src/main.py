@@ -6,13 +6,13 @@ import tensorflow as tf
 from my_functions import np_load
 from my_kernels import run,vadd,vsub,vmadd
 
-if len(sys.argv) != 4:
-    print("Usage: python main.py <gpu_index> <data_type> <config_string>")
+if len(sys.argv) != 3:
+    print("Usage: python main.py <data_type> <config_string>")
     sys.exit(1)
 
-gpu_index = sys.argv[1]
-data_type = sys.argv[2]
-config_string = sys.argv[3]
+#gpu_index = sys.argv[1]
+data_type = sys.argv[1]
+config_string = sys.argv[2]
 
 # Check for available GPUs
 gpus = tf.config.list_physical_devices('GPU')
@@ -20,14 +20,14 @@ if not gpus:
     print("No GPU found")
     sys.exit(1)
 
-if not gpu_index.isdigit() or int(gpu_index) >= len(gpus):
-    print(f"Invalid GPU index. Available GPUs: {len(gpus)}")
-    sys.exit(1)
+#if not gpu_index.isdigit() or int(gpu_index) >= len(gpus):
+#    print(f"Invalid GPU index. Available GPUs: {len(gpus)}")
+#    sys.exit(1)
 
-gpu_device = f"/GPU:{gpu_index}"
+#gpu_device = f"/GPU:{gpu_index}"
 
 print("TensorFlow version:", tf.__version__)
-print(f"Using device: {gpu_device}")
+#print(f"Using device: {gpu_device}")
 
 #load inputs
 input1 = np_load(config_string, 1, data_type)
