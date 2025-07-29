@@ -3,15 +3,20 @@
 import sys
 import numpy as np
 import tensorflow as tf
-from my_kernels import run,vadd,vsub
+from my_kernels import run,vadd,vsub,np_load
 
-if len(sys.argv) != 4:
-    print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy>")
+#if len(sys.argv) != 4:
+#    print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy>")
+#    sys.exit(1)
+if len(sys.argv) != 6:
+    print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy> <data_type> <config_string>")
     sys.exit(1)
 
 gpu_index = sys.argv[1]
 input1_path = sys.argv[2]
 input2_path = sys.argv[3]
+data_type = sys.argv[4]
+config_string = sys.argv[5]
 
 # Check for available GPUs
 gpus = tf.config.list_physical_devices('GPU')
@@ -30,8 +35,10 @@ print(f"Using device: {gpu_device}")
 print(f"Reading input files: {input1_path}, {input2_path}")
 
 # Load inputs
-a_np = np.load(input1_path).astype(np.float32)
-b_np = np.load(input2_path).astype(np.float32)
+#a_np = np.load(input1_path).astype(np.float32)
+#b_np = np.load(input2_path).astype(np.float32)
+a_np = np_load(config_string, 1, data_type)
+b_np = np_load(config_string, 2, data_type)
 
 # Ensure shape match
 if a_np.shape != b_np.shape:
