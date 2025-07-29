@@ -2527,9 +2527,9 @@ case "$command" in
         #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         #commit_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "ONIC_SHELL_COMMIT"
         project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name"
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments${normal}" #(commit ID: $commit_name)
-        echo ""
+        #echo ""
+        #echo "${bold}$CLI_NAME $command $arguments${normal}" #(commit ID: $commit_name)
+        #echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$TENSORFLOW_COMMIT" "${flags_array[@]}"
         config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$TENSORFLOW_COMMIT" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
         if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$TENSORFLOW_COMMIT/$project_name/configs/$config_name" ]; then
@@ -2571,7 +2571,19 @@ case "$command" in
         #  exit 1
         #fi
 
+        #check on data
+        config_string=$($CLI_PATH/common/get_config_string $config_index)
+        if [ ! -e "$MY_PROJECTS_PATH/$arguments/$TENSORFLOW_COMMIT/$project_name/data/input_$config_string" ]; then
+          echo ""
+          echo "$CHECK_ON_DATA_ERR_MSG"
+          echo ""
+          exit
+        fi
+
         #run
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments${normal}" #(commit ID: $commit_name)
+        echo ""
         $CLI_PATH/run/tensorflow --commit $TENSORFLOW_COMMIT --config $config_index --project $project_name
         ;;
       vrt)
