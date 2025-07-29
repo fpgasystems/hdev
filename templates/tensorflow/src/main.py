@@ -38,28 +38,37 @@ print(f"Using device: {gpu_device}")
 # Load inputs
 #a_np = np.load(input1_path).astype(np.float32)
 #b_np = np.load(input2_path).astype(np.float32)
-a_np = np_load(config_string, 1, data_type)
-b_np = np_load(config_string, 2, data_type)
+input1 = np_load(config_string, 1, data_type)
+input2 = np_load(config_string, 2, data_type)
 
 # Ensure shape match
-if a_np.shape != b_np.shape:
-    print("Input arrays must have the same shape.")
-    sys.exit(1)
+#if a_np.shape != b_np.shape:
+#    print("Input arrays must have the same shape.")
+#    sys.exit(1)
 
 # Call vector add on GPU 0
-c_np = vadd(a_np, b_np, gpu_device=gpu_device)
-print("Result of vector addition:", c_np)
-np.save("./data/output_add.npy", c_np)
-print("Output saved to output_add.npy")
+#c_np = vadd(a_np, b_np, gpu_device=gpu_device)
+#print("Result of vector addition:", c_np)
+#np.save("./data/output_add.npy", c_np)
+#print("Output saved to output_add.npy")
 
 # Call vector sub on GPU 1
-cc_np = vsub(a_np, b_np, gpu_device="/GPU:1")
-print("Result of vector subtraction:", cc_np)
-np.save("./data/output_sub.npy", cc_np)
-print("Output saved to output_sub.npy")
+#cc_np = vsub(a_np, b_np, gpu_device="/GPU:1")
+#print("Result of vector subtraction:", cc_np)
+#np.save("./data/output_sub.npy", cc_np)
+#print("Output saved to output_sub.npy")
 
 #test
 #test = run("vadd", a_np, b_np, gpu_device="/GPU:0")
 #test = run(1, "vadd", a_np, b_np)
-test = run(1, a_np, b_np)
-print("Result of run:", test)
+vadd_out1 = run(1, input1, input2)
+print("vadd (device 1):", vadd_out1)
+
+vsub_out1 = run(2, vadd_out1, input2)
+print("vsub (device 2)", vsub_out1)
+
+#test
+if np.allclose(vsub_out1, input1):
+    print("Test passed!")
+else:
+    print("Test failed!")
