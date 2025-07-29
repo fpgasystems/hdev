@@ -49,7 +49,6 @@ echo "${bold}Device configuration:${normal}"
 echo ""
 cat $DIR/configs/device_config
 echo ""
-echo ""
 
 #display host configuration
 config_string=$($CLI_PATH/common/get_config_string $config_index)
@@ -65,7 +64,7 @@ echo "${bold}Kernel configuration:${normal}"
 #echo ""
 #echo "cat $DIR/kn.cfg"
 echo ""
-cat $DIR/kn.cfg
+tail -n +2 "$DIR/kn.cfg"
 echo ""
 echo ""
 
