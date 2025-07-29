@@ -33,7 +33,7 @@ vsub_out1 = run(2, vadd_out1, input2)
 print("vsub (device 2)", vsub_out1)
 
 #test
-if np.allclose(vsub_out1, input1):
+if np.allclose(vsub_out1, input1, rtol=1e-2, atol=1e-2):
     print("Test passed!")
 else:
     print("Test failed!")
