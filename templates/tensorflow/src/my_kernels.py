@@ -24,7 +24,15 @@ def vmadd(a_np, b_np, c_np, gpu_device="/GPU:0"):
         d = tf.add(tf.multiply(a, b), c)
     return d.numpy()
 
-def run(kernel_name, *args, gpu_device="/GPU:0"):
-    with tf.device(gpu_device):
-        kernel_fn = globals()[kernel_name]
-        return kernel_fn(*args, gpu_device=gpu_device)
+# Mapping kernel names to actual function objects
+kernels = {
+    "vadd": vadd,
+    "vsub": vsub,
+    "vmadd": vmadd,
+}
+
+def run(gpu_index, kernel_name, *args):
+    gpu_device = f"/GPU:{int(gpu_index) - 1}"
+    if kernel_name not in kernels:
+        raise ValueError(f"Unknown kernel name: {kernel_name}")
+    return kernels[kernel_name](*args, gpu_device=gpu_device)

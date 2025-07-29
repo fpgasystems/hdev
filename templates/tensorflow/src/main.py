@@ -59,5 +59,6 @@ np.save("./data/output_sub.npy", cc_np)
 print("Output saved to output_sub.npy")
 
 #test
-test = run("vadd", a_np, b_np, gpu_device="/GPU:0")
+#test = run("vadd", a_np, b_np, gpu_device="/GPU:0")
+test = run(1, "vadd", a_np, b_np)
 print("Result of run:", test)
