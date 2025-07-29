@@ -6,18 +6,18 @@ import tensorflow as tf
 from my_functions import np_load
 from my_kernels import run,vadd,vsub,vmadd
 
-#if len(sys.argv) != 4:
-#    print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy>")
-#    sys.exit(1)
-if len(sys.argv) != 6:
-    print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy> <data_type> <config_string>")
+if len(sys.argv) != 4:
+    print("Usage: python main.py <gpu_index> <data_type> <config_string>")
     sys.exit(1)
+#if len(sys.argv) != 6:
+#    print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy> <data_type> <config_string>")
+#    sys.exit(1)
 
 gpu_index = sys.argv[1]
-input1_path = sys.argv[2]
-input2_path = sys.argv[3]
-data_type = sys.argv[4]
-config_string = sys.argv[5]
+#input1_path = sys.argv[2]
+#input2_path = sys.argv[3]
+data_type = sys.argv[2]
+config_string = sys.argv[3]
 
 # Check for available GPUs
 gpus = tf.config.list_physical_devices('GPU')
@@ -33,7 +33,7 @@ gpu_device = f"/GPU:{gpu_index}"
 
 print("TensorFlow version:", tf.__version__)
 print(f"Using device: {gpu_device}")
-print(f"Reading input files: {input1_path}, {input2_path}")
+#print(f"Reading input files: {input1_path}, {input2_path}")
 
 # Load inputs
 #a_np = np.load(input1_path).astype(np.float32)

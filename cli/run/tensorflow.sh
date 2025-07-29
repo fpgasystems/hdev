@@ -63,9 +63,9 @@ echo ""
 #run application
 echo "${bold}Running your Tensorflow application:${normal}"
 echo ""
-echo "python3 ./src/main.py 0 ./data/input_001/input1.npy ./data/input_001/input2.npy float32 $config_string" # --device $device_index 
+echo "python3 ./src/main.py 0 float32 $config_string" # --device $device_index 
 echo ""
-python3 ./src/main.py 0 ./data/input_001/input1.npy ./data/input_001/input2.npy float32 $config_string
+python3 ./src/main.py 0 float32 $config_string
 echo ""
 
 #author: https://github.com/jmoya82
