@@ -33,6 +33,7 @@ if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [
 fi
 
 #constants
+AMI_HOME=$($CLI_PATH/common/get_constant $CLI_PATH AMI_HOME)
 AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
 AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
@@ -88,13 +89,17 @@ cp -r $DIR/examples/$template_name/* $DIR/src
 rm -rf $DIR/examples/
 
 #create device directories (it will contain system_map.xml)
+echo "${bold}Creating device directories:${normal}"
+echo ""
 for device_index in $(seq 1 $MAX_DEVICES); do 
     device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
     if [ "$device_type" = "asoc" ]; then
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+        echo "mkdir -p $AMI_HOME/$upstream_port"
         mkdir -p "$AMI_HOME/$upstream_port"
     fi
 done
+echo ""
 
 #get tag base (from amd_v80_gen5x8_24.1_20241002 to amd_v80_gen5x8_24.1)
 tag_base="${AVED_TAG%_*}"
