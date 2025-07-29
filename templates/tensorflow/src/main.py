@@ -3,7 +3,8 @@
 import sys
 import numpy as np
 import tensorflow as tf
-from my_kernels import run,vadd,vsub,np_load
+from my_functions import np_load
+from my_kernels import run,vadd,vsub,vmadd
 
 #if len(sys.argv) != 4:
 #    print("Usage: python main.py <gpu_index> <input1.npy> <input2.npy>")
