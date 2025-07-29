@@ -8,21 +8,21 @@ if len(sys.argv) != 4:
     sys.exit(1)
 
 num_inputs = int(sys.argv[1])
-dtype_str = sys.argv[2]
+dtype = sys.argv[2]
 size = int(sys.argv[3])  # <== Read size from argument
 
 # --- Map string to NumPy dtype ---
-dtype_map = {
-    "fp32": np.float32,
-    "fp64": np.float64,
-    "int32": np.int32,
-    "int64": np.int64,
-    "bf16": np.float16  # Approximate bfloat16 with float16
-}
-if dtype_str not in dtype_map:
-    print(f"Unsupported dtype: {dtype_str}")
-    sys.exit(1)
-dtype = dtype_map[dtype_str]
+#dtype_map = {
+#    "fp32": np.float32,
+#    "fp64": np.float64,
+#    "int32": np.int32,
+#    "int64": np.int64,
+#    "bf16": np.float16  # Approximate bfloat16 with float16
+#}
+#if dtype_str not in dtype_map:
+#    print(f"Unsupported dtype: {dtype_str}")
+#    sys.exit(1)
+#dtype = dtype_map[dtype_str]
 
 # --- Generate inputs ---
 #os.makedirs("data", exist_ok=True)

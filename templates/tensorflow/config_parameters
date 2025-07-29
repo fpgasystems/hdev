@@ -1,7 +1,7 @@
 device:
-precision     int32,int64,fp32,fp64,bf16 "Choose computation precision (if using mixed precision or tensor cores)"
-block_size    32,64,128,256              "Threads per block (CUDA concept) — optional if using raw CUDA"
+precision     float16,float32,float64 "Choose computation precision (if using mixed precision or tensor cores)"
+block_size    32,64,128,256           "Threads per block (CUDA concept) — optional if using raw CUDA"
 
 host:
-MAX_N         1000                       "Maximum number of vector elements (size)"
-N             100:250:MAX_N              "Vector elements (size)"
+MAX_N         1000                    "Maximum number of vector elements (size)"
+N             100:250:MAX_N           "Vector elements (size)"

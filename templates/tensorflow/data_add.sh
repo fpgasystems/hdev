@@ -82,6 +82,17 @@ if [ ! -d "./data/input_$config_string" ]; then
     mkdir -p ./data/input_$config_string
     cd ./data/input_$config_string
 
+    #write device_parameters
+    #while IFS='=;' read -r key value _; do
+    #    key=$(echo "$key" | xargs)     # Trim whitespace
+    #    value=$(echo "$value" | xargs) # Trim whitespace
+    #    [ -n "$key" ] && echo "$value" > "$key"
+    #done < ../../configs/device_config
+    cp ../../configs/device_config .
+
+    #write device_parameters
+    cp ../../configs/host_config_$config_string .
+
     #run Python
     if [ "$add_echo" = "1" ]; then
         echo ""
