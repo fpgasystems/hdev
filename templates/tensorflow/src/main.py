@@ -6,12 +6,12 @@ import tensorflow as tf
 from my_functions import np_load
 from my_kernels import run,vadd,vsub
 
-if len(sys.argv) != 3:
-    print("Usage: python main.py <data_type> <config_string>")
+if len(sys.argv) != 2:
+    print("Usage: python main.py <config_string>")
     sys.exit(1)
 
-data_type = sys.argv[1]
-config_string = sys.argv[2]
+#data_type = sys.argv[1]
+config_string = sys.argv[1]
 
 # Check for available GPUs
 gpus = tf.config.list_physical_devices('GPU')
@@ -22,8 +22,8 @@ if not gpus:
 print("TensorFlow version:", tf.__version__)
 
 #load inputs
-input1 = np_load(config_string, 1, data_type)
-input2 = np_load(config_string, 2, data_type)
+input1 = np_load(1, config_string)
+input2 = np_load(2, config_string)
 
 #run kernels
 vadd_out1 = run(1, input1, input2)
