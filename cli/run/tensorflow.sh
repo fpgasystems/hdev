@@ -42,22 +42,21 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
+#get config_string
+config_string=$($CLI_PATH/common/get_config_string $config_index)
+
 #display device configuration
 echo "${bold}Device configuration:${normal}"
-#echo ""
-#echo "cat $DIR/kn.cfg"
-echo ""
-cat $DIR/configs/device_config
-echo ""
-
-#display host configuration
-config_string=$($CLI_PATH/common/get_config_string $config_index)
-config_name="host_config_$config_string"
-
-echo "${bold}You are running $config_name:${normal}"
-echo ""
-cat $DIR/configs/$config_name
-echo ""
+first_kernel=$(tail -n +2 kn.cfg | head -n 1 | cut -d':' -f2 | xargs)
+if [ -d "$DIR/$first_kernel.xla" ]; then
+    echo ""
+    cat $DIR/configs/device_config #this would be .device_config if hdev build tensorflow is implemented
+    echo ""
+else
+    echo ""
+    cat $DIR/data/input_$config_string/device_config
+    echo ""
+fi
 
 #display kernel configuration
 echo "${bold}Kernel configuration:${normal}"
@@ -66,6 +65,13 @@ echo "${bold}Kernel configuration:${normal}"
 echo ""
 tail -n +2 "$DIR/kn.cfg"
 echo ""
+echo ""
+
+#display host configuration
+config_name="host_config_$config_string"
+echo "${bold}Host configuration:${normal}"
+echo ""
+cat $DIR/configs/$config_name
 echo ""
 
 #run application
