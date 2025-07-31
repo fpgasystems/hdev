@@ -70,6 +70,7 @@ NETWORKING_DEVICE_INDEX="1"
 NETWORKING_PORT_INDEX="1"
 #ONIC_DEVICE_NAMES="$CLI_PATH/constants/ONIC_DEVICE_NAMES"
 WORKFLOW="opennic"
+WRAPPER_NAME="hls-wrapper"
 
 #get devices number
 if [ -s "$DEVICES_LIST_NETWORKING" ]; then
@@ -116,6 +117,18 @@ cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
 #compile files
 chmod +x $DIR/config_add
 chmod +x $DIR/config_delete
+
+#hls-wrapper
+cp -r $DIR/open-nic-shell/plugin/p2p $DIR/open-nic-shell/plugin/$WRAPPER_NAME
+if [ -d "$HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME" ]; then
+    #250mhz
+    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+    #322mhz
+    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
+    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
+fi
+rm -rf $DIR/$WRAPPER_NAME
 
 #get interface name
 interface_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
