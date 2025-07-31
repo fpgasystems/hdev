@@ -7,7 +7,7 @@ set period_ns [expr 1000.0 / $freq_mhz]
 create_clock -period $period_ns -name default
 set_clock_uncertainty "27%" default
 
-add_files p2phls_250mhz.cpp
+add_files p2p_250mhz_hls.cpp
 
 set_top onic_hls
 
