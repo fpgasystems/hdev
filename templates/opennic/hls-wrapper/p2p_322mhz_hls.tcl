@@ -2,7 +2,7 @@ open_project hls_project
 open_solution "solution1"
 set_part "xcu55c-fsvh2892-2L-e"
 
-set freq_mhz 250
+set freq_mhz 322
 set period_ns [expr 1000.0 / $freq_mhz]
 create_clock -period $period_ns -name default
 set_clock_uncertainty "27%" default
