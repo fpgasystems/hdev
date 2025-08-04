@@ -104,6 +104,12 @@ $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
 echo "$commit_name_shell" > $DIR/ONIC_SHELL_COMMIT
 echo "$commit_name_driver" > $DIR/ONIC_DRIVER_COMMIT
 
+#get device_name
+device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+#save ONIC_DEVICE_NAME 
+echo "$device_name" > $DIR/ONIC_DEVICE_NAME
+
 #add template files
 #mkdir -p $DIR/src
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
@@ -118,14 +124,18 @@ cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
 chmod +x $DIR/config_add
 chmod +x $DIR/config_delete
 
+#device_name to FDEV_NAME
+FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
+
 #hls-wrapper
-cp -r $DIR/open-nic-shell/plugin/p2p $DIR/open-nic-shell/plugin/$WRAPPER_NAME
-if [ -d "$HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME" ]; then
+if [ -f "$HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls_$FDEV_NAME.tcl" ]; then
+    #copy plugin
+    cp -r $DIR/open-nic-shell/plugin/p2p $DIR/open-nic-shell/plugin/$WRAPPER_NAME
     #250mhz
-    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls_$FDEV_NAME.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
     cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
     #322mhz
-    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
+    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls_$FDEV_NAME.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
     cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
 fi
 rm -rf $DIR/$WRAPPER_NAME
@@ -161,10 +171,10 @@ first_ip="${target_host_ip%%/*}"
 sed -i "/^remote_server/s/xxxx-xxxxx-xx/$first_ip/" "$DIR/config_parameters"
 
 #get device_name
-device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+#device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
 #save to 
-echo "$device_name" > $DIR/ONIC_DEVICE_NAME
+#echo "$device_name" > $DIR/ONIC_DEVICE_NAME
 
 #add to sh.cfg (get index of the first FPGA)
 #index=$(awk -v devname="$device_name" '$6 == devname { print $1; exit }' "$DEVICES_LIST_FPGA")

@@ -47,6 +47,7 @@ LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH LOCAL_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_JOBS="8"
 WORKFLOW="opennic"
+WRAPPER_NAME="hls-wrapper"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
@@ -102,20 +103,33 @@ if [ "$all" = "1" ]; then
         tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
         
         #copy and compile on local
-        echo "${bold}Change to LOCAL_PATH:${normal}"
+        echo "${bold}Copy to LOCAL_PATH:${normal}"
         echo ""
         echo "cp -rf $DIR/* $LOCAL_PATH/$project_name/"
-        echo "cd $LOCAL_PATH/$project_name/open-nic-shell/script"
+        #echo "cd $LOCAL_PATH/$project_name/open-nic-shell/script"
         echo ""
         mkdir -p $LOCAL_PATH/$project_name/
         cp -rf $DIR/* $LOCAL_PATH/$project_name/
-        cd $LOCAL_PATH/$project_name/open-nic-shell/script
+        #cd $LOCAL_PATH/$project_name/open-nic-shell/script
         
-        #run compilation
-        echo "${bold}Running vivado:${normal}"
+        #run Vivado HLS
+        echo "${bold}Running Vitis HLS:${normal}"
         echo ""
+        echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
+        echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
+        echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
+        echo ""
+        cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+        vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
+        echo ""
+
+        #run compilation
+        echo "${bold}Running Vivado:${normal}"
+        echo ""
+        echo "cd $LOCAL_PATH/$project_name/open-nic-shell/script"
         echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
         echo ""
+        cd $LOCAL_PATH/$project_name/open-nic-shell/script
         vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
         
         #copy and send email
