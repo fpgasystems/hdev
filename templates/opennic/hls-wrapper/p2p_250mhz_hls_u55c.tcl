@@ -16,3 +16,5 @@ csynth_design
 export_design -format ip_catalog -ipname "hls_ip" -display_name "hls_ip" -description "" -vendor "user.org" -version "1.0"
 
 close_project
+
+exit
