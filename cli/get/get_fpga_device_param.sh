@@ -19,6 +19,7 @@ SERIAL_NUMBER_COLUMN=7
 IP_COLUMN=8
 MAC_COLUMN=9
 PLATFORM_COLUMN=10
+PART_COLUMN=11
 
 #inputs (./examine 0 root_port)
 device_index=$1
@@ -63,6 +64,9 @@ get_column() {
       ;;
     platform)
       column=$PLATFORM_COLUMN
+      ;;
+    part)
+      column=$PART_COLUMN
       ;;
     *)
       echo "Unknown parameter $parameter."
