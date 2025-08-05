@@ -112,7 +112,7 @@ fi
 if ! [ -d "$DIR" ]; then
     echo "${bold}$CLI_NAME new $WORKFLOW (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
-    $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --device $device_index --push 0 
+    $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --device $device_index --push 0 --hls 0
 fi
 
 #cleanup
