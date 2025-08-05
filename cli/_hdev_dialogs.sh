@@ -52,6 +52,7 @@ CHECK_ON_TARGET_ERR_MSG="Please, choose a valid target name."
 CHECK_ON_TARGET_BUILD_ERR_MSG="Please, build your target first."
 CHECK_ON_TEMPLATE_ERR_MSG="Please, choose a valid template name."
 CHECK_ON_TENSORFLOW_ERR_MSG="Please, install TensorFlow first."
+CHECK_ON_VITIS_HLS_ERR_MSG="Please, choose a valid Vitis HLS version."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for ${bold}$USER.${normal}."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device(s) first."
@@ -1328,6 +1329,17 @@ value_check() {
       echo "$CHECK_ON_VALUE_ERR_MSG"
       echo ""
       exit
+  fi
+}
+
+vitis_hls_check() {
+  local VITIS_HLS_PATH=$1
+  local vivado_version=$2
+  if [ -z "$vivado_version" ] || [ ! -d $VITIS_HLS_PATH/$vivado_version ]; then
+    echo ""
+    echo $CHECK_ON_VITIS_HLS_ERR_MSG
+    echo ""
+    exit 1
   fi
 }
 

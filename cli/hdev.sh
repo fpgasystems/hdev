@@ -61,6 +61,7 @@ AMI_TOOL_PATH="$AVED_TOOLS_PATH/ami_tool"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
 REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
+VITIS_HLS_PATH="$XILINX_TOOLS_PATH/Vitis_HLS"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #check on server
@@ -366,6 +367,8 @@ case "$command" in
         #check on software
         vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
         vivado_check "$VIVADO_PATH" "$vivado_version"
+        vitis_hls_version=$($CLI_PATH/common/get_xilinx_version vitis)
+        vitis_hls_check "$VITIS_HLS_PATH" "$vitis_hls_version"
         gh_check "$CLI_PATH"
 
         #check on flags
@@ -966,13 +969,6 @@ case "$command" in
           echo ""
           exit 1
         fi
-
-        echo "commit_name_shell: $commit_name_shell"
-        echo "commit_name_driver: $commit_name_driver"
-        echo "new_name: $new_name"
-        echo "device_index: $device_index"
-        echo "push_option: $push_option"
-        echo "hls_option: $hls_option"
 
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --device $device_index --push $push_option --hls $hls_option
