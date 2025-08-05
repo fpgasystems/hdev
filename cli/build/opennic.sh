@@ -113,18 +113,20 @@ if [ "$all" = "1" ]; then
         #cd $LOCAL_PATH/$project_name/open-nic-shell/script
         
         #run Vivado HLS
-        echo "${bold}Running Vitis HLS:${normal}"
-        echo ""
-        echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
-        echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
-        echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
-        echo ""
-        cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
-        vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
-        echo ""
+        if [ -d "$LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME" ]; then
+            echo "${bold}Building HLS wrappers:${normal}"
+            echo ""
+            echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
+            echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
+            echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
+            echo ""
+            cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+            vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
+            echo ""
+        fi
 
         #run compilation
-        echo "${bold}Running Vivado:${normal}"
+        echo "${bold}Building OpenNIC shell:${normal}"
         echo ""
         echo "cd $LOCAL_PATH/$project_name/open-nic-shell/script"
         echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"

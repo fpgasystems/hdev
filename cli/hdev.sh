@@ -869,7 +869,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit -d --device --project --push -h --help"
+        valid_flags="-c --commit -d --device --project --push --hls --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -944,6 +944,7 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          hls_check "$CLI_PATH" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
@@ -953,6 +954,7 @@ case "$command" in
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        hls_dialog "$CLI_PATH" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
         
         #get device_name
@@ -965,8 +967,15 @@ case "$command" in
           exit 1
         fi
 
+        echo "commit_name_shell: $commit_name_shell"
+        echo "commit_name_driver: $commit_name_driver"
+        echo "new_name: $new_name"
+        echo "device_index: $device_index"
+        echo "push_option: $push_option"
+        echo "hls_option: $hls_option"
+
         #run
-        $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --device $device_index --push $push_option
+        $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --device $device_index --push $push_option --hls $hls_option
         ;;
       tensorflow)
         #early exit

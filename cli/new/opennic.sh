@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --device $device_index --push $push_option
-#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --device             1 --push            0
+#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --device $device_index --push $push_option --hls $hls_option
+#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --device             1 --push            0 --hls           1
 
 #early exit
 url="${HOSTNAME}"
@@ -51,9 +51,10 @@ commit_name_driver=$3
 new_name=$5
 device_index=$7
 push_option=$9
+hls_option=${11}
 
 #all inputs must be provided
-if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [ "$push_option" = "" ]; then
+if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [ "$push_option" = "" ] || [ "$hls_option" = "" ]; then
     exit
 fi
 
@@ -128,7 +129,8 @@ chmod +x $DIR/config_delete
 FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
 
 #hls-wrapper
-if [ -f "$HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls_$FDEV_NAME.tcl" ]; then
+#if [ -f "$HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls_$FDEV_NAME.tcl" ]; then
+if [ "$hls_option" = "1" ]; then
     #copy plugin
     cp -r $DIR/open-nic-shell/plugin/p2p $DIR/open-nic-shell/plugin/$WRAPPER_NAME
     #250mhz

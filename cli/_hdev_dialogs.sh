@@ -3,8 +3,9 @@
 #dialog messages
 CHECK_ON_CONFIG_MSG="${bold}Please, choose your configuration:${normal}"
 CHECK_ON_DEVICE_MSG="${bold}Please, choose your device:${normal}"
-CHECK_ON_NEW_MSG="${bold}Please, type a non-existing name for your project:${normal}"
+CHECK_ON_HLS_MSG="${bold}Would you like to add an HLS wrapper for user logic boxes (y/n)?${normal}"
 CHECK_ON_IFACE_MSG="${bold}Please, choose your interface:${normal}"
+CHECK_ON_NEW_MSG="${bold}Please, type a non-existing name for your project:${normal}"
 CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
 CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
 CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub account (y/n)?${normal}"
@@ -25,6 +26,7 @@ CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters
 CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid tag ID."
+CHECK_ON_HLS_ERR_MSG="Please, choose a valid hls option."
 CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on ${bold}$hostname.${normal}"
 CHECK_ON_HOTPLUG_ERR_MSG="Please, choose a valid hotplug option."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
@@ -479,6 +481,60 @@ gpu_check() {
   if [ "$gpu_server" = "0" ]; then
       echo ""
       echo $CHECK_ON_HOSTNAME_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
+hls_dialog() {
+  local CLI_PATH=$1
+  #local MY_PROJECTS_PATH=$2
+  #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  #local commit_name=$4 #arguments and workflow are the same (i.e. opennic)
+  shift 1
+  local flags_array=("$@")
+
+  #new_found=""
+  #new_name=""
+
+  if [ "$flags_array" = "" ]; then
+    #new_dialog
+    echo $CHECK_ON_HLS_MSG
+    #echo ""
+    #result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name)
+
+    hls_option=$($CLI_PATH/common/push_dialog)
+
+    #new_found=$(echo "$result" | sed -n '1p')
+    #new_name=$(echo "$result" | sed -n '2p')
+    echo ""
+  else
+    hls_check "$CLI_PATH" "${flags_array[@]}"
+    #forgotten mandatory
+    if [[ $hls_found = "0" ]]; then
+        echo $CHECK_ON_HLS_MSG
+        #echo ""
+        #result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name)
+        #new_found=$(echo "$result" | sed -n '1p')
+        #new_name=$(echo "$result" | sed -n '2p')
+        hls_option=$($CLI_PATH/common/push_dialog)
+        echo ""
+    fi
+  fi
+}
+
+hls_check(){
+  local CLI_PATH=$1
+  shift 1
+  local flags_array=("$@")
+  #push_dialog_check
+  word_check "$CLI_PATH" "--hls" "--hls" "${flags_array[@]}"
+  hls_found=$word_found
+  hls_option=$word_value
+  #forbidden combinations
+  if [[ "$hls_found" = "1" && "$hls_option" != "0" && "$hls_option" != "1" ]]; then 
+      echo ""
+      echo "$CHECK_ON_HLS_ERR_MSG"
       echo ""
       exit 1
   fi
