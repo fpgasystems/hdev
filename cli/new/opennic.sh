@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --device $device_index --push $push_option --hls $hls_option
-#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --device             1 --push            0 --hls           1
+#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --name $device_name --push $push_option --hls $hls_option
+#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --name            1 --push            0 --hls           1
 
 #early exit
 url="${HOSTNAME}"
@@ -49,12 +49,12 @@ check_connectivity() {
 commit_name_shell=$2
 commit_name_driver=$3
 new_name=$5
-device_index=$7
+device_name=$7
 push_option=$9
 hls_option=${11}
 
 #all inputs must be provided
-if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$device_index" = "" ] || [ "$push_option" = "" ] || [ "$hls_option" = "" ]; then
+if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$device_name" = "" ] || [ "$push_option" = "" ] || [ "$hls_option" = "" ]; then
     exit
 fi
 
@@ -106,7 +106,7 @@ echo "$commit_name_shell" > $DIR/ONIC_SHELL_COMMIT
 echo "$commit_name_driver" > $DIR/ONIC_DRIVER_COMMIT
 
 #get device_name
-device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+#device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
 #save ONIC_DEVICE_NAME 
 echo "$device_name" > $DIR/ONIC_DEVICE_NAME
@@ -179,24 +179,10 @@ sed -i "/^remote_server/s/xxxx-xxxxx-xx/$first_ip/" "$DIR/config_parameters"
 #echo "$device_name" > $DIR/ONIC_DEVICE_NAME
 
 #add to sh.cfg (get index of the first FPGA)
-#index=$(awk -v devname="$device_name" '$6 == devname { print $1; exit }' "$DEVICES_LIST_FPGA")
-#if [[ -n "$index" ]]; then
+device_index=$(awk -v devname="$device_name" '$6 == devname { print $1; exit }' "$DEVICES_LIST_FPGA")
+if [[ -n "$device_index" ]]; then
     echo "$device_index: onic" >> "$DIR/sh.cfg"
-#fi
-
-
-# Iterate over each ONIC device name
-
-
-
-#SH_CFG="$DIR/sh.cfg"
-## Loop through all ONIC device names
-#while IFS= read -r device_name || [[ -n "$device_name" ]]; do
-#    echo ">>> Checking: '$device_name'" >&2  # debug
-#
-#    # Check exact match on $6
-#    awk -v dev="$device_name" '$6 == dev { print $1 ": onic" }' "$DEVICES_LIST_FPGA"
-#done < "$ONIC_DEVICE_NAMES" >> "$SH_CFG"
+fi
 
 #push files
 if [ "$push_option" = "1" ]; then 

@@ -21,6 +21,7 @@ CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_CONFIG_ERR_MSG="Please, choose a valid configuration index."
 CHECK_ON_DATA_ERR_MSG="Please, create your data first."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
+CHECK_ON_DEVICE_NAME_ERR_MSG="Please, choose a valid device name."
 CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
 CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
@@ -656,6 +657,67 @@ ipv4_check() {
     else
         return 1
     fi
+}
+
+list_dialog() {
+  local CLI_PATH=$1
+  local LIST_PATH=$2
+  local CHECK_ON_MSG=$3
+  local CHECK_ON_ERR_MSG=$4
+  #local arguments=$4
+  #local multiple_devices=$5
+  #local MAX_DEVICES=$6
+  shift 4
+  local flags_array=("$@")
+  
+  item_found=""
+  item_name=""
+
+  mapfile -t items < "$LIST_PATH"
+
+  if [ ${#items[@]} -eq 1 ]; then
+    item_found="1"
+    item_name=${items[0]}
+  else
+    if [ "$flags_array" = "" ]; then
+      #device_dialog
+      echo $CHECK_ON_MSG
+      echo ""
+      result=$($CLI_PATH/common/list_dialog $LIST_PATH)
+      item_found=$(echo "$result" | sed -n '1p')
+      item_name=$(echo "$result" | sed -n '2p')
+      echo ""
+    else
+      #forgotten mandatory
+      list_check "$CLI_PATH" "$LIST_PATH" "$CHECK_ON_ERR_MSG" "${flags_array[@]}"
+      if [[ $item_found = "0" ]]; then
+        echo $CHECK_ON_MSG
+        echo ""
+        result=$($CLI_PATH/common/list_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+        item_found=$(echo "$result" | sed -n '1p')
+        item_name=$(echo "$result" | sed -n '2p')
+        echo ""
+      fi
+    fi
+  fi
+}
+
+list_check() {
+  local CLI_PATH=$1
+  local LIST_PATH=$2
+  local CHECK_ON_ERR_MSG=$3
+  shift 3
+  local flags_array=("$@")
+  word_check "$CLI_PATH" "-n" "--name" "${flags_array[@]}"
+  item_found=$word_found
+  item_name=$word_value
+
+  if [[ "$item_found" == "1" ]] && ! grep -Fxq "$item_name" "$LIST_PATH"; then
+    echo ""
+    echo "$CHECK_ON_ERR_MSG"
+    echo ""
+    exit
+  fi
 }
 
 new_dialog() {

@@ -872,7 +872,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit -d --device --project --push --hls --help"
+        valid_flags="-c --commit -n --name --project --push --hls --help" #-d --device
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -946,7 +946,8 @@ case "$command" in
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          list_check "$CLI_PATH" "$CLI_PATH/constants/ONIC_DEVICE_NAMES" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
           hls_check "$CLI_PATH" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
         fi
@@ -956,12 +957,17 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        list_dialog "$CLI_PATH" "$CLI_PATH/constants/ONIC_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
         hls_dialog "$CLI_PATH" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
+
+        #collect list results
+        device_found=$item_found
+        device_name=$item_name
         
         #get device_name
-        device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+        #device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
         #check on compatible device
         if ! grep -Fxq "$device_name" "$ONIC_DEVICE_NAMES"; then
@@ -970,8 +976,16 @@ case "$command" in
           exit 1
         fi
 
+        #echo $commit_name_shell
+        #echo $commit_name_driver
+        #echo $new_name
+        #echo $device_name
+        #echo $push_option
+        #echo $hls_option
+        #exit
+
         #run
-        $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --device $device_index --push $push_option --hls $hls_option
+        $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --name $device_name --push $push_option --hls $hls_option
         ;;
       tensorflow)
         #early exit
