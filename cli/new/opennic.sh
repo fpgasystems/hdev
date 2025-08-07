@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --name $device_name --push $push_option --hls $hls_option
-#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --name            1 --push            0 --hls           1
+#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --name  $device_name --push $push_option --hls $hls_option
+#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --name xcu280_u55c_0 --push            0 --hls           1
 
 #early exit
 url="${HOSTNAME}"
