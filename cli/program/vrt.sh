@@ -32,6 +32,7 @@ if [ "$device_index" = "" ] || [ "$project_name" = "" ] || [ "$tag_name" = "" ] 
 fi
 
 #constants
+AMI_HOME=$($CLI_PATH/common/get_constant $CLI_PATH AMI_HOME)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vrt"
 
@@ -43,6 +44,13 @@ VRT_TEMPLATE=$(cat $DIR/VRT_TEMPLATE)
 
 #get bdf
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+
+echo "${bold}Creating device directory:${normal}"
+echo ""
+upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+echo "mkdir -p $AMI_HOME/$upstream_port"
+mkdir -p "$AMI_HOME/$upstream_port"
+echo ""
 
 #partial programming
 echo "${bold}Partial programming:${normal}"
