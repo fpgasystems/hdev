@@ -977,14 +977,6 @@ case "$command" in
           exit 1
         fi
 
-        #echo $commit_name_shell
-        #echo $commit_name_driver
-        #echo $new_name
-        #echo $device_name
-        #echo $push_option
-        #echo $hls_option
-        #exit
-
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --name $device_name --push $push_option --hls $hls_option
         ;;
@@ -1039,7 +1031,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-d --device --tag --template --project --push -h --help"
+        valid_flags="-n --name --tag --template --project --push -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -1085,7 +1077,8 @@ case "$command" in
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          list_check "$CLI_PATH" "$CLI_PATH/constants/VRT_DEVICE_NAMES" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
           template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
           #template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
@@ -1096,12 +1089,17 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        list_dialog "$CLI_PATH" "$CLI_PATH/constants/VRT_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
         template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 
+        #collect list results
+        device_found=$item_found
+        device_name=$item_name
+
         #get device_name
-        device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+        #device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
         #check on compatible device
         if ! grep -Fxq "$device_name" "$VRT_DEVICE_NAMES"; then
@@ -1111,7 +1109,7 @@ case "$command" in
         fi
 
         #run
-        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --device $device_index --template $template_name --push $push_option --number "none"
+        $CLI_PATH/new/vrt --tag $tag_name --project $new_name --name $device_name --template $template_name --push $push_option --number "none"
         ;;
       xdp)
         #early exit
@@ -1698,11 +1696,9 @@ case "$command" in
 
           #add to sh.cfg
           if [[ "$(cat "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg")" == "[workflows]" ]]; then
-            cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg
             if [[ -n "$device_index" ]]; then
                 echo "$device_index: onic" >> "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg"
             fi
-            cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg
           fi
         fi
 
@@ -1733,7 +1729,7 @@ case "$command" in
           fec_option="-" 
         fi
 
-        #bitstream check
+        #bitstream check (this should never happen as hdev new opennic is for a specific device_name)
         for i in "${!device_indexes[@]}"; do
           FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH "${device_indexes[$i]}") #$device_index
           bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
@@ -1963,7 +1959,37 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        #get devices from sh.cfg (device_dialog comes at the end)
+        device_indexes=()
+        if [ "$device_found" = "1" ]; then 
+          device_indexes=("$device_index")
+        elif [[ ( "$device_found" = "" || "$device_found" = "0" ) && -f "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/sh.cfg" ]]; then 
+          while IFS=":" read -r index name; do
+            if [[ ${name// /} == "vrt" ]]; then
+                device_indexes+=("$index")
+            fi
+          done < <(grep -v '^\[' "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/sh.cfg")
+
+          #there is at least one onic device
+          if [[ ${#device_indexes[@]} -gt 0 ]]; then
+            device_found="1"
+          fi
+        fi
+
+        #final check
+        if [ "$device_found" = "" ] || [ "$device_found" = "0" ]; then
+          device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          device_indexes=("$device_index")
+
+          #add to sh.cfg
+          if [[ "$(cat "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/sh.cfg")" == "[workflows]" ]]; then
+            if [[ -n "$device_index" ]]; then
+                echo "$device_index: vrt" >> "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/sh.cfg"
+            fi
+          fi
+        fi
 
         #check on template
         VRT_TEMPLATE=$(cat $MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/VRT_TEMPLATE)
@@ -1979,7 +2005,10 @@ case "$command" in
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #run
-        $CLI_PATH/program/vrt --device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
+        for i in "${!device_indexes[@]}"; do
+          #$CLI_PATH/program/vrt --device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
+          $CLI_PATH/program/vrt --device ${device_indexes[$i]} --project $project_name --tag $tag_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
+        done
         ;;
       xdp)
         #early exit
