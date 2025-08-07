@@ -106,7 +106,7 @@ _hdev_completions()
                 commands="${commands} build"
             fi
             if [ "$is_build" = "1" ]; then
-                commands="${commands} build enable examine" #new
+                commands="${commands} build enable examine new"
             fi
             if [ "$is_fpga" = "1" ]; then
                 commands="${commands} build"
@@ -118,13 +118,13 @@ _hdev_completions()
                 commands="${commands} new"
             fi
             if [ "$gpu_enabled" = "1" ]; then
-                commands="${commands} build" #new
+                commands="${commands} build"
             fi
             if [ "$vivado_enabled" = "1" ]; then
-                commands="${commands} build" #new
+                commands="${commands} build"
             fi
             if [ ! "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
-                commands="${commands} build run" #new
+                commands="${commands} build run"
             fi
             if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                 commands="${commands} run"
@@ -196,9 +196,13 @@ _hdev_completions()
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 new)
-                    if [ ! "$is_build" = "1" ]; then
+                    #if [ ! "$is_build" = "1" ]; then
                         commands="--help"
                     
+                        if [ "$is_build" = "1" ]; then
+                            commands="${commands} aved vrt tensorflow opennic xdp"
+                        fi
+
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "1" ]; then
                             commands="${commands} aved vrt"
                         fi
@@ -210,18 +214,17 @@ _hdev_completions()
                                 commands="${commands} composer"
                             fi
                         fi
-                        #if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "1" ]; then
                             commands="${commands} opennic"
                         fi
-                        if [ "$is_build" = "0" ] && [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+                        if [ "$is_build" = "0" ] && [ "$nic_enabled" = "1" ]; then
                             commands="${commands} xdp"
                         fi
                         commands_array=($commands)
                         commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                         commands_string=$(echo "${commands_array[@]}")
                         COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
-                    fi
+                    #fi
                     ;;
                 open)
                     commands="vivado --help"

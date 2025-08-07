@@ -42,9 +42,10 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
+nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
 
-#if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]; then
-if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
+if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]; then
+#if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
     if [ "$parameter" = "--help" ]; then
         echo ""
         echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"
@@ -52,22 +53,22 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
         echo "Creates a new project of your choice."
         echo ""
         echo "ARGUMENTS:"
-        if [ "$vivado_enabled_asoc" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Generates an Alveo Versal Example Design (AVED) project."
         fi
         if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
         echo "   ${bold}composer${normal}        - Model-based design project for Hyperion developers."
         fi
-        if [ "$vivado_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
-        if [ "$gpu_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Create machine and deep learning learning applications with TensorFlow."
         fi
-        if [ "$vivado_enabled_asoc" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Generates an Alveo V80 RunTime (VRT) project."
         fi
-        if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$nic_enabled" = "1" ]; then
         echo "   ${bold}xdp${normal}             - Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
         fi
         echo ""
@@ -80,7 +81,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
         fi
         echo ""
     elif [ "$parameter" = "aved" ]; then
-        if [ "$vivado_enabled_asoc" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new aved [flags] [--help]${normal}"
             echo ""
@@ -97,7 +98,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
         fi
     elif [ "$parameter" = "composer" ]; then
-        if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
+        if [ "$is_build" = "1" ] || [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
             echo ""
             echo "${bold}$CLI_NAME new composer [--help]${normal}"
             echo ""
@@ -115,7 +116,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
         fi
     elif [ "$parameter" = "opennic" ]; then
-        if [ "$vivado_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new opennic [flags] [--help]${normal}"
             echo ""
@@ -135,7 +136,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
         fi
     elif [ "$parameter" = "tensorflow" ]; then
-        if [ "$gpu_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new tensorflow [--help]${normal}"
             echo ""
@@ -151,7 +152,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
         fi
     elif [ "$parameter" = "vrt" ]; then
-        if [ "$vivado_enabled_asoc" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new vrt [flags] [--help]${normal}"
             echo ""
@@ -170,7 +171,7 @@ if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" =
             echo ""
         fi
     elif [ "$parameter" = "xdp" ]; then
-        if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
+        if [ "$is_build" = "1" ] ||  [ "$nic_enabled" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new $parameter [flags] [--help]${normal}"
             echo ""

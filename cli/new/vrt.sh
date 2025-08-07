@@ -15,7 +15,8 @@ is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
-if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+#if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
     exit 1
 fi
 

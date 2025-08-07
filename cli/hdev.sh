@@ -122,8 +122,8 @@ cli_help() {
   else
   echo "    ${bold}get${normal}            - Devices and host information."
   fi
-  #if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
-  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
+  if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+  #if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
   echo "    ${bold}open${normal}           - Opens a windowed application for user interaction."
@@ -756,7 +756,8 @@ case "$command" in
         ;;
       aved)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+        #if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
             exit 1
         fi
 
@@ -852,8 +853,8 @@ case "$command" in
         ;;
       opennic)
         #early exit
-        #if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
+        #if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
             exit 1
         fi
 
@@ -989,6 +990,7 @@ case "$command" in
         ;;
       tensorflow)
         #early exit
+        #if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
           exit 1
         fi
@@ -1025,7 +1027,8 @@ case "$command" in
         ;;
       vrt)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+        #if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
             exit 1
         fi
 
@@ -1112,7 +1115,8 @@ case "$command" in
         ;;
       xdp)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
+        if [ "$is_build" = "0" ] && [ "$nic_enabled" = "0" ]; then
+        #if [ "$is_build" = "1" ] || [ "$is_nic" = "0" ] || [ "$is_network_developer" = "0" ]; then
             exit 1
         fi
 
@@ -1691,6 +1695,15 @@ case "$command" in
         if [ "$device_found" = "" ] || [ "$device_found" = "0" ]; then
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           device_indexes=("$device_index")
+
+          #add to sh.cfg
+          if [[ "$(cat "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg")" == "[workflows]" ]]; then
+            cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg
+            if [[ -n "$device_index" ]]; then
+                echo "$device_index: onic" >> "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg"
+            fi
+            cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/sh.cfg
+          fi
         fi
 
         #fec_dialog
