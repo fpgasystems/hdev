@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#user_name=$1
+CLI_PATH=$1
 #team_name=$2
 
 #constants

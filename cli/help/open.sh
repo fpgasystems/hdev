@@ -9,7 +9,7 @@ CLI_NAME=$2
 parameter=$3
 
 #check on composer
-is_composer_developer=$($CLI_PATH/common/is_composer_developer)
+is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
 
 #constants
 COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
