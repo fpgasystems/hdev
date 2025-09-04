@@ -33,9 +33,6 @@ echo ""
 echo "Creates binaries, bitstreams, and drivers for your accelerated applications."
 echo ""
 echo "ARGUMENTS:"
-if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON2}aved${normal}${COLOR_OFF}            - AVED's hardware and software generation."  
-fi
 echo "   ${bold}c${normal}               - C and C++ binaries."
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."

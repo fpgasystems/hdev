@@ -21,7 +21,6 @@ is_network_developer=${12}
 is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
 
 #constants
-AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
@@ -53,9 +52,6 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "Creates a new project of your choice."
         echo ""
         echo "ARGUMENTS:"
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-        echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Generates an Alveo Versal Example Design (AVED) project."
-        fi
         if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
         echo "   ${bold}composer${normal}        - Model-based design project for Hyperion developers."
         fi
@@ -80,23 +76,6 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
         fi
         echo ""
-    elif [ "$parameter" = "aved" ]; then
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-            echo ""
-            echo "${bold}$CLI_NAME new aved [flags] [--help]${normal}"
-            echo ""
-            echo "Generates an Alveo Versal Example Design (AVED) project."
-            echo ""
-            echo "FLAGS:"
-            echo "       ${bold}--project${normal}   - Specifies your AVED project name." 
-            echo "       ${bold}--push${normal}      - Pushes your AVED project to your GitHub account." 
-            echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$AVED_TAG${normal})."
-            echo ""
-            echo "   ${bold}-h, --help${normal}      - Help to use this command."
-            echo ""
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
-            echo ""
-        fi
     elif [ "$parameter" = "composer" ]; then
         if [ "$is_build" = "1" ] || [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
             echo ""

@@ -282,14 +282,6 @@ new_help() {
   exit
 }
 
-new_aved_help() {
-  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" "0" $is_vivado_developer
-  exit
-}
-
 new_composer_help() {
   if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
@@ -370,9 +362,6 @@ program_help() {
     echo "Driver and bitstream programming."
     echo ""
     echo "ARGUMENTS:"
-    if [ "$vivado_enabled_asoc" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Programs a self-built AVED project to a given device."
-    fi
     if [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}bitstream${COLOR_OFF}${normal}       - Programs a Vivado bitstream to a given device."
     fi
@@ -515,9 +504,6 @@ run_help() {
     echo "Executes your accelerated application."
     echo ""
     echo "ARGUMENTS:"
-    if [ "$vivado_enabled_asoc" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Runs AVED on a given device."
-    fi
     if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi

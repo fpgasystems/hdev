@@ -28,13 +28,8 @@ vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] &
 nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
 
 #flags
-AVED_BUILD_FLAGS=( "--project" "--tag" )
-AVED_NEW_FLAGS=( "--project" "--push" "--tag" )
-AVED_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
-AVED_RUN_FLAGS=( "--config" "--device" "--project" "--tag" )
 COMPOSER_NEW_FLAGS=( "--model" "--project" "--push" "--tag" )
 COMPOSER_OPEN_FLAGS=( "--project" "--tag" )
-#GET_INTERFACES_FLAGS=( "--type" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--hls" ) #--device
@@ -157,7 +152,7 @@ _hdev_completions()
                 build)
                     commands="c --help"
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} aved vrt"
+                        commands="${commands} vrt"
                     fi
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
@@ -200,11 +195,11 @@ _hdev_completions()
                         commands="--help"
                     
                         if [ "$is_build" = "1" ]; then
-                            commands="${commands} aved vrt tensorflow opennic xdp"
+                            commands="${commands} vrt tensorflow opennic xdp"
                         fi
 
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "1" ]; then
-                            commands="${commands} aved vrt"
+                            commands="${commands} vrt"
                         fi
                         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "1" ]; then
                             commands="${commands} tensorflow"
@@ -252,7 +247,7 @@ _hdev_completions()
                             commands="${commands} revert"
                         fi
                         if [ "$vivado_enabled_asoc" = "1" ]; then
-                            commands="${commands} image aved vrt"
+                            commands="${commands} image vrt"
                         fi
                         if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                             commands="${commands} xdp"
@@ -269,7 +264,7 @@ _hdev_completions()
                 run)
                     commands="--help"
                     if [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} aved vrt"
+                        commands="${commands} vrt"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} tensorflow"
@@ -335,9 +330,6 @@ _hdev_completions()
             case ${COMP_WORDS[COMP_CWORD-2]} in
                 build)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        aved)
-                            COMPREPLY=($(compgen -W "${AVED_BUILD_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
                         c)
                             COMPREPLY=($(compgen -W "--source --help" -- ${cur}))
                             ;;
@@ -417,9 +409,6 @@ _hdev_completions()
                     ;;
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        aved)
-                            COMPREPLY=($(compgen -W "${AVED_NEW_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
                         composer)
                             COMPREPLY=($(compgen -W "${COMPOSER_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -449,9 +438,6 @@ _hdev_completions()
                     ;;
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        aved)
-                            COMPREPLY=($(compgen -W "${AVED_PROGRAM_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
                         bitstream) 
                             COMPREPLY=($(compgen -W "${PROGRAM_BITSTREAM_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -480,9 +466,6 @@ _hdev_completions()
                     ;;
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        aved)
-                            COMPREPLY=($(compgen -W "${AVED_RUN_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -559,10 +542,6 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-4]}" in
                 build)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_BUILD_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         opennic)
                             #--commit --platform --project
                             if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
@@ -587,10 +566,6 @@ _hdev_completions()
                     ;;
                 new)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_NEW_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         composer)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COMPOSER_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -623,10 +598,6 @@ _hdev_completions()
                     ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_PROGRAM_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         bitstream)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -671,10 +642,6 @@ _hdev_completions()
                     ;;
                 run)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -760,10 +727,6 @@ _hdev_completions()
                     ;;
                 new)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_NEW_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         composer)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COMPOSER_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -784,10 +747,6 @@ _hdev_completions()
                     ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_PROGRAM_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         bitstream)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -816,10 +775,6 @@ _hdev_completions()
                     ;;
                 run)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -894,10 +849,6 @@ _hdev_completions()
                     ;;
                 program)
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_PROGRAM_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         bitstream)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -912,14 +863,6 @@ _hdev_completions()
                             ;;
                         xdp)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${XDP_PROGRAM_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                    esac
-                    ;;
-                run)
-                    case "${COMP_WORDS[COMP_CWORD-7]}" in
-                        aved)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${AVED_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac

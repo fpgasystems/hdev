@@ -17,7 +17,6 @@ AVED_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH AVED_DRIVER_NAME)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
-AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 CMDB_PATH="$CLI_PATH/cmdb"
 COMPOSER_PATH="$HDEV_PATH/composer"
@@ -261,57 +260,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         build_help
-        ;;
-      aved)
-        #early exit
-        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
-          exit 1
-        fi
-
-        #check on groups
-        vivado_developers_check "$USER"
-        
-        #check on software
-        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-        vivado_check "$VIVADO_PATH" "$vivado_version"
-        gh_check "$CLI_PATH"
-
-        #check on flags
-        valid_flags="-p --project -t --tag -h --help" 
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #checks on command line
-        if [ ! "$flags_array" = "" ]; then
-          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
-          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        fi
-
-        #dialogs
-        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
-        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "AVED_TAG"
-        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
-        echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        #we force the user to create a configuration
-        if [ ! -f "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/device_config" ]; then
-            #get current path
-            current_path=$(pwd)
-            cd "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name"
-            echo "${bold}Adding device and host configurations with ./config_add:${normal}"
-            ./config_add
-            cd "$current_path"
-        fi
-
-        #full compilation allowed on deployment servers (hacc-build-01 would need 22.04 too)
-        is_build="1"
-        
-        #run
-        $CLI_PATH/build/aved --project $project_name --tag $tag_name --version $vivado_version --all $is_build
         ;;
       c)
         #check on flags
@@ -753,79 +701,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         new_help
-        ;;
-      aved)
-        #early exit
-        #if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
-        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
-            exit 1
-        fi
-
-        #check on groups
-        vivado_developers_check "$USER"
-        
-        #check on software
-        gh_check "$CLI_PATH"
-
-        #check on flags
-        valid_flags="-t --tag --project --push -h --help"
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #check_on_tag
-        tag_found=""
-        tag_name=""
-        if [ "$flags_array" = "" ]; then
-            #commit dialog
-            tag_found="1"
-            tag_name=$AVED_TAG
-        else
-            #github_tag_dialog_check
-            result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
-            tag_found=$(echo "$result" | sed -n '1p')
-            tag_name=$(echo "$result" | sed -n '2p')
-
-            #check if tag_name is empty
-            if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
-                exit
-            fi
-            
-            #check if tag exist
-            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $AVED_REPO $tag_name)
-            
-            if [ "$tag_found" = "0" ]; then 
-                tag_name=$AVED_TAG
-            elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
-                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
-                exit
-            elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
-                if [ "$exists_tag" = "0" ]; then
-                  echo ""
-                  echo $CHECK_ON_GH_TAG_ERR_MSG
-                  echo ""
-                  exit 1
-                fi
-            fi
-        fi
-
-        #checks (command line)
-        if [ ! "$flags_array" = "" ]; then
-          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-          push_check "$CLI_PATH" "${flags_array[@]}"
-        fi
-
-        #dialogs
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
-        echo ""
-        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-  
-        #run
-        $CLI_PATH/new/aved --tag $tag_name --project $new_name --push $push_option
         ;;
       composer)
         if [[ -f "$CLI_PATH/new/composer" ]]; then
@@ -1298,76 +1173,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         program_help
-        ;;
-      aved)
-        #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
-          exit
-        fi
-
-        #check on server
-        fpga_check "$CLI_PATH" "$hostname"
-        
-        #check on groups
-        vivado_developers_check "$USER"
-        
-        #check on software
-        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-        vivado_check "$VIVADO_PATH" "$vivado_version"
-        gh_check "$CLI_PATH"
-        ami_check "$AMI_TOOL_PATH"
-      
-        #check on flags
-        valid_flags="-d --device -p --project -t --tag -r --remote -h --help"
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #check on driver (on the contrary to OpenNIC, the driver must be present--at system level--before programming)
-        if ! lsmod | grep -q ${AVED_DRIVER_NAME%.ko}; then
-          echo ""
-          echo "Your targeted driver ($AVED_DRIVER_NAME) is missing."
-          echo ""
-          exit
-        fi
-
-        #checks (command line)
-        if [ ! "$flags_array" = "" ]; then
-          #commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          remote_check "$CLI_PATH" "${flags_array[@]}"
-        fi
-
-        #dialogs
-        #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
-        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "AVED_TAG"
-        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
-        echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-
-        #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-        aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
-
-        #image check
-        pdi_project_name="${aved_name}.$vivado_version.pdi"
-        image_path="$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/$pdi_project_name"
-        if ! [ -e "$image_path" ]; then
-          echo "$CHECK_ON_IMAGE_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-          echo ""
-          exit 1
-        fi
-
-        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
-
-        #run
-        $CLI_PATH/program/aved --device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
         ;;
       bitstream|vivado)
         #early exit
@@ -2205,100 +2010,6 @@ case "$command" in
       -h|--help)
         run_help
         ;;
-      aved)
-        #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
-          exit
-        fi
-
-        #check on server
-        fpga_check "$CLI_PATH" "$hostname"
-        
-        #check on groups
-        vivado_developers_check "$USER"
-        
-        #check on software
-        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-        vivado_check "$VIVADO_PATH" "$vivado_version"
-        gh_check "$CLI_PATH"
-        ami_check "$AMI_TOOL_PATH"
-      
-        #check on flags
-        valid_flags="-c --config -d --device -p --project -t --tag -h --help"
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #constants
-        CONFIG_PREFIX="host_config_"
-
-        #checks (command line)
-        if [ ! "$flags_array" = "" ]; then
-          #commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-          if [ "$project_found" = "1" ]; then
-            config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "yes" "${flags_array[@]}"
-          fi
-        fi
-
-        #early onic workflow check
-        #if [ "$device_found" = "1" ]; then
-        #  workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        #  if [ ! "$workflow" = "onic" ]; then
-        #      echo ""
-        #      echo "$CHECK_ON_WORKFLOW_ERR_MSG"
-        #      echo ""
-        #      exit
-        #  fi
-        #fi
-
-        if [ "$project_found" = "0" ]; then
-          add_echo="no"
-        fi
-
-        echo ""
-        echo "Sorry, we are working on this!"
-        echo ""
-        exit
-
-        #dialogs
-        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
-        tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "AVED_TAG"
-        project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
-        echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
-        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/$config_name" ]; then
-            echo ""
-            echo "$CHECK_ON_CONFIG_ERR_MSG"
-            echo ""
-            exit
-        fi
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-
-        #onic workflow check
-        #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        #if [ ! "$workflow" = "onic" ]; then
-        #    echo "$CHECK_ON_WORKFLOW_ERR_MSG"
-        #    echo ""
-        #    exit
-        #fi
-
-        #onic application check
-        #if [ ! -x "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/onic" ]; then
-        #  echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-        #  echo ""
-        #  exit 1
-        #fi
-
-        #run
-        $CLI_PATH/run/opennic --config $config_index --device $device_index --project $project_name --tag $tag_name 
-        ;;
       opennic)
         #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
@@ -3063,9 +2774,6 @@ case "$command" in
             exit
           fi
         fi
-
-        #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-        #aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
 
         #dialogs
         echo ""
