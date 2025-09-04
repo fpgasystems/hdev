@@ -37,6 +37,7 @@ fi
 #AMI_HOME=$($CLI_PATH/common/get_constant $CLI_PATH AMI_HOME)
 AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
 AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
+AVED_SMBUS_IP_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP_PATH)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 DEVICES_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
@@ -109,7 +110,8 @@ rm -rf $DIR/examples/
 tag_base="${AVED_TAG%_*}"
 
 #copy SMBus IP
-cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo
+#cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo
+cp -r $AVED_SMBUS_IP_PATH/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo
 
 #add template files
 cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
