@@ -15,15 +15,15 @@ build_help() {
     exit
 }
 
-build_aved_help() {
-    is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-    is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-    is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-    is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-    $CLI_PATH/help/build_aved $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_vivado_developer
-    exit
-}
+#build_aved_help() {
+#    is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#    is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+#    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+#    is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#    is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+#    $CLI_PATH/help/build_aved $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_vivado_developer
+#    exit
+#}
 
 build_c_help() {
     $CLI_PATH/help/build_c $CLI_NAME
@@ -395,14 +395,14 @@ program_help() {
   exit
 }
 
-program_aved_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
-    $CLI_PATH/help/program_aved $CLI_PATH $CLI_NAME
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
-    echo ""
-  fi
-  exit
-}
+#program_aved_help() {
+#  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+#    $CLI_PATH/help/program_aved $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga
+#    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+#    echo ""
+#  fi
+#  exit
+#}
 
 program_bitstream_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
@@ -468,7 +468,7 @@ program_vivado_help() {
 
 program_vrt_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
-    $CLI_PATH/help/program_aved $CLI_PATH $CLI_NAME
+    $CLI_PATH/help/program_vrt $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
   fi
@@ -523,14 +523,14 @@ run_help() {
   exit
 }
 
-run_aved_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
-    $CLI_PATH/help/run_aved $CLI_PATH $CLI_NAME
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
-    echo ""
-  fi
-  exit
-}
+#run_aved_help() {
+#  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+#    $CLI_PATH/help/run_aved $CLI_PATH $CLI_NAME
+#    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+#    echo ""
+#  fi
+#  exit
+#}
 
 run_opennic_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
