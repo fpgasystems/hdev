@@ -1364,10 +1364,12 @@ case "$command" in
         vivado_developers_check "$USER"
 
         #check on software  
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
         ami_check "$AMI_TOOL_PATH"
 
         #check on flags
-        valid_flags="-d --device -p --path -r --remote -h --help"
+        valid_flags="-d --device --partition --path -r --remote -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -1387,7 +1389,7 @@ case "$command" in
               device_found="1"
               device_index="1"
           fi
-          #partition_check "$CLI_PATH" "$device_index" "${flags_array[@]}"
+          partition_check "$CLI_PATH" "$device_index" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
           #file_path_dialog_check
           result="$("$CLI_PATH/common/file_path_dialog_check" "${flags_array[@]}")"
@@ -1419,8 +1421,19 @@ case "$command" in
           exit
         fi
 
+        #echo "I am here"
+        #echo "device_index: $device_index"
+        #echo "path: $file_path"
+        #echo "remote: $deploy_option"
+        #echo "partition_index: $partition_index"
+        #exit
+
         #run
-        $CLI_PATH/program/image --device $device_index --path $file_path --remote $deploy_option "${servers_family_list[@]}"
+        if [ "$partition_index" = "none" ]; then
+          $CLI_PATH/program/bitstream --path $file_path --device $device_index --version $vivado_version --hotplug "1" --remote $deploy_option "${servers_family_list[@]}" 
+        else
+          $CLI_PATH/program/image --device $device_index --path $file_path --partition $partition_index --remote $deploy_option "${servers_family_list[@]}"
+        fi
         ;;
       opennic)
         #early exit
