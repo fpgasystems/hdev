@@ -235,7 +235,10 @@ _hdev_completions()
                     if [ ! "$is_build" = "1" ]; then
                         commands="--help"
                         if [ "$is_vivado_developer" = "1" ]; then
-                            commands="${commands} bitstream driver" #vivado
+                            commands="${commands} driver" #vivado #bitstream
+                        fi
+                        if [ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "0" ]; then
+                            commands="${commands} bitstream"
                         fi
                         if [ "$is_vivado_developer" = "1" ]; then
                             commands="${commands} opennic"

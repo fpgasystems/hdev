@@ -1176,7 +1176,7 @@ case "$command" in
         ;;
       bitstream|vivado)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ] || [ "$is_asoc" = "1" ]; then
           exit 1
         fi
 

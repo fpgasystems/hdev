@@ -16,7 +16,7 @@ is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
-if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ] || [ "$is_asoc" = "1" ]; then
     exit 1
 fi
 
