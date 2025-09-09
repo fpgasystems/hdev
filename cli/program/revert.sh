@@ -45,6 +45,13 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 #get device_type
 device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
 
+#get upstream_port
+upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+
+#get device and serial name
+serial_number=$($CLI_PATH/get/serial -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
+device_name=$($CLI_PATH/get/name -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
+
 #revert
 if [ "$device_type" = "asoc" ]; then
     #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
@@ -102,11 +109,11 @@ elif [ "$device_type" = "acap" ] || [ "$device_type" = "fpga" ]; then
     fi
 
     #get upstream_port
-    upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+    #upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
     #get device and serial name
-    serial_number=$($CLI_PATH/get/serial -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
-    device_name=$($CLI_PATH/get/name -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
+    #serial_number=$($CLI_PATH/get/serial -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
+    #device_name=$($CLI_PATH/get/name -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
 
     #echo ""
     echo "${bold}Programming XRT shell:${normal}"
@@ -114,10 +121,15 @@ elif [ "$device_type" = "acap" ] || [ "$device_type" = "fpga" ]; then
     $VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $CLI_PATH/program/flash_xrt_bitstream.tcl -tclargs $SERVERADDR $serial_number $device_name
 
     #hotplug
-    root_port=$($CLI_PATH/get/get_fpga_device_param $device_index root_port)
-    LinkCtl=$($CLI_PATH/get/get_fpga_device_param $device_index LinkCtl)
-    sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
+    #root_port=$($CLI_PATH/get/get_fpga_device_param $device_index root_port)
+    #LinkCtl=$($CLI_PATH/get/get_fpga_device_param $device_index LinkCtl)
+    #sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
 fi
+
+#hotplug
+root_port=$($CLI_PATH/get/get_fpga_device_param $device_index root_port)
+LinkCtl=$($CLI_PATH/get/get_fpga_device_param $device_index LinkCtl)
+sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
 
 #reverting remote servers (if applies)
 reverting_string="$CLI_PATH/program/revert --device $device_index --version $vivado_version --remote 0"
