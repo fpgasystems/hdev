@@ -74,7 +74,6 @@ is_numa=$($CLI_PATH/common/is_numa $CLI_PATH)
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #legend
@@ -2657,9 +2656,9 @@ case "$command" in
           #check if PR exist
           exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $HDEV_REPO $pullrq_id)
           if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
-            $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
             echo ""
             echo $CHECK_ON_PR_ERR_MSG
+            $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
             echo ""
             exit 1
           fi

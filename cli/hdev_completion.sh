@@ -18,7 +18,6 @@ IS_GPU_DEVELOPER="1"
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #evaluate integrations
