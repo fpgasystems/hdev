@@ -111,10 +111,14 @@ echo "$commit_name_driver" > $DIR/ONIC_DRIVER_COMMIT
 #save ONIC_DEVICE_NAME 
 echo "$device_name" > $DIR/ONIC_DEVICE_NAME
 
+#add api files
+cp $HDEV_PATH/api/config_add $DIR
+cp $HDEV_PATH/api/config_delete $DIR
+
 #add template files
 #mkdir -p $DIR/src
-cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
-cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+#cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
+#cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 cp $HDEV_PATH/templates/$WORKFLOW/Makefile $DIR/Makefile
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
