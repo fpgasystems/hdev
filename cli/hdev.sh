@@ -19,8 +19,6 @@ AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 CMDB_PATH="$CLI_PATH/cmdb"
-COMPOSER_PATH="$HDEV_PATH/composer"
-COMPOSER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_REPO)
 COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
@@ -702,30 +700,6 @@ case "$command" in
       -h|--help)
         new_help
         ;;
-      composer)
-        if [[ -f "$CLI_PATH/new/composer" ]]; then
-          #early exit
-          if [ "$is_build" = "1" ] || [ "$is_composer_developer" = "0" ]; then
-              exit 1
-          fi
-
-          #check on groups
-          vivado_developers_check "$USER"
-          
-          #check on software
-          gh_check "$CLI_PATH"
-
-          #check on flags
-          valid_flags="-m --model --project --push -t --tag -h --help"
-          flags_check $command_arguments_flags"@"$valid_flags
-
-          #inputs (split the string into an array)
-          read -r -a flags_array <<< "$flags"
-
-          #call integration
-          $CLI_PATH/_hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
-        fi
-        ;;
       opennic)
         #early exit
         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
@@ -1095,25 +1069,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         open_help
-        ;;
-      composer)
-        if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-          #check on groups
-          vivado_developers_check "$USER"
-          
-          #check on software
-          gh_check "$CLI_PATH"
-
-          #check on flags
-          valid_flags="-m --model --project --push -t --tag -h --help"
-          flags_check $command_arguments_flags"@"$valid_flags
-
-          #inputs (split the string into an array)
-          read -r -a flags_array <<< "$flags"
-
-          #call integration
-          $CLI_PATH/_hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
-        fi
         ;;
       vivado)
         #early exit

@@ -8,12 +8,6 @@ CLI_PATH=$1
 CLI_NAME=$2
 parameter=$3
 
-#check on composer
-is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
-
-#constants
-COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
-
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
@@ -34,31 +28,12 @@ if [ "$parameter" = "--help" ]; then
     echo "Opens a windowed application for user interaction."
     echo ""
     echo "ARGUMENTS:"
-    if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-    echo "   ${bold}composer${normal}        - Hyperion model-based design graphical interface."
-    fi
     echo "   ${bold}vivado${normal}          - Vivado Graphical Unit Interface (GUI)."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
     #echo ""
-elif [ "$parameter" = "composer" ]; then
-    if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-        echo ""
-        echo "${bold}$CLI_NAME open composer [flags] [--help]${normal}"
-        echo ""
-        echo "Hyperion model-based design graphical interface."
-        echo ""
-        echo "FLAGS:"
-        echo "   ${bold}-p, --project${normal}   - Specifies your project name." 
-        echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$COMPOSER_TAG${normal})."
-        echo ""
-        echo "   ${bold}-h, --help${normal}      - Help to use this command."
-        echo ""
-        #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
-        #echo ""
-    fi
 elif [ "$parameter" = "vivado" ]; then
     #if [ "$vivado_enabled" = "1" ]; then
         echo ""

@@ -17,9 +17,6 @@ is_gpu_developer=${10}
 is_vivado_developer=${11}
 is_network_developer=${12}
 
-#check on composer
-is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
-
 #constants
 COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
@@ -52,9 +49,6 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "Creates a new project of your choice."
         echo ""
         echo "ARGUMENTS:"
-        if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
-        echo "   ${bold}composer${normal}        - Model-based design project for Hyperion developers."
-        fi
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
@@ -76,24 +70,6 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
         fi
         echo ""
-    elif [ "$parameter" = "composer" ]; then
-        if [ "$is_build" = "1" ] || [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
-            echo ""
-            echo "${bold}$CLI_NAME new composer [--help]${normal}"
-            echo ""
-            echo "Model-based design project for Hyperion developers."
-            echo ""
-            echo "FLAGS:"
-            echo "   ${bold}-m, --model${normal}     - Design reference for your application."
-            echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
-            echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account."
-            echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$COMPOSER_TAG${normal})."
-            echo ""
-            echo "   ${bold}-h, --help${normal}      - Help to use this command."
-            #echo ""
-            #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
-            echo ""
-        fi
     elif [ "$parameter" = "opennic" ]; then
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
             echo ""
