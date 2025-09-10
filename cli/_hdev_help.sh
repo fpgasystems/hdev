@@ -73,6 +73,8 @@ pullrq_help() {
     echo "   ${bold}-n, --number${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    #echo ""
+    $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
     echo ""
   fi
   exit
