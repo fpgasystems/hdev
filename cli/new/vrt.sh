@@ -113,9 +113,13 @@ tag_base="${AVED_TAG%_*}"
 #cp -r $HDEV_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo
 cp -r $AVED_SMBUS_IP_PATH/$AVED_SMBUS_IP $DIR/submodules/v80-vitis-flow/submodules/aved/hw/$tag_base/src/iprepo
 
+#add api files
+cp $HDEV_PATH/api/config_add $DIR
+cp $HDEV_PATH/api/config_delete $DIR
+
 #add template files
-cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
-cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+#cp $HDEV_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
+#cp $HDEV_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
 cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
