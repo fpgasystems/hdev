@@ -34,8 +34,6 @@ if [ "$pullrq_id" = "" ] || [ "$tag_name" = "" ]; then
     exit
 fi
 
-echo "Hola 1"
-
 #constants
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
@@ -53,8 +51,6 @@ installation_path=$(which hdev | xargs dirname | xargs dirname)
 #remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
 remote_tag_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/releases/tags/$tag_name" | jq -r '.published_at // .created_at')
 
-echo "Hola 2"
-
 #get installed commit date
 local_commit_date=$(cat $HDEV_PATH/TAG_DATE)
 
@@ -63,12 +59,12 @@ local_commit_date=$(cat $HDEV_PATH/TAG_DATE)
 remote_timestamp=$(date -d "$remote_tag_date" +%s)
 local_timestamp=$(date -d "$local_commit_date" +%s)
 
-echo "pullrq_id: $pullrq_id"
-echo "tag_name: $tag_name"
-echo "remote_tag_date: $remote_tag_date"
-echo "local_commit_date: $local_commit_date"
-echo "remote_timestamp: $remote_timestamp"
-echo "local_timestamp: $local_timestamp"
+#echo "pullrq_id: $pullrq_id"
+#echo "tag_name: $tag_name"
+#echo "remote_tag_date: $remote_tag_date"
+#echo "local_commit_date: $local_commit_date"
+#echo "remote_timestamp: $remote_timestamp"
+#echo "local_timestamp: $local_timestamp"
 
 #compare the timestamps and confirm update
 update="0"
