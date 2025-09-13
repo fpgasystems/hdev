@@ -37,7 +37,7 @@ ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 SOCKPERF_MIN=$($CLI_PATH/common/get_constant $CLI_PATH SOCKPERF_MIN)
 REPO_NAME="hdev"
-TENSORFLOW_COMMIT=$(cat $HDEV_PATH/COMMIT)
+TENSORFLOW_COMMIT=$(cat $HDEV_PATH/TAG)
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 VRT_DEVICE_NAMES="$CLI_PATH/constants/VRT_DEVICE_NAMES"
 VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
@@ -156,10 +156,11 @@ cli_help() {
 }
 
 cli_release() {
-    release=$(cat $HDEV_PATH/COMMIT)
-    release_date=$(cat $HDEV_PATH/COMMIT_DATE)
+    release=$(cat $HDEV_PATH/TAG)
+    release_date=$(cat $HDEV_PATH/TAG_DATE)
     echo ""
-    echo "Release (commit_ID) : $release ($release_date)"
+    #echo "Release (commit_ID) : $release ($release_date)"
+    echo "$release ($release_date)"
     echo ""
     exit 1
 }
