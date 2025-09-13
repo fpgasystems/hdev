@@ -117,6 +117,11 @@ if [ $update = "1" ]; then
     echo "$GITHUB_CLI_PATH/gh pr checkout $pullrq_id"
     echo ""
     $GITHUB_CLI_PATH/gh pr checkout $pullrq_id
+    #get pull request update date
+    remote_pr_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/pulls/$pullrq_id" | jq -r '.merged_at // .closed_at // .updated_at // .created_at')
+    #update TAG and TAG_DATE
+    echo "#$pullrq_id" > TAG
+    echo $remote_pr_date > TAG_DATE
   fi
 
   #process tag
@@ -126,13 +131,16 @@ if [ $update = "1" ]; then
     echo ""
     echo "git checkout tags/$tag_name -b tag-$tag_name"
     git checkout tags/$tag_name -b tag-$tag_name
+    #update TAG and TAG_DATE
+    echo $tag_name > TAG
+    echo $remote_tag_date > TAG_DATE
   fi
 
   #get commit ID
   #remote_commit_id=$(git rev-parse --short HEAD)
 
   #get tag ID
-  tag_commit_id=$(git rev-parse --short "$tag_name")
+  #tag_commit_id=$(git rev-parse --short "$tag_name")
   
   #remove unnecessary files
   rm -f *.md
@@ -151,8 +159,8 @@ if [ $update = "1" ]; then
   #echo $remote_commit_date > COMMIT_DATE
 
   #update TAG and TAG_DATE
-  echo $tag_commit_id > TAG
-  echo $remote_tag_date > TAG_DATE
+  #echo $tag_commit_id > TAG
+  #echo $remote_tag_date > TAG_DATE
 
   #backup files
   echo ""
@@ -246,10 +254,10 @@ if [ $update = "1" ]; then
   sleep 1
 
   if [ ! $pullrq_id = "none" ]; then
-    echo "$REPO_NAME was set to pull request ${bold}#$pullrq_id (commit ID: $remote_commit_id)!${normal}"
+    echo "$REPO_NAME was set to pull request ${bold}#$pullrq_id!${normal}"
     echo ""
   else
-    echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+    echo "$REPO_NAME was set to release ${bold}$tag_name!${normal}"
     echo ""
   fi
 fi
