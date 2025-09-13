@@ -49,14 +49,22 @@ installation_path=$(which hdev | xargs dirname | xargs dirname)
 
 #get last commit date on the remote
 #remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
-remote_tag_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/releases/tags/$tag_name" | jq -r '.published_at // .created_at')
+
+#remotes dates
+if [ ! $pullrq_id = "none" ]; then
+  remote_pr_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/pulls/$pullrq_id" | jq -r '.merged_at // .closed_at // .updated_at // .created_at')
+  #convert to Unix timestamps
+  remote_timestamp=$(date -d "$remote_pr_date" +%s)
+elif [ ! $tag_name = "none" ]; then
+  remote_tag_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/releases/tags/$tag_name" | jq -r '.published_at // .created_at')
+  #convert to Unix timestamps
+  remote_timestamp=$(date -d "$remote_tag_date" +%s)
+fi
 
 #get installed commit date
 local_commit_date=$(cat $HDEV_PATH/TAG_DATE)
 
-#convert the dates to Unix timestamps
-#remote_timestamp=$(date -d "$remote_commit_date" +%s)
-remote_timestamp=$(date -d "$remote_tag_date" +%s)
+#convert to Unix timestamps
 local_timestamp=$(date -d "$local_commit_date" +%s)
 
 #echo "pullrq_id: $pullrq_id"
@@ -82,17 +90,17 @@ elif [ ! $tag_name = "none" ] && [ "$local_timestamp" -lt "$remote_timestamp" ];
     echo "This will update ${bold}$REPO_NAME${normal} to tag ID ${bold}$tag_name. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
-#elif [ ! $tag_name = "none" ]; then
-#    echo ""
-#    echo "${bold}hdev update${normal}"
-#    echo ""
-#    echo "This will checkout ${bold}$REPO_NAME${normal} to tag ID ${bold}$tag_name. Would you like to continue (y/n)?${normal}"
-#    update=$($CLI_PATH/common/push_dialog)
-#    echo ""
-else
+elif [ ! $tag_name = "none" ] && [ "$local_timestamp" -gt "$remote_timestamp" ]; then
+    echo ""
+    echo "${bold}hdev update${normal}"
+    echo ""
+    echo "This will downgrade ${bold}$REPO_NAME${normal} to tag ID ${bold}$tag_name. Would you like to continue (y/n)?${normal}"
+    update=$($CLI_PATH/common/push_dialog)
+    echo ""
+elif [ "$local_timestamp" -eq "$remote_timestamp" ]; then
     tag_id=$(cat $HDEV_PATH/TAG)
     echo ""
-    echo "$REPO_NAME is on its latest version ${bold}(tag ID: $tag_id)!${normal}"
+    echo "$REPO_NAME is already at the requested version!"
     echo ""
 fi
 
