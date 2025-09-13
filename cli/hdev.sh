@@ -127,9 +127,6 @@ cli_help() {
   if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
-  if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}pullrq${normal}         - Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
-  fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
@@ -142,7 +139,7 @@ cli_help() {
   echo "    ${bold}set${normal}            - Devices and host configuration."
   fi
   if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}update${normal}         - Updates ${bold}$CLI_NAME${normal} to its latest version."
+  echo "    ${bold}update${normal}         - Updates ${bold}$CLI_NAME${normal} to a specific version."
   fi
   echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
   echo ""
@@ -2612,35 +2609,39 @@ case "$command" in
       ;;  
     esac
     ;;
-  pullrq)
+  update)
     case "$arguments" in
       -h|--help)
-        pullrq_help
+        update_help
         ;;
       *)
         #early exit
         if [ "$is_sudo" = "0" ]; then
           exit
         fi
-
-        #check on software
-        gh_check "$CLI_PATH"
+        
+        #check on sudo
+        sudo_check $USER
 
         #check on flags
-        valid_flags="-n --number --help"
+        #valid_flags="-h --help --latest -t --tag -n --number"
+        #command_run $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$@"
 
-        exists_pr="0"
-        if [ "$arguments" = "" ]; then
-          pullrq_help
-        else
-          #check on pull request
-          if [[ ! " $valid_flags " =~ " $arguments " ]]; then
-            pullrq_help
+        #check on number of parameters
+        if [ "$#" -lt 2 ]; then
+          update_help
+          exit 1
+        elif [ "$2" = "--latest" ]; then
+          if [ "$#" -gt 2 ]; then
+            update_help
+            exit 1
           fi
-
+          tag_name=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
+          pullrq_id="none"
+        elif [ "$2" = "-n" ] || [ "$2" = "--number" ]; then
           word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
           pullrq_found=$word_found
           pullrq_id=$word_value
@@ -2662,6 +2663,13 @@ case "$command" in
             echo ""
             exit 1
           fi
+          tag_name="none"
+        elif [ "$2" = "-t" ] || [ "$2" = "--tag" ]; then
+          word_check "$CLI_PATH" "-t" "--tag" "${flags_array[@]}"
+          tag_found=$word_found
+          tag_name=$word_value
+          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$HDEV_REPO" "$tag_name" "${flags_array[@]}"
+          pullrq_id="none"
         fi
 
         #get update.sh
@@ -2673,42 +2681,13 @@ case "$command" in
         
         #remove temporal copy
         rm -rf $UPDATES_PATH/$REPO_NAME
-        
-        #run up to date update with pullrq 
-        $HDEV_PATH/update --number $pullrq_id
-        ;;
-    esac
-    ;;
-  update)
-    case "$arguments" in
-      -h|--help)
-        update_help
-        ;;
-      *)
-        #early exit
-        if [ "$is_sudo" = "0" ]; then
-          exit
-        fi
-        
-        if [ "$#" -ne 1 ]; then
-          update_help
-          exit 1
-        fi
 
-        sudo_check $USER
-
-        #get update.sh
-        cd $UPDATES_PATH
-        git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
-
-        #copy update
-        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
-        
-        #remove temporal copy
-        rm -rf $UPDATES_PATH/$REPO_NAME
+        echo "number: $pullrq_id"
+        echo "tag: $tag_name"
+        exit
         
         #run up to date update 
-        $HDEV_PATH/update --number "none"
+        $HDEV_PATH/update --number $pullrq_id
         ;;
     esac
     ;;

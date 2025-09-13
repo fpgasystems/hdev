@@ -60,27 +60,6 @@ build_xdp_help() {
     exit
 }
 
-# pullrq -----------------------------------------------------------------------------------------------------------------------
-
-pullrq_help() {
-  if [ "$is_sudo" = "1" ]; then
-    echo ""
-    echo "${bold}$CLI_NAME pullrq [flags] [--help]${normal}"
-    echo ""
-    echo "Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
-    echo ""
-    echo "FLAGS:"
-    echo "   ${bold}-n, --number${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
-    echo ""
-    echo "   ${bold}-h, --help${normal}      - Help to use this command."
-    #echo ""
-    $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
-    echo ""
-  fi
-  exit
-}
-
-
 # enable ------------------------------------------------------------------------------------------------------------------------
 
 enable_help() {
@@ -717,16 +696,21 @@ set_performance_help() {
 
 update_help() {
   if [ "$is_sudo" = "1" ]; then
-    #$CLI_PATH/help/update $CLI_NAME
+    #get latest tag
+    latest_tag=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
     echo ""
-    echo "${bold}$CLI_NAME update [--help]${normal}"
+    echo "${bold}$CLI_NAME update [flags] [--latest --help]${normal}"
     echo ""
-    echo "Updates ${bold}$CLI_NAME${normal} to its latest version."
+    echo "Updates ${bold}$CLI_NAME${normal} to a specific version."
     echo ""
     echo "FLAGS:"
-    echo "   This command has no flags."
+    echo "   ${bold}    --latest${normal}    - Updates ${bold}$CLI_NAME${normal} to its latest version (tag ID: ${bold}$latest_tag${normal})."
+    echo "   ${bold}-n, --number${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
+    echo "   ${bold}-t, --tag${normal}       - GitHub tag ID."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    #echo ""
+    $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
     echo ""
   fi
   exit

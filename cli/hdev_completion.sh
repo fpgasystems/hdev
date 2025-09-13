@@ -45,6 +45,7 @@ SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 SOCKPERF_RUN_FLAGS=( "--interface" "--server" "--size" )
 TENSORFLOW_RUN_FLAGS=( "--config" "--project" )
 TENSORFLOW_NEW_FLAGS=( "--project" "--push" )
+UPDATE_FLAGS=( "--latest" "--number" "--tag" )
 VIVADO_OPEN_FLAGS=( "--path" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--name" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
@@ -132,7 +133,7 @@ _hdev_completions()
 
             # Check on groups
             if [ "$is_sudo" = "1" ]; then
-                commands="${commands} reboot update pullrq"
+                commands="${commands} reboot update"
             fi
             #if [ "$is_sudo" = "1" ]; then
             #    commands="${commands} checkout"
@@ -293,11 +294,12 @@ _hdev_completions()
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
-                pullrq)
-                    COMPREPLY=($(compgen -W "--number --help" -- ${cur}))
-                    ;;
                 update)
-                    COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                    commands="--latest --number --tag --help"
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 validate)
                     commands="docker --help"
