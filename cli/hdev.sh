@@ -2682,12 +2682,8 @@ case "$command" in
         #remove temporal copy
         rm -rf $UPDATES_PATH/$REPO_NAME
 
-        echo "number: $pullrq_id"
-        echo "tag: $tag_name"
-        exit
-        
         #run up to date update 
-        $HDEV_PATH/update --number $pullrq_id
+        $HDEV_PATH/update --number $pullrq_id --tag $tag_name
         ;;
     esac
     ;;
