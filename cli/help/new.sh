@@ -18,7 +18,6 @@ is_vivado_developer=${11}
 is_network_developer=${12}
 
 #constants
-COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
