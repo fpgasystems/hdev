@@ -38,6 +38,7 @@ echo "Hola 1"
 
 #constants
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 
