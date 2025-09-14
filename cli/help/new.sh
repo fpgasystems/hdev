@@ -16,8 +16,12 @@ is_nic=$9
 is_gpu_developer=${10}
 is_vivado_developer=${11}
 is_network_developer=${12}
+is_hdev_developer=${13}
 
 #constants
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
+COYOTE_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_REPO)
+GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
@@ -49,6 +53,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo ""
         echo "ARGUMENTS:"
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+        echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Create a new application using OS abstractions for FPGA-based devices."
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
@@ -69,6 +74,33 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
         fi
         echo ""
+    elif [ "$parameter" = "coyote" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+            echo ""
+            echo "${bold}$CLI_NAME new coyote [flags] [--help]${normal}"
+            echo ""
+            echo "Create a new application using OS abstractions for FPGA-based devices."
+            echo ""
+            echo "FLAGS:"
+            echo "   ${bold}-c, --commit${normal}    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
+            echo "   ${bold}    --name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+            if [ "$is_hdev_developer" = "1" ]; then
+            echo "   ${bold}    --number${normal}    - ${bold}$COYOTE_REPO${normal} GitHub repository pull request ID."
+            fi
+            echo "       ${bold}--project${normal}   - Specifies your Coyote project name." 
+            echo "       ${bold}--push${normal}      - Pushes your Coyote project to your GitHub account." 
+            echo ""
+            echo "   ${bold}    --help${normal}      - Help to use this command."
+            echo ""
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
+            if [ "is_hdev_developer" = "1" ]; then
+                #echo ""
+                $GITHUB_CLI_PATH/gh pr list --repo $COYOTE_REPO
+                echo ""
+            else
+                echo ""
+            fi
+        fi
     elif [ "$parameter" = "opennic" ]; then
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
             echo ""

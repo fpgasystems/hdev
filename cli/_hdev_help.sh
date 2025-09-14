@@ -259,7 +259,19 @@ new_help() {
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_GPU_DEVELOPER $is_vivado_developer $is_network_developer
+  is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_GPU_DEVELOPER $is_vivado_developer $is_network_developer $is_hdev_developer
+  exit
+}
+
+new_coyote_help() {
+  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
   exit
 }
 
