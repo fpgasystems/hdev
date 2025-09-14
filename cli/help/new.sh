@@ -93,7 +93,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo "   ${bold}    --help${normal}      - Help to use this command."
             echo ""
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
-            if [ "is_hdev_developer" = "1" ]; then
+            if [ "$is_hdev_developer" = "1" ]; then
                 #echo ""
                 $GITHUB_CLI_PATH/gh pr list --repo $COYOTE_REPO
                 echo ""
