@@ -559,7 +559,23 @@ _hdev_completions()
                 new)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         coyote)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
@@ -712,7 +728,23 @@ _hdev_completions()
                 new)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
                         coyote)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
@@ -818,7 +850,23 @@ _hdev_completions()
                 new)
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
                         coyote)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
@@ -877,7 +925,23 @@ _hdev_completions()
                 new)
                     case "${COMP_WORDS[COMP_CWORD-9]}" in
                         coyote)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
