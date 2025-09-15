@@ -693,7 +693,7 @@ list_dialog() {
       if [[ $item_found = "0" ]]; then
         echo $CHECK_ON_MSG
         echo ""
-        result=$($CLI_PATH/common/list_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+        result=$($CLI_PATH/common/list_dialog $LIST_PATH)
         item_found=$(echo "$result" | sed -n '1p')
         item_name=$(echo "$result" | sed -n '2p')
         echo ""
