@@ -19,6 +19,9 @@ AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 CMDB_PATH="$CLI_PATH/cmdb"
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
+COYOTE_DEVICE_NAMES="$CLI_PATH/constants/COYOTE_DEVICE_NAMES"
+COYOTE_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_REPO)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
 IS_GPU_DEVELOPER="1"
@@ -697,9 +700,7 @@ case "$command" in
         new_help
         ;;
       coyote)
-        echo "Hey 1"      
-        source "$CLI_PATH/new/.coyote"
-        echo "Hey 2"
+        source "$CLI_PATH/$command/.$arguments"
         ;;
       opennic)
         #early exit
