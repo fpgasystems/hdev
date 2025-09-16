@@ -591,7 +591,23 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -756,7 +772,23 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -874,7 +906,23 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -949,7 +997,23 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -990,9 +1054,24 @@ _hdev_completions()
                 new)
                     case "${COMP_WORDS[COMP_CWORD-11]}" in
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                     esac
                     ;;
                 program)
@@ -1009,48 +1088,45 @@ _hdev_completions()
                     ;;
             esac
             ;;
-        15)
-            #six flags are already present
-            #program opennic --device 1 --commit 8077751 --fec 0 --project my_project --remote 0 --xdp 0 --
-            #COMP_CWORD-14: program
-            #COMP_CWORD-13: opennic
-            #COMP_CWORD-12: --device
-            #COMP_CWORD-11: 1
-            #COMP_CWORD-10: --commit
-            #COMP_CWORD-9: 8077751
-            #COMP_CWORD-8: --fec
-            #COMP_CWORD-7: 0
-            #COMP_CWORD-6: --project
-            #COMP_CWORD-5: my_project
-            #COMP_CWORD-4: --remote
-            #COMP_CWORD-3: 0
-            #COMP_CWORD-2: --xdp
-            #COMP_CWORD-1: 0
-
-            #    For extending the code: 
-            #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
-            #        ...
-            #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-            #        echo "previous_flags: ${previous_flags[@]}"
-            #        echo "remaining_flags: ${remaining_flags[@]}"
-
-            previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}" "${COMP_WORDS[COMP_CWORD-10]}" "${COMP_WORDS[COMP_CWORD-12]}")
-
-            case "${COMP_WORDS[COMP_CWORD-14]}" in
-                new)
-                    case "${COMP_WORDS[COMP_CWORD-13]}" in
-                        vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                    esac
-                    ;;
-            esac
-            ;;
-
-        #17)
-        #    ...
+        #15)
+        #    #six flags are already present
+        #    #program opennic --device 1 --commit 8077751 --fec 0 --project my_project --remote 0 --xdp 0 --
+        #    #COMP_CWORD-14: program
+        #    #COMP_CWORD-13: opennic
+        #    #COMP_CWORD-12: --device
+        #    #COMP_CWORD-11: 1
+        #    #COMP_CWORD-10: --commit
+        #    #COMP_CWORD-9: 8077751
+        #    #COMP_CWORD-8: --fec
+        #    #COMP_CWORD-7: 0
+        #    #COMP_CWORD-6: --project
+        #    #COMP_CWORD-5: my_project
+        #    #COMP_CWORD-4: --remote
+        #    #COMP_CWORD-3: 0
+        #    #COMP_CWORD-2: --xdp
+        #    #COMP_CWORD-1: 0
         #
+        #    #    For extending the code: 
+        #    #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
+        #    #        ...
+        #    #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
+        #    #        echo "previous_flags: ${previous_flags[@]}"
+        #    #        echo "remaining_flags: ${remaining_flags[@]}"
+        #    
+        #    # The following is code that is working (jmoya82, 16.09.2025)
+        #       
+        #    previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}" "${COMP_WORDS[COMP_CWORD-10]}" "${COMP_WORDS[COMP_CWORD-12]}")
+        #
+        #    case "${COMP_WORDS[COMP_CWORD-14]}" in
+        #        new)
+        #            case "${COMP_WORDS[COMP_CWORD-13]}" in
+        #                vrt)
+        #                    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+        #                    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+        #                    ;;
+        #            esac
+        #            ;;
+        #    esac
         #    ;;
         *)
             COMPREPLY=()
