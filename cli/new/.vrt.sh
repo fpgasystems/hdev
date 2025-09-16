@@ -29,7 +29,7 @@ pullrq_id="none"
 if [ "$is_hdev_developer" = "1" ]; then
     word_check "$CLI_PATH" "--number" "--number" "${flags_array[@]}"
     pullrq_found=$word_found
-    #pullrq_id=$word_value
+    pullrq_id=$word_value
 fi
 
 #tag or PR
@@ -77,7 +77,7 @@ elif [ "$pullrq_found" = "1" ]; then
 
     #check on pullrq_id
     if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
-        $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
+        $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
         exit 1
     elif [ "$pullrq_found" == "1" ]; then
         pullrq_id=$word_value

@@ -29,7 +29,7 @@ pullrq_id="none"
 if [ "$is_hdev_developer" = "1" ]; then
     word_check "$CLI_PATH" "--number" "--number" "${flags_array[@]}"
     pullrq_found=$word_found
-    #pullrq_id=$word_value
+    pullrq_id=$word_value
 fi
 
 #commit or PR
