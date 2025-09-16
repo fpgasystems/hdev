@@ -54,6 +54,10 @@ if [ "$flags_array" = "" ]; then
     echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
     echo ""
 elif [ "$commit_found" = "1" ]; then
+    #set pullrq_id
+    pullrq_found="0"
+    pullrq_id="none"
+
     #check if commit_name is empty
     if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
         $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
@@ -82,8 +86,8 @@ elif [ "$pullrq_found" = "1" ]; then
     if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
         $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
         exit 1
-    elif [ "$pullrq_found" == "1" ]; then
-        pullrq_id=$word_value
+    #elif [ "$pullrq_found" == "1" ]; then
+    #    pullrq_id=$word_value
     fi
 
     #check if PR exist

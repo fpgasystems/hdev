@@ -38,8 +38,8 @@ if [ "$tag_found" = "1" ] && [ "$pullrq_found" = "1" ]; then
 fi
 
 #check_on_tag
-tag_found=""
-tag_name=""
+#tag_found=""
+#tag_name=""
 if [ "$flags_array" = "" ]; then
     #tag dialog
     tag_found="1"
@@ -51,6 +51,10 @@ if [ "$flags_array" = "" ]; then
     echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
     echo ""
 elif [ "$tag_found" = "1" ]; then
+    #set pullrq_id
+    pullrq_found="0"
+    pullrq_id="none"
+
     #check if tag_name is empty
     if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
         $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
@@ -79,8 +83,8 @@ elif [ "$pullrq_found" = "1" ]; then
     if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
         $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
         exit 1
-    elif [ "$pullrq_found" == "1" ]; then
-        pullrq_id=$word_value
+    #elif [ "$pullrq_found" == "1" ]; then
+    #    pullrq_id=$word_value
     fi
 
     #check if PR exist
