@@ -38,8 +38,6 @@ if [ "$tag_found" = "1" ] && [ "$pullrq_found" = "1" ]; then
 fi
 
 #check_on_tag
-#tag_found=""
-#tag_name=""
 if [ "$flags_array" = "" ]; then
     #tag dialog
     tag_found="1"
@@ -108,13 +106,9 @@ if [ ! "$flags_array" = "" ]; then
     list_check "$CLI_PATH" "$CLI_PATH/constants/VRT_DEVICE_NAMES" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
     template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
     push_check "$CLI_PATH" "${flags_array[@]}"
-    #template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
 fi
 
 #dialogs
-#echo ""
-#echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
-#echo ""
 new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 list_dialog "$CLI_PATH" "$CLI_PATH/constants/VRT_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
@@ -125,23 +119,12 @@ push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_a
 device_found=$item_found
 device_name=$item_name
 
-#get device_name
-#device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
-
 #check on compatible device
 if ! grep -Fxq "$device_name" "$VRT_DEVICE_NAMES"; then
     echo "Sorry, this command is not available for ${bold}$device_name.${normal}"
     echo ""
     exit 1
 fi
-
-echo "tag_name: $tag_name"
-echo "new_name: $new_name"
-echo "device_name: $device_name"
-echo "template_name: $template_name"
-echo "push_option: $push_option"
-echo "pullrq_id: $pullrq_id"
-exit
 
 #run
 $CLI_PATH/new/vrt --tag $tag_name --project $new_name --name $device_name --template $template_name --push $push_option --number $pullrq_id

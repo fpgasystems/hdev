@@ -38,10 +38,6 @@ if [ "$commit_found" = "1" ] && [ "$pullrq_found" = "1" ]; then
 fi
 
 #check_on_commits
-#commit_found=""
-#commit_name=""
-#pullrq_found=""
-#pullrq_id=""
 if [ "$flags_array" = "" ]; then
     #commit dialog
     commit_found="1"
