@@ -94,10 +94,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
             if [ "$is_hdev_developer" = "1" ]; then
-                #echo ""
-                #$GITHUB_CLI_PATH/gh pr list --repo $COYOTE_REPO
                 $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$COYOTE_REPO"
-                #echo ""
             else
                 echo ""
             fi
@@ -147,7 +144,10 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "FLAGS:"
             #echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
-            echo "   ${bold}-n, --name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+            echo "       ${bold}--name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+            if [ "$is_hdev_developer" = "1" ]; then
+            echo "       ${bold}--number${normal}    - ${bold}$VRT_REPO${normal} GitHub repository pull request ID."
+            fi
             echo "       ${bold}--project${normal}   - Specifies your VRT project name." 
             echo "       ${bold}--push${normal}      - Pushes your VRT project to your GitHub account." 
             echo "       ${bold}--tag${normal}       - GitHub tag ID (default: ${bold}$VRT_TAG${normal})."
@@ -156,7 +156,11 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
-            echo ""
+            if [ "$is_hdev_developer" = "1" ]; then
+                $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$VRT_REPO"
+            else
+                echo ""
+            fi
         fi
     elif [ "$parameter" = "xdp" ]; then
         if [ "$is_build" = "1" ] ||  [ "$nic_enabled" = "1" ]; then

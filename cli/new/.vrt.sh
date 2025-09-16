@@ -12,7 +12,7 @@ vivado_developers_check "$USER"
 gh_check "$CLI_PATH"
 
 #check on flags
-valid_flags="-n --name --tag --template --project --push -h --help"
+valid_flags="--name --number --tag --template --project --push -h --help"
 flags_check $command_arguments_flags"@"$valid_flags
 
 #inputs (split the string into an array)

@@ -296,7 +296,7 @@ new_vrt_help() {
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" "0" $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "vrt" "0" $is_asoc $is_build "0" "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
   exit
 }
 
