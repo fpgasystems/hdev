@@ -46,7 +46,7 @@ TENSORFLOW_RUN_FLAGS=( "--config" "--project" )
 TENSORFLOW_NEW_FLAGS=( "--project" "--push" )
 UPDATE_FLAGS=( "--latest" "--number" "--tag" )
 VIVADO_OPEN_FLAGS=( "--path" )
-VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--name" )
+VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--name" "--number" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 VRT_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
@@ -1009,30 +1009,47 @@ _hdev_completions()
                     ;;
             esac
             ;;
-        #15)
-        #    #six flags are already present
-        #    #program opennic --device 1 --commit 8077751 --fec 0 --project my_project --remote 0 --xdp 0 --
-        #    #COMP_CWORD-14: program
-        #    #COMP_CWORD-13: opennic
-        #    #COMP_CWORD-12: --device
-        #    #COMP_CWORD-11: 1
-        #    #COMP_CWORD-10: --commit
-        #    #COMP_CWORD-9: 8077751
-        #    #COMP_CWORD-8: --fec
-        #    #COMP_CWORD-7: 0
-        #    #COMP_CWORD-6: --project
-        #    #COMP_CWORD-5: my_project
-        #    #COMP_CWORD-4: --remote
-        #    #COMP_CWORD-3: 0
-        #    #COMP_CWORD-2: --xdp
-        #    #COMP_CWORD-1: 0
-        #
-        #    For extending the code: 
-        #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
-        #        ...
-        #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-        #        echo "previous_flags: ${previous_flags[@]}"
-        #        echo "remaining_flags: ${remaining_flags[@]}"
+        15)
+            #six flags are already present
+            #program opennic --device 1 --commit 8077751 --fec 0 --project my_project --remote 0 --xdp 0 --
+            #COMP_CWORD-14: program
+            #COMP_CWORD-13: opennic
+            #COMP_CWORD-12: --device
+            #COMP_CWORD-11: 1
+            #COMP_CWORD-10: --commit
+            #COMP_CWORD-9: 8077751
+            #COMP_CWORD-8: --fec
+            #COMP_CWORD-7: 0
+            #COMP_CWORD-6: --project
+            #COMP_CWORD-5: my_project
+            #COMP_CWORD-4: --remote
+            #COMP_CWORD-3: 0
+            #COMP_CWORD-2: --xdp
+            #COMP_CWORD-1: 0
+
+            #    For extending the code: 
+            #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
+            #        ...
+            #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
+            #        echo "previous_flags: ${previous_flags[@]}"
+            #        echo "remaining_flags: ${remaining_flags[@]}"
+
+            previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}" "${COMP_WORDS[COMP_CWORD-10]}" "${COMP_WORDS[COMP_CWORD-12]}")
+
+            case "${COMP_WORDS[COMP_CWORD-14]}" in
+                new)
+                    case "${COMP_WORDS[COMP_CWORD-13]}" in
+                        vrt)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                    esac
+                    ;;
+            esac
+            ;;
+
+        #17)
+        #    ...
         #
         #    ;;
         *)
