@@ -48,42 +48,27 @@ if [ "$flags_array" = "" ]; then
     commit_name=$COYOTE_COMMIT
     pullrq_found="0"
     pullrq_id="none"
+
     #header
     echo ""
     echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
     echo ""
 elif [ "$commit_found" = "1" ]; then
-    #commit_dialog_check
-    #result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
-    #commit_found=$(echo "$result" | sed -n '1p')
-    #commit_name=$(echo "$result" | sed -n '2p')
-
     #check if commit_name is empty
     if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
         $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
         exit 1
     fi
-    
-    #check if commits exist
-    #exists_commit=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $COYOTE_REPO $commit_name)
 
-    #if [ "$commit_found" = "0" ]; then 
-    #    commit_name=$COYOTE_COMMIT
-    #elif [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then 
-    #    $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
-    #    exit
-    #el
-    
     #check if commits exist
     exists_commit=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $COYOTE_REPO $commit_name)
     if [ "$commit_found" = "1" ] && [ "$exists_commit" = "0" ]; then 
-        #if [ "$exists_commit" = "0" ]; then
-            echo ""
-            echo $CHECK_ON_COMMIT_ERR_MSG
-            echo ""
-            exit 1
-        #fi
+        echo ""
+        echo $CHECK_ON_COMMIT_ERR_MSG
+        echo ""
+        exit 1
     fi
+
     #header
     echo ""
     echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
@@ -95,9 +80,6 @@ elif [ "$pullrq_found" = "1" ]; then
 
     #check on pullrq_id
     if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
-        #echo ""
-        #echo $CHECK_ON_PR_ERR_MSG
-        #echo ""
         $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
         exit 1
     elif [ "$pullrq_found" == "1" ]; then
@@ -127,9 +109,6 @@ if [ ! "$flags_array" = "" ]; then
 fi
 
 #dialogs
-#echo ""
-#echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
-#echo ""
 new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
 list_dialog "$CLI_PATH" "$CLI_PATH/constants/COYOTE_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
 push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
@@ -137,9 +116,6 @@ push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flag
 #collect list results
 device_found=$item_found
 device_name=$item_name
-
-#get device_name
-#device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
 #check on compatible device
 if ! grep -Fxq "$device_name" "$COYOTE_DEVICE_NAMES"; then
