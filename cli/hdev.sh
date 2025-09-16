@@ -3022,7 +3022,7 @@ case "$command" in
             if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
               echo ""
               echo $CHECK_ON_PR_ERR_MSG
-              print_pr "$GITHUB_CLI_PATH" "$VRT_REPO"
+              $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$VRT_REPO"
               exit 1
             fi
           fi

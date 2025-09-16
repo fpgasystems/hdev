@@ -109,7 +109,7 @@ elif [ "$pullrq_found" = "1" ]; then
     if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
         echo ""
         echo $CHECK_ON_PR_ERR_MSG
-        print_pr "$GITHUB_CLI_PATH" "$COYOTE_REPO"
+        $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$COYOTE_REPO"
         exit 1
     fi
     #header

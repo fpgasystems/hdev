@@ -912,19 +912,19 @@ pow2_check() {
     fi
 }
 
-print_pr() {
-    local GITHUB_CLI_PATH=$1
-    local REPO_NAME=$2
-
-    open_pr=$($GITHUB_CLI_PATH/gh pr list --repo "$REPO_NAME" --json number --jq 'if length>0 then "1" else "0" end' 2>/dev/null || echo 0)
-    if [[ "$open_pr" == "0" ]]; then
-        echo ""
-        $GITHUB_CLI_PATH/gh pr list --repo $REPO_NAME
-    else
-        $GITHUB_CLI_PATH/gh pr list --repo $REPO_NAME
-    fi
-    echo ""
-}
+#print_pr() {
+#    local GITHUB_CLI_PATH=$1
+#    local REPO_NAME=$2
+#
+#    open_pr=$($GITHUB_CLI_PATH/gh pr list --repo "$REPO_NAME" --json number --jq 'if length>0 then "1" else "0" end' 2>/dev/null || echo 0)
+#    if [[ "$open_pr" == "0" ]]; then
+#        echo ""
+#        $GITHUB_CLI_PATH/gh pr list --repo $REPO_NAME
+#    else
+#        $GITHUB_CLI_PATH/gh pr list --repo $REPO_NAME
+#    fi
+#    echo ""
+#}
 
 project_dialog() {
   local CLI_PATH=$1

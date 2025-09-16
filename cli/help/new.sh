@@ -95,8 +95,9 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
             if [ "$is_hdev_developer" = "1" ]; then
                 #echo ""
-                $GITHUB_CLI_PATH/gh pr list --repo $COYOTE_REPO
-                echo ""
+                #$GITHUB_CLI_PATH/gh pr list --repo $COYOTE_REPO
+                $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$COYOTE_REPO"
+                #echo ""
             else
                 echo ""
             fi
