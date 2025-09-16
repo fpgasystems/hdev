@@ -2926,8 +2926,7 @@ case "$command" in
         #valid_flags="-d --device -h --help"
         #command_run $command_arguments_flags"@"$valid_flags
 
-        echo "HEY! Continue here"
-
+        echo "Work in progress"
         exit
 
         ;;
@@ -2977,22 +2976,42 @@ case "$command" in
           exit
         fi
 
-        #checks (command line)
+        #check on commit
+        word_check "$CLI_PATH" "--tag" "--tag" "${flags_array[@]}"
+        tag_found=$word_found
+        #commit_name=$word_value
+
+        #check on PR
         pullrq_found="0"
         pullrq_id="none"
+        if [ "$is_hdev_developer" = "1" ]; then
+            word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
+            pullrq_found=$word_found
+            pullrq_id=$word_value
+        fi
+
+        #tag or PR
+        if [ "$tag_found" = "1" ] && [ "$pullrq_found" = "1" ]; then
+            exit 1
+        fi
+
+        #checks (command line)
+        #pullrq_found="0"
+        #pullrq_id="none"
         exists_pr="0"
         if [ ! "$flags_array" = "" ]; then
           #check on PR
           if [ "$is_hdev_developer" = "1" ]; then
-            word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
-            pullrq_found=$word_found
+            #word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
+            #pullrq_found=$word_found
             #pullrq_id=$word_value
 
             #check on pullrq_id
             if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
-              echo ""
-              echo $CHECK_ON_PR_ERR_MSG
-              echo ""
+              #echo ""
+              #echo $CHECK_ON_PR_ERR_MSG
+              #echo ""
+              validate_vrt_help
               exit 1
             elif [ "$pullrq_found" == "1" ]; then
               pullrq_id=$word_value
@@ -3001,10 +3020,9 @@ case "$command" in
             #check if PR exist
             exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $VRT_REPO $pullrq_id)
             if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
-              $GITHUB_CLI_PATH/gh pr list --repo $VRT_REPO
               echo ""
               echo $CHECK_ON_PR_ERR_MSG
-              echo ""
+              print_pr "$GITHUB_CLI_PATH" "$VRT_REPO"
               exit 1
             fi
           fi
