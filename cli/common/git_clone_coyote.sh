@@ -27,7 +27,7 @@ cd $DIR
 git clone $COYOTE_REPO
 
 #change to repository directory
-cd $DIR/Coyote
+cd $DIR/coyote
 
 #checkout the specific tag
 if [ $pullrq_id = "none" ]; then
@@ -53,6 +53,6 @@ if [ $pullrq_id = "none" ]; then
     echo ""
 else
     echo ""
-    echo "Checkout to pull request #$pullrq_id ${bold}$AVED_TAG${normal} done!"
+    echo "Checkout to pull request ${bold}#$pullrq_id${normal} done!"
     echo ""
 fi
