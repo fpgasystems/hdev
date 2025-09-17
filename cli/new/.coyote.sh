@@ -76,7 +76,7 @@ elif [ "$commit_found" = "1" ]; then
 elif [ "$pullrq_found" = "1" ]; then
     #set commit
     commit_found="0"
-    commit_name="pull-requests"
+    commit_name="$COYOTE_COMMIT"
 
     #check on pullrq_id
     if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
