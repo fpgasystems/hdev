@@ -6,7 +6,7 @@ normal=$(tput sgr0)
 #inputs
 CLI_PATH=$1
 DIR=$2
-COYOTE_COMMIT=$3
+commit_name=$3
 pullrq_id=$4
 
 #constants
@@ -31,7 +31,7 @@ cd $DIR/Coyote
 
 #checkout the specific tag
 if [ $pullrq_id = "none" ]; then
-    git checkout $COYOTE_COMMIT > /dev/null 2>&1
+    git checkout $commit_name > /dev/null 2>&1
 else
     echo ""
     echo "${bold}Processing pull-request:${normal}"
@@ -49,7 +49,7 @@ rm -rf .git
 
 if [ $pullrq_id = "none" ]; then
     echo ""
-    echo "Checkout commit ID ${bold}$COYOTE_COMMIT${normal} done!"
+    echo "Checkout commit ID ${bold}$commit_name${normal} done!"
     echo ""
 else
     echo ""
