@@ -124,12 +124,5 @@ if ! grep -Fxq "$device_name" "$COYOTE_DEVICE_NAMES"; then
     exit 1
 fi
 
-echo "commit_name: $commit_name"
-echo "pullrq_id: $pullrq_id"
-echo "project: $new_name"
-echo "device_name: $device_name"
-echo "push_option: $push_option"
-exit
-
 #run
 $CLI_PATH/new/coyote --commit $commit_name --number $pullrq_id --project $new_name --name $device_name --push $push_option
