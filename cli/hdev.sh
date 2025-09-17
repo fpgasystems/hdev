@@ -2563,9 +2563,10 @@ case "$command" in
 
           #check on pullrq_id
           if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
-            echo ""
-            echo $CHECK_ON_PR_ERR_MSG
-            echo ""
+            #echo ""
+            #echo $CHECK_ON_PR_ERR_MSG
+            #echo ""
+            update_help
             exit 1
           fi
 
@@ -2574,8 +2575,9 @@ case "$command" in
           if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
             echo ""
             echo $CHECK_ON_PR_ERR_MSG
-            $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
-            echo ""
+            #$GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
+            #echo ""
+            $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$HDEV_REPO"
             exit 1
           fi
           tag_name="none"

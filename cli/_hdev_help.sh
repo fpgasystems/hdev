@@ -722,8 +722,13 @@ update_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     #echo ""
-    $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
-    echo ""
+    #$GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
+    #echo ""
+    #if [ "$is_sudo" = "1" ]; then
+      $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$HDEV_REPO"
+    #else
+    #  echo ""
+    #fi
   fi
   exit
 }
