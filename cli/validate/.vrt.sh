@@ -77,7 +77,7 @@ if [ ! "$flags_array" = "" ]; then
     #either pullrq_id or tag_name
     if [ "$exists_pr" = "1" ]; then
         tag_found="0"
-        tag_name="none"
+        tag_name="pull-requests"
     else
         tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
     fi

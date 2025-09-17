@@ -75,7 +75,7 @@ elif [ "$tag_found" = "1" ]; then
 elif [ "$pullrq_found" = "1" ]; then
     #set tag
     tag_found="0"
-    tag_name="none"
+    tag_name="pull-requests"
 
     #check on pullrq_id
     if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
