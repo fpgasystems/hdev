@@ -19,9 +19,12 @@ flags_check $command_arguments_flags"@"$valid_flags
 read -r -a flags_array <<< "$flags"
 
 #check on commit
+commit_name=$COYOTE_COMMIT
 word_check "$CLI_PATH" "-c" "--commit" "${flags_array[@]}"
 commit_found=$word_found
-commit_name=$word_value
+if [ "$commit_found" = "1" ]; then
+    commit_name=$word_value
+fi
 
 #check on PR
 pullrq_found="0"
@@ -29,13 +32,18 @@ pullrq_id="none"
 if [ "$is_hdev_developer" = "1" ]; then
     word_check "$CLI_PATH" "--number" "--number" "${flags_array[@]}"
     pullrq_found=$word_found
-    pullrq_id=$word_value
+    if [ "$pullrq_found" = "1" ]; then
+        pullrq_id=$word_value
+    fi
 fi
 
 #commit or PR
 if [ "$commit_found" = "1" ] && [ "$pullrq_found" = "1" ]; then
     exit 1
 fi
+
+#header string
+header_string="(commit ID: $commit_name)"
 
 #check_on_commits
 if [ "$flags_array" = "" ]; then
@@ -44,11 +52,6 @@ if [ "$flags_array" = "" ]; then
     commit_name=$COYOTE_COMMIT
     pullrq_found="0"
     pullrq_id="none"
-
-    #header
-    echo ""
-    echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
-    echo ""
 elif [ "$commit_found" = "1" ]; then
     #set pullrq_id
     pullrq_found="0"
@@ -68,11 +71,6 @@ elif [ "$commit_found" = "1" ]; then
         echo ""
         exit 1
     fi
-
-    #header
-    echo ""
-    echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
-    echo ""
 elif [ "$pullrq_found" = "1" ]; then
     #set commit
     commit_found="0"
@@ -82,8 +80,6 @@ elif [ "$pullrq_found" = "1" ]; then
     if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
         $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
         exit 1
-    #elif [ "$pullrq_found" == "1" ]; then
-    #    pullrq_id=$word_value
     fi
 
     #check if PR exist
@@ -94,10 +90,9 @@ elif [ "$pullrq_found" = "1" ]; then
         $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$COYOTE_REPO"
         exit 1
     fi
-    #header
-    echo ""
-    echo "${bold}$CLI_NAME $command $arguments (pull request ID: #$pullrq_id)${normal}"
-    echo ""
+
+    #header string
+    header_string="(pull request ID: #$pullrq_id)"
 fi
 
 #checks (command line)
@@ -109,6 +104,9 @@ if [ ! "$flags_array" = "" ]; then
 fi
 
 #dialogs
+echo ""
+echo "${bold}$CLI_NAME $command $arguments $header_string${normal}"
+echo ""
 new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
 list_dialog "$CLI_PATH" "$CLI_PATH/constants/COYOTE_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
 push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
