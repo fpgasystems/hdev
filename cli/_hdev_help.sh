@@ -60,25 +60,6 @@ build_xdp_help() {
     exit
 }
 
-# pullrq -----------------------------------------------------------------------------------------------------------------------
-
-pullrq_help() {
-  if [ "$is_sudo" = "1" ]; then
-    echo ""
-    echo "${bold}$CLI_NAME pullrq [flags] [--help]${normal}"
-    echo ""
-    echo "Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
-    echo ""
-    echo "FLAGS:"
-    echo "   ${bold}-n, --number${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
-    echo ""
-    echo "   ${bold}-h, --help${normal}      - Help to use this command."
-    echo ""
-  fi
-  exit
-}
-
-
 # enable ------------------------------------------------------------------------------------------------------------------------
 
 enable_help() {
@@ -282,15 +263,6 @@ new_help() {
   exit
 }
 
-new_composer_help() {
-  if [[ -f "$CLI_PATH/new/composer" && "$is_composer_developer" == "1" ]]; then
-    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-    is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-    $CLI_PATH/help/new $CLI_PATH $CLI_NAME "composer" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
-  fi
-  exit
-}
-
 new_opennic_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
@@ -331,16 +303,6 @@ new_xdp_help() {
 
 open_help() {
   $CLI_PATH/help/open $CLI_PATH $CLI_NAME "--help"
-  exit
-}
-
-open_composer_help() {
-  #if [ "$is_composer_developer" = "1" ]; then
-  if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-    $CLI_PATH/help/open $CLI_PATH $CLI_NAME "composer"
-    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
-    #echo ""
-  fi
   exit
 }
 
@@ -734,16 +696,21 @@ set_performance_help() {
 
 update_help() {
   if [ "$is_sudo" = "1" ]; then
-    #$CLI_PATH/help/update $CLI_NAME
+    #get latest tag
+    latest_tag=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
     echo ""
-    echo "${bold}$CLI_NAME update [--help]${normal}"
+    echo "${bold}$CLI_NAME update [flags] [--latest --help]${normal}"
     echo ""
-    echo "Updates ${bold}$CLI_NAME${normal} to its latest version."
+    echo "Updates ${bold}$CLI_NAME${normal} to a specific version."
     echo ""
     echo "FLAGS:"
-    echo "   This command has no flags."
+    echo "   ${bold}    --latest${normal}    - Updates ${bold}$CLI_NAME${normal} to its latest version (tag ID: ${bold}$latest_tag${normal})."
+    echo "   ${bold}-n, --number${normal}    - ${bold}$HDEV_REPO${normal} GitHub repository pull request ID."
+    echo "   ${bold}-t, --tag${normal}       - GitHub tag ID."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    #echo ""
+    $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
     echo ""
   fi
   exit

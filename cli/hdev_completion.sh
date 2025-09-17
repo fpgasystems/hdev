@@ -18,7 +18,6 @@ IS_GPU_DEVELOPER="1"
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #evaluate integrations
@@ -46,6 +45,7 @@ SET_PERFORMANCE_FLAGS=( "--device" "--value" )
 SOCKPERF_RUN_FLAGS=( "--interface" "--server" "--size" )
 TENSORFLOW_RUN_FLAGS=( "--config" "--project" )
 TENSORFLOW_NEW_FLAGS=( "--project" "--push" )
+UPDATE_FLAGS=( "--latest" "--number" "--tag" )
 VIVADO_OPEN_FLAGS=( "--path" )
 VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--name" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
@@ -133,7 +133,7 @@ _hdev_completions()
 
             # Check on groups
             if [ "$is_sudo" = "1" ]; then
-                commands="${commands} reboot update pullrq"
+                commands="${commands} reboot update"
             fi
             #if [ "$is_sudo" = "1" ]; then
             #    commands="${commands} checkout"
@@ -204,11 +204,6 @@ _hdev_completions()
                         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "1" ]; then
                             commands="${commands} tensorflow"
                         fi
-                        if [[ -f "$CLI_PATH/open/composer" ]]; then
-                            if [ "$is_build" = "0" ] && [ "$is_composer_developer" = "1" ]; then
-                                commands="${commands} composer"
-                            fi
-                        fi
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "1" ]; then
                             commands="${commands} opennic"
                         fi
@@ -223,9 +218,6 @@ _hdev_completions()
                     ;;
                 open)
                     commands="vivado --help"
-                    if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-                        commands="${commands} composer"
-                    fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
@@ -302,11 +294,12 @@ _hdev_completions()
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
-                pullrq)
-                    COMPREPLY=($(compgen -W "--number --help" -- ${cur}))
-                    ;;
                 update)
-                    COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                    commands="--latest --number --tag --help"
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 validate)
                     commands="docker --help"
@@ -412,9 +405,6 @@ _hdev_completions()
                     ;;
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        composer)
-                            COMPREPLY=($(compgen -W "${COMPOSER_NEW_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -431,9 +421,6 @@ _hdev_completions()
                     ;;
                 open) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        composer)
-                            COMPREPLY=($(compgen -W "${COMPOSER_OPEN_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
                         vivado)
                             COMPREPLY=($(compgen -W "${VIVADO_OPEN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -569,10 +556,6 @@ _hdev_completions()
                     ;;
                 new)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        composer)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COMPOSER_NEW_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -587,14 +570,6 @@ _hdev_completions()
                             ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                    esac
-                    ;;
-                open)
-                    case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        composer)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COMPOSER_OPEN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -730,10 +705,6 @@ _hdev_completions()
                     ;;
                 new)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
-                        composer)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COMPOSER_NEW_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -836,10 +807,6 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-8]}" in
                 new)
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
-                        composer)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COMPOSER_NEW_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))

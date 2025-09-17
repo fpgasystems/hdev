@@ -19,9 +19,6 @@ AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 CMDB_PATH="$CLI_PATH/cmdb"
-COMPOSER_PATH="$HDEV_PATH/composer"
-COMPOSER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_REPO)
-COMPOSER_TAG=$($CLI_PATH/common/get_constant $CLI_PATH COMPOSER_TAG)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
 IS_GPU_DEVELOPER="1"
@@ -39,7 +36,7 @@ ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 SOCKPERF_MIN=$($CLI_PATH/common/get_constant $CLI_PATH SOCKPERF_MIN)
 REPO_NAME="hdev"
-TENSORFLOW_COMMIT=$(cat $HDEV_PATH/COMMIT)
+TENSORFLOW_COMMIT=$(cat $HDEV_PATH/TAG)
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 VRT_DEVICE_NAMES="$CLI_PATH/constants/VRT_DEVICE_NAMES"
 VRT_REPO=$($CLI_PATH/common/get_constant $CLI_PATH VRT_REPO)
@@ -76,7 +73,6 @@ is_numa=$($CLI_PATH/common/is_numa $CLI_PATH)
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-is_composer_developer=$($CLI_PATH/common/is_composer_developer $CLI_PATH)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #legend
@@ -130,9 +126,6 @@ cli_help() {
   if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
-  if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}pullrq${normal}         - Checkout a ${bold}$CLI_NAME${normal} pull request for testing."
-  fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
@@ -145,7 +138,7 @@ cli_help() {
   echo "    ${bold}set${normal}            - Devices and host configuration."
   fi
   if [ "$is_sudo" = "1" ]; then
-  echo "    ${bold}update${normal}         - Updates ${bold}$CLI_NAME${normal} to its latest version."
+  echo "    ${bold}update${normal}         - Updates ${bold}$CLI_NAME${normal} to a specific version."
   fi
   echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
   echo ""
@@ -162,10 +155,11 @@ cli_help() {
 }
 
 cli_release() {
-    release=$(cat $HDEV_PATH/COMMIT)
-    release_date=$(cat $HDEV_PATH/COMMIT_DATE)
+    release=$(cat $HDEV_PATH/TAG)
+    release_date=$(cat $HDEV_PATH/TAG_DATE)
     echo ""
-    echo "Release (commit_ID) : $release ($release_date)"
+    #echo "Release (commit_ID) : $release ($release_date)"
+    echo "$release ($release_date)"
     echo ""
     exit 1
 }
@@ -702,30 +696,6 @@ case "$command" in
       -h|--help)
         new_help
         ;;
-      composer)
-        if [[ -f "$CLI_PATH/new/composer" ]]; then
-          #early exit
-          if [ "$is_build" = "1" ] || [ "$is_composer_developer" = "0" ]; then
-              exit 1
-          fi
-
-          #check on groups
-          vivado_developers_check "$USER"
-          
-          #check on software
-          gh_check "$CLI_PATH"
-
-          #check on flags
-          valid_flags="-m --model --project --push -t --tag -h --help"
-          flags_check $command_arguments_flags"@"$valid_flags
-
-          #inputs (split the string into an array)
-          read -r -a flags_array <<< "$flags"
-
-          #call integration
-          $CLI_PATH/_hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
-        fi
-        ;;
       opennic)
         #early exit
         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
@@ -1095,25 +1065,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         open_help
-        ;;
-      composer)
-        if [[ -f "$CLI_PATH/open/composer" && "$is_composer_developer" == "1" ]]; then
-          #check on groups
-          vivado_developers_check "$USER"
-          
-          #check on software
-          gh_check "$CLI_PATH"
-
-          #check on flags
-          valid_flags="-m --model --project --push -t --tag -h --help"
-          flags_check $command_arguments_flags"@"$valid_flags
-
-          #inputs (split the string into an array)
-          read -r -a flags_array <<< "$flags"
-
-          #call integration
-          $CLI_PATH/_hdev_composer "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "${flags_array[@]}"
-        fi
         ;;
       vivado)
         #early exit
@@ -2658,35 +2609,39 @@ case "$command" in
       ;;  
     esac
     ;;
-  pullrq)
+  update)
     case "$arguments" in
       -h|--help)
-        pullrq_help
+        update_help
         ;;
       *)
         #early exit
         if [ "$is_sudo" = "0" ]; then
           exit
         fi
-
-        #check on software
-        gh_check "$CLI_PATH"
+        
+        #check on sudo
+        sudo_check $USER
 
         #check on flags
-        valid_flags="-n --number --help"
+        #valid_flags="-h --help --latest -t --tag -n --number"
+        #command_run $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$@"
 
-        exists_pr="0"
-        if [ "$arguments" = "" ]; then
-          pullrq_help
-        else
-          #check on pull request
-          if [[ ! " $valid_flags " =~ " $arguments " ]]; then
-            pullrq_help
+        #check on number of parameters
+        if [ "$#" -lt 2 ]; then
+          update_help
+          exit 1
+        elif [ "$2" = "--latest" ]; then
+          if [ "$#" -gt 2 ]; then
+            update_help
+            exit 1
           fi
-
+          tag_name=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
+          pullrq_id="none"
+        elif [ "$2" = "-n" ] || [ "$2" = "--number" ]; then
           word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
           pullrq_found=$word_found
           pullrq_id=$word_value
@@ -2702,12 +2657,19 @@ case "$command" in
           #check if PR exist
           exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $HDEV_REPO $pullrq_id)
           if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
-            $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
             echo ""
             echo $CHECK_ON_PR_ERR_MSG
+            $GITHUB_CLI_PATH/gh pr list --repo $HDEV_REPO
             echo ""
             exit 1
           fi
+          tag_name="none"
+        elif [ "$2" = "-t" ] || [ "$2" = "--tag" ]; then
+          word_check "$CLI_PATH" "-t" "--tag" "${flags_array[@]}"
+          tag_found=$word_found
+          tag_name=$word_value
+          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$HDEV_REPO" "$tag_name" "${flags_array[@]}"
+          pullrq_id="none"
         fi
 
         #get update.sh
@@ -2719,42 +2681,9 @@ case "$command" in
         
         #remove temporal copy
         rm -rf $UPDATES_PATH/$REPO_NAME
-        
-        #run up to date update with pullrq 
-        $HDEV_PATH/update --number $pullrq_id
-        ;;
-    esac
-    ;;
-  update)
-    case "$arguments" in
-      -h|--help)
-        update_help
-        ;;
-      *)
-        #early exit
-        if [ "$is_sudo" = "0" ]; then
-          exit
-        fi
-        
-        if [ "$#" -ne 1 ]; then
-          update_help
-          exit 1
-        fi
 
-        sudo_check $USER
-
-        #get update.sh
-        cd $UPDATES_PATH
-        git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
-
-        #copy update
-        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
-        
-        #remove temporal copy
-        rm -rf $UPDATES_PATH/$REPO_NAME
-        
         #run up to date update 
-        $HDEV_PATH/update --number "none"
+        $HDEV_PATH/update --number $pullrq_id --tag $tag_name
         ;;
     esac
     ;;

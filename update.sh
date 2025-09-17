@@ -6,9 +6,9 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev update --number $pullrq_id
-#example: /opt/hdev/cli/hdev update --number       none
-#         /opt/hdev/cli/hdev update --number          1
+#usage:       $CLI_PATH/hdev update --number $pullrq_id --tag $tag_name
+#example: /opt/hdev/cli/hdev update --number       none --tag 2024.6
+#         /opt/hdev/cli/hdev update --number          1 --tag none
 
 #helper functions
 chmod_x() {
@@ -27,14 +27,16 @@ fi
 
 #inputs
 pullrq_id=$2
+tag_name=$4
 
 #all inputs must be provided
-if [ "$pullrq_id" = "" ]; then
+if [ "$pullrq_id" = "" ] || [ "$tag_name" = "" ]; then
     exit
 fi
 
 #constants
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
 REPO_NAME="hdev"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 
@@ -46,35 +48,59 @@ REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
 installation_path=$(which hdev | xargs dirname | xargs dirname)
 
 #get last commit date on the remote
-remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
+#remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
+
+#remotes dates
+if [ ! $pullrq_id = "none" ]; then
+  remote_pr_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/pulls/$pullrq_id" | jq -r '.merged_at // .closed_at // .updated_at // .created_at')
+  #convert to Unix timestamps
+  remote_timestamp=$(date -d "$remote_pr_date" +%s)
+elif [ ! $tag_name = "none" ]; then
+  remote_tag_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/releases/tags/$tag_name" | jq -r '.published_at // .created_at')
+  #convert to Unix timestamps
+  remote_timestamp=$(date -d "$remote_tag_date" +%s)
+fi
 
 #get installed commit date
-local_commit_date=$(cat $HDEV_PATH/COMMIT_DATE)
+local_commit_date=$(cat $HDEV_PATH/TAG_DATE)
 
-#convert the dates to Unix timestamps
-remote_timestamp=$(date -d "$remote_commit_date" +%s)
+#convert to Unix timestamps
 local_timestamp=$(date -d "$local_commit_date" +%s)
+
+#echo "pullrq_id: $pullrq_id"
+#echo "tag_name: $tag_name"
+#echo "remote_tag_date: $remote_tag_date"
+#echo "local_commit_date: $local_commit_date"
+#echo "remote_timestamp: $remote_timestamp"
+#echo "local_timestamp: $local_timestamp"
 
 #compare the timestamps and confirm update
 update="0"
 if [ ! $pullrq_id = "none" ]; then
     echo ""
-    echo "${bold}hdev pullrq${normal}"
+    echo "${bold}hdev update${normal}"
     echo ""
     echo "This will checkout ${bold}$REPO_NAME${normal} to its pull request ${bold}#$pullrq_id. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
-elif [ "$local_timestamp" -lt "$remote_timestamp" ]; then
+elif [ ! $tag_name = "none" ] && [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
     echo "${bold}hdev update${normal}"
     echo ""
-    echo "This will update ${bold}$REPO_NAME${normal} to its latest version. ${bold}Would you like to continue (y/n)?${normal}"
+    echo "This will update ${bold}$REPO_NAME${normal} to tag ID ${bold}$tag_name. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
-else
-    commit_id=$(cat $HDEV_PATH/COMMIT)
+elif [ ! $tag_name = "none" ] && [ "$local_timestamp" -gt "$remote_timestamp" ]; then
     echo ""
-    echo "$REPO_NAME is on its latest version ${bold}(commit ID: $commit_id)!${normal}"
+    echo "${bold}hdev update${normal}"
+    echo ""
+    echo "This will downgrade ${bold}$REPO_NAME${normal} to tag ID ${bold}$tag_name. Would you like to continue (y/n)?${normal}"
+    update=$($CLI_PATH/common/push_dialog)
+    echo ""
+elif [ "$local_timestamp" -eq "$remote_timestamp" ]; then
+    tag_id=$(cat $HDEV_PATH/TAG)
+    echo ""
+    echo "$REPO_NAME is already at the requested version!"
     echo ""
 fi
 
@@ -82,7 +108,7 @@ fi
 if [ $update = "1" ]; then
   #checkout
   cd $UPDATES_PATH
-  git clone $REPO_URL #https://github.com/fpgasystems/hdev.git
+  git clone $REPO_URL
 
   #change to directory
   cd $UPDATES_PATH/$REPO_NAME
@@ -95,10 +121,30 @@ if [ $update = "1" ]; then
     echo "$GITHUB_CLI_PATH/gh pr checkout $pullrq_id"
     echo ""
     $GITHUB_CLI_PATH/gh pr checkout $pullrq_id
+    #get pull request update date
+    remote_pr_date=$(curl -s "https://api.github.com/repos/$HDEV_REPO/pulls/$pullrq_id" | jq -r '.merged_at // .closed_at // .updated_at // .created_at')
+    #update TAG and TAG_DATE
+    echo "#$pullrq_id" > TAG
+    echo $remote_pr_date > TAG_DATE
+  fi
+
+  #process tag
+  if [ ! $tag_name = "none" ]; then
+    echo ""
+    echo "${bold}Processing tag:${normal}"
+    echo ""
+    echo "git checkout tags/$tag_name -b tag-$tag_name"
+    git checkout tags/$tag_name -b tag-$tag_name
+    #update TAG and TAG_DATE
+    echo $tag_name > TAG
+    echo $remote_tag_date > TAG_DATE
   fi
 
   #get commit ID
-  remote_commit_id=$(git rev-parse --short HEAD)
+  #remote_commit_id=$(git rev-parse --short HEAD)
+
+  #get tag ID
+  #tag_commit_id=$(git rev-parse --short "$tag_name")
   
   #remove unnecessary files
   rm -f *.md
@@ -113,8 +159,12 @@ if [ $update = "1" ]; then
   rm -rf playbooks
 
   #update COMMIT and COMMIT_DATE
-  echo $remote_commit_id > COMMIT
-  echo $remote_commit_date > COMMIT_DATE
+  #echo $remote_commit_id > COMMIT
+  #echo $remote_commit_date > COMMIT_DATE
+
+  #update TAG and TAG_DATE
+  #echo $tag_commit_id > TAG
+  #echo $remote_tag_date > TAG_DATE
 
   #backup files
   echo ""
@@ -189,8 +239,12 @@ if [ $update = "1" ]; then
   echo ""
 
   #copy COMMIT and COMMIT_DATE
-  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
-  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
+  #sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
+  #sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
+
+  #copy TAG and TAG_DATE
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
 
   #ensure ownership
   sudo chown -R root:root $installation_path
@@ -204,10 +258,10 @@ if [ $update = "1" ]; then
   sleep 1
 
   if [ ! $pullrq_id = "none" ]; then
-    echo "$REPO_NAME was set to pull request ${bold}#$pullrq_id (commit ID: $remote_commit_id)!${normal}"
+    echo "$REPO_NAME was set to pull request ${bold}#$pullrq_id!${normal}"
     echo ""
   else
-    echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+    echo "$REPO_NAME was set to release ${bold}$tag_name!${normal}"
     echo ""
   fi
 fi
