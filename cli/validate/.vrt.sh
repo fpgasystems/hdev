@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Yep!"
-
 #early exit
 if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
     exit
@@ -20,11 +18,7 @@ gh_check "$CLI_PATH"
 ami_check "$AMI_TOOL_PATH"
 
 #check on flags
-#if [ "$is_hdev_developer" = "1" ]; then
-    valid_flags="-d --device -n --number --tag --target -h --help"
-#else
-#  valid_flags="-d --device --tag --target -h --help"
-#fi
+valid_flags="-d --device -n --number --tag --target -h --help"
 flags_check $command_arguments_flags"@"$valid_flags
 
 #inputs (split the string into an array)
@@ -58,43 +52,34 @@ if [ "$tag_found" = "1" ] && [ "$pullrq_found" = "1" ]; then
 fi
 
 #checks (command line)
-#pullrq_found="0"
-#pullrq_id="none"
 exists_pr="0"
 if [ ! "$flags_array" = "" ]; then
     #check on PR
     if [ "$is_hdev_developer" = "1" ]; then
-    #word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
-    #pullrq_found=$word_found
-    #pullrq_id=$word_value
+        #check on pullrq_id
+        if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
+            validate_vrt_help
+            exit 1
+        elif [ "$pullrq_found" == "1" ]; then
+            pullrq_id=$word_value
+        fi
 
-    #check on pullrq_id
-    if [[ "$pullrq_found" == "1" && "$pullrq_id" == "" ]]; then
-        #echo ""
-        #echo $CHECK_ON_PR_ERR_MSG
-        #echo ""
-        validate_vrt_help
-        exit 1
-    elif [ "$pullrq_found" == "1" ]; then
-        pullrq_id=$word_value
-    fi
-
-    #check if PR exist
-    exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $VRT_REPO $pullrq_id)
-    if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
-        echo ""
-        echo $CHECK_ON_PR_ERR_MSG
-        $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$VRT_REPO"
-        exit 1
-    fi
+        #check if PR exist
+        exists_pr=$($CLI_PATH/common/gh_pr_check $GITHUB_CLI_PATH $VRT_REPO $pullrq_id)
+        if [ "$pullrq_found" = "1" ] && [ "$exists_pr" = "0" ]; then
+            echo ""
+            echo $CHECK_ON_PR_ERR_MSG
+            $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$VRT_REPO"
+            exit 1
+        fi
     fi
 
     #either pullrq_id or tag_name
     if [ "$exists_pr" = "1" ]; then
-    tag_found="1"
-    tag_name=$VRT_TAG
+        tag_found="0"
+        tag_name="none"
     else
-    tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
+        tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
     fi
     device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
     target_check "$CLI_PATH" "VRT_TARGETS" "${flags_array[@]}"
