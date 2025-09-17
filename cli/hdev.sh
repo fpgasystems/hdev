@@ -810,7 +810,7 @@ case "$command" in
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
         #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        list_dialog "$CLI_PATH" "$CLI_PATH/constants/ONIC_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
+        list_dialog "$CLI_PATH" "$CLI_PATH/devices_acap_fpga" "$CLI_PATH/constants/ONIC_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
         hls_dialog "$CLI_PATH" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
 

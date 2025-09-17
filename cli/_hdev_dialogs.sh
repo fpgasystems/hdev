@@ -661,50 +661,82 @@ ipv4_check() {
 
 list_dialog() {
   local CLI_PATH=$1
-  local LIST_PATH=$2
-  local CHECK_ON_MSG=$3
-  local CHECK_ON_ERR_MSG=$4
-  #local arguments=$4
-  #local multiple_devices=$5
-  #local MAX_DEVICES=$6
-  shift 4
+  local SERVER_DEVICES=$2
+  local WORKFLOW_DEVICES=$3
+  local CHECK_ON_MSG=$4
+  local CHECK_ON_ERR_MSG=$5
+  shift 5
   local flags_array=("$@")
-  
+
   item_found=""
   item_name=""
 
-  mapfile -t items < "$LIST_PATH"
+  # 1) Read server device names from column 6 (dedup, strip empties)
+  mapfile -t server_list < <(awk '{print $6}' "$SERVER_DEVICES" | sed '/^\s*$/d' | sort -u)
 
+  # 2) Read workflow devices (line-by-line, strip empties; keep original order)
+  mapfile -t workflow_list < <(sed '/^\s*$/d' "$WORKFLOW_DEVICES")
+
+  # 3) Build a set of server devices and compute intersection (preserve workflow order)
+  declare -A server_set
+  for dev in "${server_list[@]}"; do
+    server_set["$dev"]=1
+  done
+
+  items=()
+  for dev in "${workflow_list[@]}"; do
+    if [[ ${server_set["$dev"]} ]]; then
+      items+=("$dev")
+    fi
+  done
+
+  # If nothing matches, bail out early
+  if [ ${#items[@]} -eq 0 ]; then
+    echo "No matching devices between SERVER_DEVICES (col 6) and WORKFLOW_DEVICES."
+    item_found="0"
+    item_name=""
+    return 0
+  fi
+
+  # When a single item is available, auto-select it
   if [ ${#items[@]} -eq 1 ]; then
     item_found="1"
     item_name=${items[0]}
   else
-    if [ "$flags_array" = "" ]; then
-      #device_dialog
-      echo $CHECK_ON_MSG
+    # Prepare a temporary file with the filtered items for downstream tools
+    local filtered_list
+    filtered_list="$(mktemp)"
+    printf "%s\n" "${items[@]}" > "$filtered_list"
+
+    if [ "${#flags_array[@]}" -eq 0 ]; then
+      # No flags: show device dialog with the filtered list
+      echo "$CHECK_ON_MSG"
       echo ""
-      result=$($CLI_PATH/common/list_dialog $LIST_PATH)
+      result="$("$CLI_PATH/common/list_dialog" "$filtered_list")"
       item_found=$(echo "$result" | sed -n '1p')
       item_name=$(echo "$result" | sed -n '2p')
       echo ""
     else
-      #forgotten mandatory
-      list_check "$CLI_PATH" "$LIST_PATH" "$CHECK_ON_ERR_MSG" "${flags_array[@]}"
+      # Flags present: run list_check against the filtered list
+      list_check "$CLI_PATH" "$filtered_list" "$CHECK_ON_ERR_MSG" "${flags_array[@]}"
       if [[ $item_found = "0" ]]; then
-        echo $CHECK_ON_MSG
+        echo "$CHECK_ON_MSG"
         echo ""
-        result=$($CLI_PATH/common/list_dialog $LIST_PATH)
+        result="$("$CLI_PATH/common/list_dialog" "$filtered_list")"
         item_found=$(echo "$result" | sed -n '1p')
         item_name=$(echo "$result" | sed -n '2p')
         echo ""
       fi
     fi
+
+    # Cleanup temp file
+    rm -f "$filtered_list"
   fi
 }
 
 list_check() {
   local CLI_PATH=$1
-  local LIST_PATH=$2
+  local WORKFLOW_DEVICES=$2
   local CHECK_ON_ERR_MSG=$3
   shift 3
   local flags_array=("$@")
@@ -712,7 +744,7 @@ list_check() {
   item_found=$word_found
   item_name=$word_value
 
-  if [[ "$item_found" == "1" ]] && ! grep -Fxq "$item_name" "$LIST_PATH"; then
+  if [[ "$item_found" == "1" ]] && ! grep -Fxq "$item_name" "$WORKFLOW_DEVICES"; then
     echo ""
     echo "$CHECK_ON_ERR_MSG"
     echo ""
