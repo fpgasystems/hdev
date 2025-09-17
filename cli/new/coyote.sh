@@ -74,8 +74,13 @@ fi
 #clone repository
 $CLI_PATH/common/git_clone_coyote $CLI_PATH $DIR $commit_name $pullrq_id
 
-#save commit_name
-echo "$commit_name" > $DIR/COYOTE_COMMIT
+#save commit_name (PR)
+if [ "$pullrq_id" = "none" ]; then
+    id="$commit_name"
+else
+    id="$pullrq_id"
+fi
+echo "$id" > $DIR/COYOTE_COMMIT
 
 #save ONIC_DEVICE_NAME 
 echo "$device_name" > $DIR/COYOTE_DEVICE_NAME
