@@ -1,0 +1,13 @@
+device:
+min_pkt_len   64:64:255                "Minimum packet length in bytes (default to 64)"
+max_pkt_len   256,1514,3028,4800,9600  "Maximum packet length in bytes (default to 1514)"
+use_phys_func 0,1                      "Indicates if the QDMA H2C and C2H AXI4-stream interfaces are included in the 250MHz user logic box (default to 1)"
+num_phys_func 1:4                      "Number of QDMA physical functions per QDMA subsystem (default to 1)" 
+num_qdma      1,2                      "Number of QDMA subsystems, subjects to the board model (default to 1)"
+num_queue     1,2,5,10,512,1024,2048   "Number of QDMA queues (default to 512)"
+num_cmac_port 1,2                      "Number of CMAC ports, subjects to the board model (default to 1)"
+
+host:
+MAX_NUM_PINGS 10                       "Maximum number of ping messages"
+NUM_PINGS     1:MAX_NUM_PINGS          "Number of ping messages"
+remote_server xxxx-xxxxx-xx            "A reachable host in your network"
