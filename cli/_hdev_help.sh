@@ -846,7 +846,11 @@ validate_vrt_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
     $CLI_PATH/help/validate_vrt $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
-    echo ""
+    if [ "$is_hdev_developer" = "1" ]; then
+      $CLI_PATH/common/print_pr "$GITHUB_CLI_PATH" "$VRT_REPO"
+    else
+      echo ""
+    fi
   fi
   exit
 }
