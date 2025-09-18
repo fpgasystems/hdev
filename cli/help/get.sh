@@ -59,7 +59,7 @@ if [ "$parameter" = "--help" ]; then
         echo -e "   ${bold}${COLOR_ON5}performance${COLOR_OFF}${normal}     - Performance level."
         fi
         if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_asoc" = "1" ]; then
-        echo -e "   ${bold}${COLOR_ON2}platform${COLOR_OFF}${normal}        - Platform name."
+        echo -e "   ${bold}${COLOR_ON2}platform${COLOR_OFF}${normal}        - Xilinx platform names."
         #echo -e "   ${bold}${COLOR_ON2}resource${COLOR_OFF}${normal}        - Resource Availability."
         echo -e "   ${bold}${COLOR_ON2}serial${COLOR_OFF}${normal}          - Serial numbers."
         fi
@@ -256,7 +256,7 @@ elif [ "$parameter" = "platform" ]; then
         echo ""
         echo "${bold}$CLI_NAME get platform [flags] [--help]${normal}"
         echo ""
-        echo "Platform names."
+        echo "Xilinx platform names."
         echo ""
         echo "FLAGS:"
         echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
