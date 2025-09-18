@@ -5,8 +5,8 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new coyote --commit $commit_name --number $pullrq_id --project   $new_name --name  $device_name --push $push_option
-#example: /opt/hdev/cli/hdev new coyote --commit       807775 --number        137 --project hello_world --name xcu280_u55c_0 --push            0
+#usage:       $CLI_PATH/hdev new coyote --commit $commit_name --number $pullrq_id --project   $new_name --name  $device_name --template $template_name --push $push_option
+#example: /opt/hdev/cli/hdev new coyote --commit       807775 --number        137 --project hello_world --name xcu280_u55c_0 --template 01_hello_world --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -42,10 +42,11 @@ commit_name=$2
 pullrq_id=$4
 new_name=$6
 device_name=$8
-push_option=${10}
+template_name=${10}
+push_option=${12}
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$pullrq_id" = "" ] || [ "$new_name" = "" ] || [ "$device_name" = "" ] || [ "$push_option" = "" ]; then
+if [ "$commit_name" = "" ] || [ "$pullrq_id" = "" ] || [ "$new_name" = "" ] || [ "$device_name" = "" ] || [ "$template_name" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
@@ -84,6 +85,25 @@ echo "$id" > $DIR/COYOTE_COMMIT
 
 #save ONIC_DEVICE_NAME 
 echo "$device_name" > $DIR/COYOTE_DEVICE_NAME
+
+#save template_name
+echo "$template_name" > $DIR/COYOTE_TEMPLATE
+
+#move files
+mv $DIR/coyote/* $DIR/
+rm -rf $DIR/coyote
+
+#remove files
+rm $DIR/*.md
+
+#create src folder
+mkdir $DIR/src
+
+#copy template files
+cp -r $DIR/examples/$template_name/* $DIR/src
+
+#delete examples
+rm -rf $DIR/examples/
 
 #add api files
 cp $HDEV_PATH/api/config_add $DIR

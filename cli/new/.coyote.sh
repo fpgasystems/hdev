@@ -100,6 +100,7 @@ if [ ! "$flags_array" = "" ]; then
     new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
     #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
     list_check "$CLI_PATH" "$CLI_PATH/constants/COYOTE_DEVICE_NAMES" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
+    template_check "$CLI_PATH" "COYOTE_TEMPLATES" "${flags_array[@]}"
     push_check "$CLI_PATH" "${flags_array[@]}"
 fi
 
@@ -109,6 +110,7 @@ echo "${bold}$CLI_NAME $command $arguments $header_string${normal}"
 echo ""
 new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
 list_dialog "$CLI_PATH" "$CLI_PATH/devices_acap_fpga" "$CLI_PATH/constants/COYOTE_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
+template_dialog  "$CLI_PATH" "COYOTE_TEMPLATES" "${flags_array[@]}"
 push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
 
 #collect list results
@@ -123,4 +125,4 @@ if ! grep -Fxq "$device_name" "$COYOTE_DEVICE_NAMES"; then
 fi
 
 #run
-$CLI_PATH/new/coyote --commit $commit_name --number $pullrq_id --project $new_name --name $device_name --push $push_option
+$CLI_PATH/new/coyote --commit $commit_name --number $pullrq_id --project $new_name --name $device_name --template $template_name --push $push_option
