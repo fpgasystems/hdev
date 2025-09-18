@@ -126,6 +126,9 @@ if [[ -n "$device_index" ]]; then
     echo "$device_index: coyote" >> "$DIR/sh.cfg"
 fi
 
+#update CMakeLists.txt
+sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/src/hw/CMakeLists.txt"
+
 #push files
 if [ "$push_option" = "1" ]; then 
     cd $DIR
