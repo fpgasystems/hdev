@@ -1317,7 +1317,7 @@ template_dialog() {
     template_name=$(echo "$result" | sed -n '2p')
     echo ""
   else
-    template_check "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
+    template_check "$CLI_PATH" "$TEMPLATES_FILE" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $template_found = "0" ]]; then
         echo $CHECK_ON_TEMPLATE_MSG
