@@ -35,6 +35,7 @@ echo ""
 echo "ARGUMENTS:"
 echo "   ${bold}c${normal}               - C and C++ binaries."
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Build your accelerated application on top of Coyote shell."
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."
 fi
 if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
