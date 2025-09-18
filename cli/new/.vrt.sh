@@ -110,7 +110,11 @@ echo "${bold}$CLI_NAME $command $arguments $header_string${normal}"
 echo ""
 new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-list_dialog "$CLI_PATH" "$CLI_PATH/devices_acap_fpga" "$CLI_PATH/constants/VRT_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
+if [ "$is_build" = "1" ]; then
+    list_dialog "$CLI_PATH" "none" "$CLI_PATH/constants/VRT_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
+else
+    list_dialog "$CLI_PATH" "$CLI_PATH/devices_acap_fpga" "$CLI_PATH/constants/VRT_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
+fi
 template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
 push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 

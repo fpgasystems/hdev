@@ -671,9 +671,13 @@ list_dialog() {
   item_found=""
   item_name=""
 
-  # 1) Read server device names from column 6 (dedup, strip empties)
-  mapfile -t server_list < <(awk '{print $6}' "$SERVER_DEVICES" | sed '/^\s*$/d' | sort -u)
-
+  if [ "$SERVER_DEVICES" = "none" ]; then
+    mapfile -t server_list < <(sed '/^\s*$/d' "$WORKFLOW_DEVICES")
+  else
+    # 1) Read server device names from column 6 (dedup, strip empties)
+    mapfile -t server_list < <(awk '{print $6}' "$SERVER_DEVICES" | sed '/^\s*$/d' | sort -u)
+  fi
+  
   # 2) Read workflow devices (line-by-line, strip empties; keep original order)
   mapfile -t workflow_list < <(sed '/^\s*$/d' "$WORKFLOW_DEVICES")
 

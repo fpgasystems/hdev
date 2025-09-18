@@ -83,7 +83,11 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "FLAGS:"
             echo "   ${bold}-c, --commit${normal}    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
+            if [ "$is_build" = "0" ]; then
             echo "   ${bold}    --name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+            elif [ "$is_build" = "1" ]; then
+            echo "   ${bold}    --name${normal}      - Device Name (available: ${bold}$(paste -sd, $CLI_PATH/constants/COYOTE_DEVICE_NAMES | sed 's/,/, /g')${normal})."
+            fi
             if [ "$is_hdev_developer" = "1" ]; then
             echo "   ${bold}    --number${normal}    - ${bold}$COYOTE_REPO${normal} GitHub repository pull request ID."
             fi
@@ -109,9 +113,12 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "FLAGS:"
             echo "   ${bold}-c, --commit${normal}    - GitHub shell and driver commit IDs (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
-            #echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
             echo "       ${bold}--hls${normal}       - Adds an HLS wrapper for user logic boxes."
+            if [ "$is_build" = "0" ]; then
             echo "   ${bold}-n, --name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+            elif [ "$is_build" = "1" ]; then
+            echo "   ${bold}-n, --name${normal}      - Device Name (available: ${bold}$(paste -sd, $CLI_PATH/constants/ONIC_DEVICE_NAMES | sed 's/,/, /g')${normal})."
+            fi
             echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
             echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account." 
             echo ""
@@ -145,7 +152,11 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "FLAGS:"
             #echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
-            echo "       ${bold}--name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+            if [ "$is_build" = "0" ]; then
+            echo "   ${bold}    --name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+            elif [ "$is_build" = "1" ]; then
+            echo "   ${bold}    --name${normal}      - Device Name (available: ${bold}$(paste -sd, $CLI_PATH/constants/VRT_DEVICE_NAMES | sed 's/,/, /g')${normal})."
+            fi
             if [ "$is_hdev_developer" = "1" ]; then
             echo "       ${bold}--number${normal}    - ${bold}$VRT_REPO${normal} GitHub repository pull request ID."
             fi
