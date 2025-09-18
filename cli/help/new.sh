@@ -89,6 +89,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             fi
             echo "       ${bold}--project${normal}   - Specifies your Coyote project name." 
             echo "       ${bold}--push${normal}      - Pushes your Coyote project to your GitHub account." 
+            echo "   ${bold}-t, --template${normal}  - ${bold}$COYOTE_REPO${normal} GitHub repository examples."
             echo ""
             echo "   ${bold}    --help${normal}      - Help to use this command."
             echo ""
