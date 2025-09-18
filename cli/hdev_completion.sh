@@ -194,7 +194,7 @@ _hdev_completions()
                         commands="--help"
                     
                         if [ "$is_build" = "1" ]; then
-                            commands="${commands} vrt tensorflow opennic xdp"
+                            commands="${commands} vrt tensorflow opennic xdp coyote"
                         fi
 
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "1" ]; then
