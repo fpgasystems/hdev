@@ -27,7 +27,7 @@ vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] &
 nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
 
 #flags
-COYOTE_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--number" )
+COYOTE_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--number" "--template" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--hls" ) #--device
@@ -1053,6 +1053,26 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-12]}" in
                 new)
                     case "${COMP_WORDS[COMP_CWORD-11]}" in
+                        coyote)
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         vrt)
                             # Start from the default flags
                             local vrt_flags=("${VRT_NEW_FLAGS[@]}")
