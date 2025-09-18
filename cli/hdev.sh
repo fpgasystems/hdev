@@ -292,6 +292,9 @@ case "$command" in
         $CLI_PATH/build/c --source $cfile_path
         echo ""
         ;;
+      coyote)
+        source "$CLI_PATH/$command/.$arguments"
+        ;;
       opennic)
         #early exit
         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
