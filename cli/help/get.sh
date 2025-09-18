@@ -53,7 +53,7 @@ if [ "$parameter" = "--help" ]; then
         echo "   ${bold}interfaces${normal}      - High-performance computing networking devices."
         if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_asoc" = "1" ]; then
         #echo -e "   ${bold}${COLOR_ON2}memory${COLOR_OFF}${normal}          - Memory Information."
-        echo -e "   ${bold}${COLOR_ON2}name${COLOR_OFF}${normal}            - Device names."
+        echo -e "   ${bold}${COLOR_ON2}name${COLOR_OFF}${normal}            - Xilinx device names."
         fi
         if [ "$is_gpu" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}performance${COLOR_OFF}${normal}     - Performance level."
@@ -76,13 +76,6 @@ if [ "$parameter" = "--help" ]; then
         fi
         if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_asoc" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}workflow${COLOR_OFF}${normal}        - Current workflow."
-        #elif [ "$is_asoc" = "1" ]; then
-        #echo -e "   ${bold}${COLOR_ON2}bdf${COLOR_OFF}${normal}             - Bus Device Function."
-        #echo -e "   ${bold}${COLOR_ON2}name${COLOR_OFF}${normal}            - Device names."
-        #echo -e "   ${bold}${COLOR_ON2}network${COLOR_OFF}${normal}         - Networking information."
-        #echo -e "   ${bold}${COLOR_ON2}serial${COLOR_OFF}${normal}          - Serial numbers."
-        #echo -e "   ${bold}${COLOR_ON2}uuid${COLOR_OFF}${normal}            - Programmable Device Image (PDI) Universally Unique IDentifier (UUID)."
-        #echo -e "   ${bold}${COLOR_ON2}workflow${COLOR_OFF}${normal}        - Current workflow."
         fi
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -168,7 +161,7 @@ elif [ "$parameter" = "name" ]; then
         echo ""
         echo "${bold}$CLI_NAME get name [flags] [--help]${normal}"
         echo ""
-        echo "Device names."
+        echo "Xilinx device names."
         echo ""
         echo "FLAGS:"
         echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
