@@ -25,9 +25,9 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-c, --commit${normal}    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    if [ "$is_build" = "1" ]; then
-    echo "       ${bold}--platform${normal}  - Xilinx platform (according to ${bold}$CLI_NAME get platform${normal})."
-    fi
+    #if [ "$is_build" = "1" ]; then
+    #echo "       ${bold}--name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
+    #fi
     echo "       ${bold}--project${normal}   - Specifies your Coyote project name."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
