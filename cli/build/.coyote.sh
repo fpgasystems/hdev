@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Hey I am here"
-
 #early exit
 if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
     exit 1
