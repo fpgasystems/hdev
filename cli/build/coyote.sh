@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev build opennic --commit $commit_name_shell $commit_name_driver --project $project_name --version $vivado_version --all $all 
-#example: /opt/hdev/cli/hdev build opennic --commit            8077751             1cf2578 --project   hello_world --version          2022.2 --all    1 
+#usage:       $CLI_PATH/hdev build opennic --commit $commit_name --project $project_name --version $vivado_version --all $all 
+#example: /opt/hdev/cli/hdev build opennic --commit      0e514ab --project   hello_world --version          2024.1 --all    1 
 
 #early exit
 url="${HOSTNAME}"
@@ -19,25 +19,19 @@ if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
     exit 1
 fi
 
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
-fi
-
 #inputs
 commit_name=$2
-commit_name_driver=$3
-project_name=$5
-vivado_version=$7
-all=$9
+project_name=$4
+vivado_version=$6
+all=$8
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$commit_name_driver" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
+if [ "$commit_name" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
     exit
 fi
+
+echo "HEREEEEEE"
+exit
 
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
