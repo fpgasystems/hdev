@@ -27,7 +27,7 @@ vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] &
 nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
 
 #flags
-COYOTE_BUILD_FLAGS=( "--commit" "--project" )
+COYOTE_BUILD_FLAGS=( "--commit" "--project" "--target" )
 COYOTE_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--number" "--template" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
@@ -737,6 +737,10 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-6]}" in
                 build)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_BUILD_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
