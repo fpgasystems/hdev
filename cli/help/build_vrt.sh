@@ -18,9 +18,9 @@ VRT_TAG=$($CLI_PATH/common/get_constant $CLI_PATH VRT_TAG)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
 if [ "$is_build" = "1" ]; then
-    targets="${bold}sim_all, emu_all,${normal} or ${bold}hw_all.${normal}"
+    targets="${bold}sim_all, emu_all, hw_all.${normal}"
 elif [ "$is_build" = "0" ]; then    
-    targets="${bold}sim_all${normal} or ${bold}emu_all.${normal}"
+    targets="${bold}sim_all, emu_all.${normal}"
 fi
 
 #if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
