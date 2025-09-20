@@ -320,7 +320,7 @@ case "$command" in
         gh_check "$CLI_PATH"
 
         #check on flags
-        valid_flags="-c --commit --project -h --help" #--platform 
+        valid_flags="-c --commit -p --project -h --help" #--platform 
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)

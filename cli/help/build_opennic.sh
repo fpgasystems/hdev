@@ -28,7 +28,7 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     #if [ "$is_build" = "1" ]; then
     #echo "       ${bold}--name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
     #fi
-    echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name."
+    echo "   ${bold}-p, --project${normal}   - Specifies your OpenNIC project name."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
