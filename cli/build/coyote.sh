@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev build opennic --commit $commit_name --project $project_name --version $vivado_version --all $all 
-#example: /opt/hdev/cli/hdev build opennic --commit      0e514ab --project   hello_world --version          2024.1 --all    1 
+#usage:       $CLI_PATH/hdev build coyote --commit $commit_name --project $project_name --version $vivado_version --all $all 
+#example: /opt/hdev/cli/hdev build coyote --commit      0e514ab --project   hello_world --version          2024.1 --all    1 
 
 #early exit
 url="${HOSTNAME}"
@@ -30,28 +30,25 @@ if [ "$commit_name" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = 
     exit
 fi
 
-echo "HEREEEEEE"
-exit
-
 #constants
-BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
-BITSTREAMS_PATH="$CLI_PATH/bitstreams"
-DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
+COYOTE_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_SHELL_NAME)
+COYOTE_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_DRIVER_NAME)
 LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH LOCAL_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-NUM_JOBS="8"
-WORKFLOW="opennic"
-WRAPPER_NAME="hls-wrapper"
+WORKFLOW="coyote"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 DRIVER_DIR="$DIR/open-nic-driver"
 
 #get device name
-device_name=$(cat $DIR/ONIC_DEVICE_NAME)
+device_name=$(cat $DIR/COYOTE_DEVICE_NAME)
 
 #device_name to FDEV_NAME
 FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
+
+echo "FDEV_NAME: $FDEV_NAME"
+exit
 
 #define shell
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
@@ -153,7 +150,7 @@ if [ "$all" = "1" ]; then
 
             #send email
             #user_email=$USER@ethz.ch
-            #echo "Subject: Good news! hdev build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
+            #echo "Subject: Good news! hdev build coyote (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
         fi
     fi
 fi
