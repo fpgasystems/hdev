@@ -1364,24 +1364,47 @@ target_dialog() {
   target_found=""
   target_name=""
 
-  if [ "$flags_array" = "" ]; then
-    #new_dialog
-    echo $CHECK_ON_TARGET_MSG
-    echo ""
-    result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
-    target_found=$(echo "$result" | sed -n '1p')
-    target_name=$(echo "$result" | sed -n '2p')
-    echo ""
+  # Read file into array
+  mapfile -t all_targets < "$CLI_PATH/constants/$TARGETS_FILE"
+
+  #exclude target
+  if [ "$is_build" = "0" ]; then 
+    filtered_targets=()
+    for target in "${all_targets[@]}"; do
+        if [[ "$target" != "$TARGET_DEPLOY_EXCLUDE" ]]; then
+            filtered_targets+=("$target")
+        fi
+    done
   else
-    target_check "$CLI_PATH" "$TARGETS_FILE" "${flags_array[@]}"
-    #forgotten mandatory
-    if [[ $target_found = "0" ]]; then
-        echo $CHECK_ON_TARGET_MSG
-        echo ""
-        result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
-        target_found=$(echo "$result" | sed -n '1p')
-        target_name=$(echo "$result" | sed -n '2p')
-        echo ""
+    filtered_targets=("${all_targets[@]}")
+  fi
+
+  #get number of targets
+  num_targets=${#filtered_targets[@]}
+
+  if [ "$num_targets" -eq 1 ]; then
+    target_found="1"
+    target_name=${filtered_targets[0]}
+  else
+    if [ "$flags_array" = "" ]; then
+      #new_dialog
+      echo $CHECK_ON_TARGET_MSG
+      echo ""
+      result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
+      target_found=$(echo "$result" | sed -n '1p')
+      target_name=$(echo "$result" | sed -n '2p')
+      echo ""
+    else
+      target_check "$CLI_PATH" "$TARGETS_FILE" "${flags_array[@]}"
+      #forgotten mandatory
+      if [[ $target_found = "0" ]]; then
+          echo $CHECK_ON_TARGET_MSG
+          echo ""
+          result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
+          target_found=$(echo "$result" | sed -n '1p')
+          target_name=$(echo "$result" | sed -n '2p')
+          echo ""
+      fi
     fi
   fi
 }

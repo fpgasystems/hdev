@@ -19,7 +19,7 @@ COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 #    targets="${bold}sim${normal} or ${bold}emu_all.${normal}"
 #fi
 
-targets=$(paste -sd, $CLI_PATH/constants/COYOTE_TARGETS | sed 's/,/, /g'). 
+targets=$(paste -sd, $CLI_PATH/constants/COYOTE_TARGETS | sed 's/,/, /g')
 
 #evaluate integrations
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
@@ -37,7 +37,7 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     #echo "       ${bold}--name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
     #fi
     echo "   ${bold}-p, --project${normal}   - Specifies your Coyote project name."
-    echo "   ${bold}-t, --target${normal}    - Sets the build target to ${bold}$targets${normal}"
+    echo "   ${bold}-t, --target${normal}    - Hardware build target (${bold}$targets${normal})."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""

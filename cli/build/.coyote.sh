@@ -22,6 +22,10 @@ flags_check $command_arguments_flags"@"$valid_flags
 #inputs (split the string into an array)
 read -r -a flags_array <<< "$flags"
 
+#set default target
+target_found="0"
+target_name=""
+
 #checks on command line
 if [ ! "$flags_array" = "" ]; then
     commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$COYOTE_REPO" "$COYOTE_COMMIT" "${flags_array[@]}"
@@ -48,7 +52,11 @@ echo ""
 echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
 echo ""
 project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-target_dialog "$CLI_PATH" "COYOTE_TARGETS" "hw" "$is_build" "${flags_array[@]}"
+#target_dialog "$CLI_PATH" "COYOTE_TARGETS" "hw" "$is_build" "${flags_array[@]}"
+#when not specified explicitely, only the application will be compiled
+if [ "$target_found" = "0" ]; then
+    target_name="none"
+fi
 
 #we force the user to create a configuration
 if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
@@ -60,6 +68,14 @@ if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/devic
     cd "$current_path"
 fi
 
+echo "commit_name: $commit_name"
+echo "project_name: $project_name"
+echo "target_found: $target_found"
+echo "target_name: $target_name"
+echo "vivado_version: $vivado_version"
+echo "is_build: $is_build"
+exit
+
 #run
-$CLI_PATH/build/coyote --commit $commit_name --project $project_name --version $vivado_version --all $is_build #--platform $device_name
+$CLI_PATH/build/coyote --commit $commit_name --project $project_name --target $target_name --version $vivado_version --all $is_build #--platform $device_name
 echo ""
