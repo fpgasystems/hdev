@@ -386,6 +386,10 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
+        #set default target
+        target_found="0"
+        target_name=""
+
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
@@ -408,7 +412,11 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         #template_dialog  "$CLI_PATH" "VRT_TEMPLATES" "${flags_array[@]}"
-        target_dialog "$CLI_PATH" "VRT_TARGETS" "hw_emu" "$is_build" "${flags_array[@]}"
+        #target_dialog "$CLI_PATH" "VRT_TARGETS" "hw_emu" "$is_build" "${flags_array[@]}"
+        #when not specified explicitely, only the application will be compiled
+        if [ "$target_found" = "0" ]; then
+            target_name="none"
+        fi
 
         #run with all set to one (as compiling with hacc-build servers did not work) 
         $CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version --all 1
