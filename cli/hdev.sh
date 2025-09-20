@@ -391,6 +391,12 @@ case "$command" in
           tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
           target_check "$CLI_PATH" "VRT_TARGETS" "${flags_array[@]}"
+          if [ "$is_build" = "0" ] && [ "$target_name" = "hw_all" ]; then
+              echo ""
+              echo "$CHECK_ON_TARGET_ERR_MSG"
+              echo ""
+              exit 1
+          fi
         fi
         
         #dialogs
