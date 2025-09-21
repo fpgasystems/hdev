@@ -53,10 +53,22 @@ echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
 echo ""
 project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
 #target_dialog "$CLI_PATH" "COYOTE_TARGETS" "hw" "$is_build" "${flags_array[@]}"
-#when not specified explicitely, only the application will be compiled
-if [ "$target_found" = "0" ]; then
+
+#check on target_name
+device_name=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/COYOTE_DEVICE_NAME)
+FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
+project_shell="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+if [ ! -e "$project_shell" ]; then
+    target_name="hw"
+elif [ "$target_found" = "0" ]; then
     target_name="none"
 fi
+
+#echo "device_name: $device_name"
+#echo "FDEV_NAME: $FDEV_NAME"
+#echo "project_shell: $project_shell"
+#echo "target_name: $target_name"
+#exit
 
 #we force the user to create a configuration
 if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
@@ -68,14 +80,17 @@ if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/devic
     cd "$current_path"
 fi
 
-echo "commit_name: $commit_name"
-echo "project_name: $project_name"
-echo "target_found: $target_found"
-echo "target_name: $target_name"
-echo "vivado_version: $vivado_version"
-echo "is_build: $is_build"
-exit
+#echo "commit_name: $commit_name"
+#echo "project_name: $project_name"
+#echo "target_found: $target_found"
+#echo "target_name: $target_name"
+#echo "vivado_version: $vivado_version"
+#echo "is_build: $is_build"
+#exit
+
+#temporal fix (to be removed!!!! Alows us to build on deployment servers)
+is_build="1"
 
 #run
-$CLI_PATH/build/coyote --commit $commit_name --project $project_name --target $target_name --version $vivado_version --all $is_build #--platform $device_name
+$CLI_PATH/build/coyote --commit $commit_name --project $project_name --target $target_name --version $vivado_version --is_build $is_build #--platform $device_name
 echo ""

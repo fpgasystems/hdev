@@ -37,7 +37,11 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     #echo "       ${bold}--name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
     #fi
     echo "   ${bold}-p, --project${normal}   - Specifies your Coyote project name."
-    echo "   ${bold}-t, --target${normal}    - Hardware build target (${bold}$targets${normal})."
+    if [ "$is_build" = "1" ]; then
+        echo "   ${bold}-t, --target${normal}    - Hardware build target (available: ${bold}$targets${normal})."
+    else
+        echo "   ${bold}-t, --target${normal}    - Hardware build target (available: ${bold}sw_emu${normal})."
+    fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
