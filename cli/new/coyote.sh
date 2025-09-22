@@ -127,7 +127,8 @@ if [[ -n "$device_index" ]]; then
 fi
 
 #update CMakeLists.txt
-sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/src/hw/CMakeLists.txt"
+sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/src/hw/CMakeLists.txt" #hardware, hw
+sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/src/sw/CMakeLists.txt" #software, sw
 
 #push files
 if [ "$push_option" = "1" ]; then 

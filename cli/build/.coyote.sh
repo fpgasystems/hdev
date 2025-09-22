@@ -88,9 +88,6 @@ fi
 #echo "is_build: $is_build"
 #exit
 
-#temporal fix (to be removed!!!! Alows us to build on deployment servers)
-is_build="1"
-
 #run
-$CLI_PATH/build/coyote --commit $commit_name --project $project_name --target $target_name --version $vivado_version --is_build $is_build #--platform $device_name
+$CLI_PATH/build/coyote --commit $commit_name --project $project_name --target $target_name --version $vivado_version --is_build $is_build
 echo ""
