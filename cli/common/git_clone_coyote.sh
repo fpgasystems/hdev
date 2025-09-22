@@ -24,7 +24,7 @@ echo ""
 cd $DIR
 
 #clone repository
-git clone $COYOTE_REPO
+git clone --recurse-submodules $COYOTE_REPO
 
 #change to repository directory
 cd $DIR/coyote
