@@ -228,6 +228,9 @@ mkdir build_sw && cd build_sw
 cmake ../
 make
 
+#remove build_sw
+rm -rf $DIR/src/sw/build_sw
+
 #remove drivier files (generated while compilation)
 #rm $DRIVER_DIR/Module.symvers
 #rm -rf $DRIVER_DIR/hwmon
