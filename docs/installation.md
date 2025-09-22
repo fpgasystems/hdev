@@ -13,7 +13,6 @@ To install **[hdev](https://github.com/fpgasystems/hdev)**, please proceed by fo
 * [Installing prerequisite software](#installing-prerequisite-software)
 * [System and Vivado configuration](#system-and-vivado-configuration)
 * [Generating device configuration files](#generating-device-configuration-files)
-* [Generating device information files](#generating-device-information-files)
 * [Enabling hdev on a cluster](#enabling-hdev-on-a-cluster)
 
 ## Downloading the installer
@@ -115,69 +114,8 @@ where the **vivado_developers** group relates to the section above.
 ![Installing cable drivers and configuring udev rules.](./images/udev-rules.png "Installing cable drivers and configuring udev rules.")
 *Installing cable drivers and configuring udev rules.*
 
-## Generating device configuration files
-
-An essential **hdev** component are the device configuration files. Each server running **hdev** requires three files: one for networking devices, one for adaptable devices (ACAPs, ASoCs and FPGAs) and another for GPUs. These files are assumed to be correct, and what follows helps you generate them accurately.
-
-### devices\_network
-A **devices_network** configuration file is located in `$CLI_PATH/devices_network` and looks like this:
-
-![devices_network.](./images/devices_network.png "devices_network.")
-*devices_network.*
-
-There is one row per networking device, and the columns represent the following information:
-
-1. **Device Index:** An auto-generated integer value, starting from 1.
-2. **BDF:** Identify the Bus Device Function (BDF) of your networking device using the `lspci | grep Ethernet` command. For NICs with multiple ports, capture only the function zero (e.g., 23:00.0).
-3. **Device Type:** Must be set to "nic."
-4. **Device Name:** A representative string that identifies the vendor or model of your NIC.
-5. **IP Addresses:** Assign an IP address to each NIC port based on your networking configuration plan.
-6. **MAC Addresses:** Assign a MAC address to each NIC port based on your networking configuration plan.
-
-### devices\_acap\_fpga
-A **devices_acap_fpga** configuration file is located in `$CLI_PATH/devices_acap_fpga` and looks like this:
-
-![devices_acap_fpga.](./images/devices_acap_fpga.png "devices_acap_fpga.")
-*devices\_acap\_fpga.*
-
-There is one row per reconfigurable device, and the columns represent the following information:
-
-1. **Device Index:** An auto-generated integer value, starting from 1.
-2. **Upstream Port:** Identify Xilinx reconfigurable devices' *upstream ports* using the command: `lspci | grep Xilinx | grep '\.0 '` (e.g., `a1:00.0`).
-3. **Root Port:** Find the root port related to the upstream port using: `sudo lspci -t` (e.g., `a1:00.0` corresponds to `a0:03.1`).
-4. **LnkCtl:** Discover *LnkCtl* capabilities related to the root port using: `sudo lspci -vvv -s` (e.g., `sudo lspci -vvv -s a0:03.1` corresponds to `58`).
-5. **Device Type:** Select between "acap", "asoc", or "fpga" based on the Platform’s XSA Name revealed by the `xbutil examine` command.
-6. **Device Name:** The device name can be found in the Vivado GUI when you open the hardware target of interest, e.g., `xcu280_u55c_0`.
-7. **Serial Number:** Obtain the *serial number* of the device of interest using the `sudo xbmgmt examine` command.
-8. **IP Addresses:** Assign two IP addresses (one for each interface, separated by a slash) according to your IP configuration plan.
-9. **MAC Addresses:** Retrieve the *MAC addresses* corresponding to the IP addresses above for the device of interest using the `xbutil examine` command.
-10. **Platform:** Determine the platform of the device of interest using the `xbutil examine` command.
-11. **Part:** Device part according to Vivado Hardware Manager.
-
-![Getting root port (step 3) and device name (step 6).](./images/root-port-device-name.png "Getting root port (step 3) and device name (step 6).")
-*Getting root port (step 3) and device name (step 6).*
-
-### devices\_gpu
-A **devices_gpu** configuration file is located in `$CLI_PATH/devices_gpu` and looks like this:
-
-![devices_acap_fpga.](./images/devices_gpu.png "devices_gpu.")
-*devices_gpu.*
-
-As before, there is one row per GPU, and the columns represent the following information:
-
-1. **Device Index:** An auto-generated integer value, starting from 1.
-2. **Bus:** Determine the *bus* value using the `rocm-smi --showbus` command.
-3. **Device Type:** Set to "gpu."
-4. **GPU ID:** Obtain the *GPU ID* using the `rocm-smi -i` command.
-5. **Serial Number:** Find the *serial number* using the `rocm-smi --showserial` command.
-6. **Unique ID:** Retrieve the *unique ID* using the `rocm-smi --showuniqueid` command.
-
-## Generating device information files
-
-Alongside the device configuration files, each server running **hdev** requires the `$CLI_PATH/platforminfo` file, which contains pertinent details about clock speed, available resources, and memory. The Xilinx tool `platforminfo` can assist in obtaining the appropriate values for these files.
-
-![platforminfo for three different servers: one mounting an Alveo U250 board, one mounting a U280 board, and one mounting one U55C and one Versal VCK5000.](./images/platforminfo.png "platforminfo for three different servers: one mounting an Alveo U250 board, one mounting a U280 board, and one mounting one U55C and one Versal VCK5000.")
-*platforminfo for three different servers: one mounting an Alveo U250 board, one mounting a U280 board, and one mounting one U55C and one Versal VCK5000.*
+## Configuring the devices Configuration Management Data Base
+The Configuration Management Data Base (CMDB) stores all related info of the devices in each of the nodes in the cluster. See the [documentation of the CMDB](./docs/cmdb-structure.md) to understand how to set this up.
 
 ## Enabling hdev on a cluster
 Under the following assumptions, **hdev** can program bitstreams on remote servers’ ACAPs and FPGAs:

@@ -37,82 +37,78 @@ Below are the schemas of the three different device files:
 
 ![devices_acap_fpga.](./images/devices_acap_fpga.png "devices_acap_fpga.")
 
+The reconfigurable devices are PCIe add-on cards that provide a reconfigurable fabric. Hdev only supports AMD/Xilinx FPGAs at this moment.
+
 There is one row per reconfigurable device, and the columns represent the following information:
 
 ```
 <device index> <upstream bdf> <root bdf> <lnkctl> <device type> <device name> <serial number> <ip addresses> <mac addresses> <platform> <part>
 ```
 
-| Attribute           | Type       | Description                                                                                                                                   |
-|---------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| Device Index        | int        | Unique index of the device row. First row has index 1, the second has index 2, etc.                                                           |
-| Upstream BDF        | string     | The PCI BDF of the Xilinx reconfigurable device                                                                                               |
-| Root BDF            | string     | The PCI BDF of the port that the reconfigurable device is connected to.                                                                       |
-| LnkCtl              | hex        | The capabilities register address of the LinkCtl for the root bdf.                                                                            |
-| Device Type         | string     | Type of reconfigurable device. Choose between "acap", "asoc", or "fpga".                                                                      |
-| Device Name         | string     | Name of the device as reported by Vivado.                                                                                                     |
-| Serial Number       | string     | The Serial number of the device                                                                                                               |
-| IP Addresses        | list       | A list of IP addresses for the interfaces of the reconfigurable device.                                                                       |
-| MAC Addresses       | list       | A list of MAC addresses of the interfaces of the reconfigurable device. List items correspond to the items in the IP list.                    |
-| Platform            | string     | The default platform (also called shell) that is loaded on the reconfigurable device.                                                         |
-| Part                | string     | The part name of the reconfigurable device.                                                                                                   |
-
-
-8. **IP Addresses:** [string] Assign two IP addresses (one for each interface, separated by a slash) according to your IP configuration plan.
-9. **MAC Addresses:** [string] Retrieve the *MAC addresses* corresponding to the IP addresses above for the device of interest using the `xbmgmt examine --device <bdf> -r platform` command.
-10. **Platform:** [string] Determine the platform of the device of interest using the `xbutil examine` command.
-11. **Part:** [string] Device part according to Vivado Hardware Manager.
-
-Device type is based on the Platform’s XSA Name revealed by the `xbutil examine` command.
-The device name can be found in the Vivado GUI when you open the hardware target of interest, e.g., `xcu280_u55c_0`.
+| Attribute           | Type       | Description                                                                                                                                                          |
+|---------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Device Index        | int        | Unique index of the device row. First row has index 1, the second has index 2, etc.                                                                                  |
+| Upstream BDF        | string     | The PCI BDF of the Xilinx reconfigurable device. See [instructions below](#upstream-bdf).                                                                            |
+| Root BDF            | string     | The PCI BDF of the port that the reconfigurable device is connected to. See [instructions below](#root-bdf).                                                         |
+| LnkCtl              | hex        | The capabilities register address of the LinkCtl for the root bdf. See [instructions below](#lnkctl).                                                                |
+| Device Type         | string     | Type of reconfigurable device. Choose between "acap", "asoc", or "fpga". See [instructions below](#device-type-for-reconfigurable-devices).                          |
+| Device Name         | string     | Name of the device as reported by Vivado Hardware Manager.                                                                                                           |
+| Serial Number       | string     | The Serial number of the device. See [instructions below](#serial-number).                                                                                           |
+| IP Addresses        | list       | A list of IP addresses for the interfaces of the reconfigurable device. Use reserved IPs, dont' rely on DHCP for this type of device.                                |
+| MAC Addresses       | list       | A list of MAC addresses of the interfaces of the reconfigurable device. List items correspond to the items in the IP list. See [instructions below](#mac-addresses). |
+| Platform            | string     | The default platform (also called shell) that is loaded on the reconfigurable device. See [instructions below](#platform).                                           |
+| Part Number         | string     | The part name of the reconfigurable device. See [instructions below](#part-number).                                                                                  |
 
 
 #### devices\_gpu
 
 ![devices_acap_fpga.](./images/devices_gpu.png "devices_gpu.")
 
-As before, there is one row per GPU, and the columns represent the following information:
+The Graphics Processing Units (GPU) here are targeting AMD GPUs that use the rocm library.
 
-| Device Index | Bus | Device Type | GPU ID | Serial Number | Unique ID |
-|--------------|-----|-------------|--------|---------------|-----------|
+There is one row per GPU, and the columns represent the following information:
 
 ```
 <device index> <bus> <device type> <gpu id> <serial number> <unique id>
 ```
 
-1. **Device Index:** An auto-generated integer value, starting from 1.
-2. **Bus:** Determine the *bus* value using the `rocm-smi --showbus` command.
-3. **Device Type:** Set to "gpu."
-4. **GPU ID:** Obtain the *GPU ID* using the `rocm-smi -i` command.
-5. **Serial Number:** Find the *serial number* using the `rocm-smi --showserial` command.
-6. **Unique ID:** Retrieve the *unique ID* using the `rocm-smi --showuniqueid` command.
+| Attribute           | Type       | Description                                                                                                                                   |
+|---------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| Device Index        | int        | Unique index of the device row. First row has index 1, the second has index 2, etc.                                                           |
+| Upstream BDF        | string     | The PCI BDF of the GPU. See [instructions below](#upstream-bdf).                                                                              |
+| Device Type         | string     | Always set to "gpu".                                                                                                                          |
+| GPU ID              | string     | The Device ID as denoted by `rocm-smi -i`.                                                                                                    |
+| Serial Number       | string     | The Serial number of the device. See [instructions below](#serial-number).                                                                    |
+| Unique ID           | string     | The Unique ID as provided by `rocm-smi --showuniqueid`.                                                                                       |
 
 
 #### devices\_network
 
 ![devices_network.](./images/devices_network.png "devices_network.")
 
-There is one row per networking device, and the columns represent the following information:
+The network devices are the Network Interface Cards (NIC) that interface with a high-speed data network. Low-speed access and management connections should not be added here.
 
-| Device Index | BDF | Device Type | Device Name | IP Addresses | MAC Addresses |
-|--------------|-----|-------------|-------------|--------------|---------------|
+There is one row per networking device, and the columns represent the following information:
 
 ```
 <device index> <bdf> <device type> <device name> <ip addresses> <mac addresses>
 ```
 
-1. **Device Index:** An auto-generated integer value, starting from 1.
-2. **Upstream BDF:** Identify the Bus Device Function (BDF) of your networking device using the `lspci | grep Ethernet` command. For NICs with multiple ports, capture only the function zero (e.g., 23:00.0).
-3. **Device Type:** Must be set to "nic."
-4. **Device Name:** A representative string that identifies the vendor or model of your NIC.
-5. **IP Addresses:** Assign an IP address to each NIC port based on your networking configuration plan.
-6. **MAC Addresses:** Assign a MAC address to each NIC port based on your networking configuration plan.
+| Attribute           | Type       | Description                                                                                                                                                   |
+|---------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Device Index        | int        | Unique index of the device row. First row has index 1, the second has index 2, etc.                                                                           |
+| Upstream BDF        | string     | The PCI BDF of the network device. See [instructions below](#upstream-bdf).                                                                                   |
+| Device Type         | string     | Always set to "nic".                                                                                                                                          |
+| Device Name         | string     | A representative string of your choosing that identifies the vendor or model of your NIC.                                                                     |
+| IP Addresses        | list       | A list of IP addresses for the interfaces of the network device. It is expected in a data center setting, IP addresses are reserved or static.                |
+| MAC Addresses       | list       | A list of MAC addresses of the interfaces of the network device. List items correspond to the items in the IP list. See [instructions below](#mac-addresses). |
+
 
 How to find the ...
 -------------------
 
 #### Upstream BDF
-BDF is an abreviation of [Bus/Device/Function](https://en.wikipedia.org/wiki/PCI_configuration_space#Technical_information) and is the identifier for a certain PCIe device. The BDF follows a format of BB:DD.F, where BB, DD and F are hexadecimal numbers that represent the Bus, Device and Function respectively. We can find the BDF for our device using the `lspci` command. We can search in the lspci command for a Vendor or Model name that would identify our device. For example `lspci | grep Xilinx`, will most likely give us all BDFs for Xilinx devices.
+BDF is an abbreviation of [Bus/Device/Function](https://en.wikipedia.org/wiki/PCI_configuration_space#Technical_information) and is the identifier for a certain PCIe device. The BDF follows a format of BB:DD.F, where BB, DD and F are hexadecimal numbers that represent the Bus, Device and Function respectively. We can find the BDF for our device using the `lspci` command. We can search in the lspci command for a Vendor or Model name that would identify our device. For example `lspci | grep Xilinx`, will most likely give us all BDFs for Xilinx devices.
 
 ![Example of lspci | grep Xilinx](./images/lspci-grep-xilinx.png "lspci | grep Xilinx")
 
@@ -133,14 +129,14 @@ Here is a table of Vendor IDs for a selection of vendors:
 | AMD motherboards | 1022:     |
 | AMD GPUs         | 1002:     |
 
-The tools that come with reconfigurable devices often also show the bdf of the devices, for example `xbutil examine` and `ami_tool overview`.
+The tools that come with reconfigurable devices often also show the BDF of the devices, for example `xbutil examine` and `ami_tool overview`. Additionally for AMD GPUs you can also find the upstream BDF using `rocm-smi --showbus`.
 
 #### Root BDF
 The root BDF is the BDF of the device that the Upstream BDF is connected to. We can easily find this root BDF with
 ```bash
 lspci -s <upstream bdf> -PP
 ```
-The `-s <upstream bdf>` flag selects the device with the upstream bdf (fill in the BDF that is relevant to you). The `-PP` flag will enhance the lspci output to also show the root BDF. The lspci will show this as `<root bdf>/<upstream bdf>`.
+The `-s <upstream bdf>` flag selects the device with the Upstream BDF (fill in the BDF that is relevant to you). The `-PP` flag will enhance the lspci output to also show the root BDF. The lspci will show this as `<root bdf>/<upstream bdf>`.
 
 ![Example of getting the root bdf for a specific upstream bdf](./images/lspci-root-bdf.png "lspci -s c4:00.0 -PP")
 
@@ -170,4 +166,46 @@ The Device type for the reconfigurable devices have three options: `acap`, `asoc
 #### Serial number
 You can often find the Serial number in the very verbose output of lspci using `lspci -vvv`. You will then find it after `[SN]`.
 
-For reconfigurable devices, this method often does not work. Then you will use the provided tools to look this up. For example `xbmgmt examine` for reconfigurable devices using XRT and `ami_tool overview` for devices that use AVED. For GPUs you can also use `rocm-smi --showserial` to find the serial number.
+For reconfigurable devices, this method often does not work. Then you will use the provided tools to look this up. For devices using XRT use `xbmgmt examine` and for devices using AVED use `ami_tool overview`.
+
+For AMD GPUs you can also use `rocm-smi --showserial` to find the serial number.
+
+
+#### MAC Addresses
+
+###### fpga and acap
+For the FPGAs and ACAPs that use XRT, we can retrieve the MAC addresses using the following command
+```bash
+xbmgmt examine --device <bdf> -r platform
+```
+
+Note that using the `xbmgmt` command we need to use the `.0` function, whereas the user-space `xbutil` uses the `.1` function.
+
+###### asoc
+For the ASOCs that use AVED, we can retrieve the MAC addresses using the following command
+```bash
+ami_tool mfg_info -d <bdf>
+```
+
+###### network
+To get the mac address of a network device, we can simply use a standard Linux command
+```bash
+ip a
+```
+Look for the network interface of your NIC and note down the mac address. If your NIC has multiple physical ports, then it will also most likely have multiple interfaces in the output of the `ip a` command. These interface names are often closely related and only increase a certain value in the name.
+
+#### Platform
+The platform is the shell that is installed on the FPGA/ASOC/ACAP.
+
+For devices using XRT we can list all our devices and their platform using this command
+```bash
+xbutil examine
+```
+
+For devices using AVED, we can list all our devices and their platform using this command (TODO: probably, but still need to verify)
+```bash
+ami_tool overview
+```
+
+#### Part Number
+TODO: unknown how to get this at the moment
