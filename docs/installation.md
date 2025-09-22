@@ -12,7 +12,7 @@ To install **[hdev](https://github.com/fpgasystems/hdev)**, please proceed by fo
 * [Running the installer](#running-the-installer)
 * [Installing prerequisite software](#installing-prerequisite-software)
 * [System and Vivado configuration](#system-and-vivado-configuration)
-* [Generating device configuration files](#generating-device-configuration-files)
+* [Configure the CMDB](#configure-the-devices-configuration-management-data-base)
 * [Enabling hdev on a cluster](#enabling-hdev-on-a-cluster)
 
 ## Downloading the installer
@@ -114,8 +114,8 @@ where the **vivado_developers** group relates to the section above.
 ![Installing cable drivers and configuring udev rules.](./images/udev-rules.png "Installing cable drivers and configuring udev rules.")
 *Installing cable drivers and configuring udev rules.*
 
-## Configuring the devices Configuration Management Data Base
-The Configuration Management Data Base (CMDB) stores all related info of the devices in each of the nodes in the cluster. See the [documentation of the CMDB](./docs/cmdb-structure.md) to understand how to set this up.
+## Configure the devices Configuration Management Data Base
+The Configuration Management Data Base (CMDB) stores all related info of the devices in each of the nodes in the cluster. See the [documentation of the CMDB](./cmdb-structure.md) to understand how to set this up.
 
 ## Enabling hdev on a cluster
 Under the following assumptions, **hdev** can program bitstreams on remote servers’ ACAPs and FPGAs:
