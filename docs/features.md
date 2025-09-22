@@ -1,7 +1,7 @@
 <div id="readme" class="Box-body readme blob js-code-block-container">
 <article class="markdown-body entry-content p-3 p-md-6" itemprop="text">
 <p align="right">
-<a href="https://github.com/fpgasystems/hdev?tab=readme-ov-file#--hacc-development">Back to top</a>
+<a href="/?tab=readme-ov-file#--hacc-development">Back to top</a>
 </p>
 
 # Features
@@ -17,7 +17,7 @@ By using **hdev,** you can easily:
 <!-- * Explore model-based design principles with readily available ***out-of-the-box* examples.**
 * **Simplify the creation of HIP/ROCm GPU applications** using the *hdev new-build-run hip* commands. -->
 
-![Validating OpenNIC integration on ETHZ-HACC with hdev.](./features.png "Validating OpenNIC integration on ETHZ-HACC with hdev.")
+![Validating OpenNIC integration on ETHZ-HACC with hdev.](./images/features.png "Validating OpenNIC integration on ETHZ-HACC with hdev.")
 *Validating ETHZ-HACC with **hdev.***
 
 <!-- This should be consistent with features on the HACC repository -->
