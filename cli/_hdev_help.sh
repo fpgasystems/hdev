@@ -350,6 +350,9 @@ program_help() {
     echo -e "   ${bold}${COLOR_ON2}bitstream${COLOR_OFF}${normal}       - Programs a Vivado bitstream to a given device."
     fi
     if [ "$is_vivado_developer" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Programs Coyote shell (dynamic and application layers) to a given device."
+    fi
+    if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
     fi
     if [ "$vivado_enabled_asoc" = "1" ]; then
@@ -395,6 +398,15 @@ program_bitstream_help() {
     echo ""
     exit
   fi
+}
+
+program_coyote_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    $CLI_PATH/help/program_coyote $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    echo ""
+  fi
+  exit
 }
 
 program_driver_help() {

@@ -1154,6 +1154,9 @@ case "$command" in
         #run
         $CLI_PATH/program/bitstream --path $bitstream_name --device $device_index --version $vivado_version --hotplug $hotplug_value --remote $deploy_option "${servers_family_list[@]}" 
         ;;
+      coyote)
+        source "$CLI_PATH/$command/.$arguments"
+        ;;
       driver)
         #early exit
         #if [ "$vivado_enabled" = "0" ]; then

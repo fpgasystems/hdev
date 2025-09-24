@@ -29,6 +29,7 @@ nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1
 #flags
 COYOTE_BUILD_FLAGS=( "--commit" "--project" "--target" )
 COYOTE_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--number" "--template" )
+COYOTE_PROGRAM_FLAGS=( "--commit" "--device" "--project" "--remote" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--hls" ) #--device
@@ -233,7 +234,7 @@ _hdev_completions()
                             commands="${commands} bitstream"
                         fi
                         if [ "$is_vivado_developer" = "1" ]; then
-                            commands="${commands} opennic"
+                            commands="${commands} opennic coyote"
                         fi
                         if [ ! "$is_asoc" = "1" ]; then
                             commands="${commands} reset"
@@ -437,6 +438,9 @@ _hdev_completions()
                         bitstream) 
                             COMPREPLY=($(compgen -W "${PROGRAM_BITSTREAM_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        coyote)
+                            COMPREPLY=($(compgen -W "${COYOTE_PROGRAM_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
@@ -626,6 +630,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         driver)
                             if [ "${COMP_WORDS[COMP_CWORD-2]}" = "--insert" ]; then
                                 remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--params --remote")
@@ -805,6 +813,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_PROGRAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         driver)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "--insert --params --remote")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -937,6 +949,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
                         bitstream)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         image)
