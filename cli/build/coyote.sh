@@ -52,6 +52,9 @@ FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
 #echo "FDEV_NAME: $FDEV_NAME"
 #exit
 
+#get template_name
+template_name=$(cat $DIR/COYOTE_TEMPLATE)
+
 #define shell
 project_shell="$DIR/${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
@@ -104,98 +107,53 @@ if [ "$is_build" = "1" ] && [ "$target_name" = "hw" ]; then
         mkdir -p $LOCAL_PATH/$project_name/
         cp -rf $DIR/* $LOCAL_PATH/$project_name/
         #cd $LOCAL_PATH/$project_name/open-nic-shell/script
-        
-        #run Vivado HLS
-        #if [ -d "$LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME" ]; then
-        #    echo "${bold}Building HLS wrappers:${normal}"
-        #    echo ""
-        #    echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
-        #    echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
-        #    echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
-        #    echo ""
-        #    cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
-        #    vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
-        #    echo ""
-        #fi
 
         #run compilation
         echo "${bold}Building Coyote shell:${normal}"
         echo ""
+        echo "cd $LOCAL_PATH/$project_name/$template_name/hw"
+        echo "mkdir build_hw && cd build_hw"
+        echo "cmake ../ -DFDEV_NAME=$FDEV_NAME"
+        echo "make project && make bitgen"
+        echo ""
+        cd $LOCAL_PATH/$project_name/$template_name/hw
+        mkdir build_hw && cd build_hw
+        cmake ../ -DFDEV_NAME=$FDEV_NAME
+        make project && make bitgen
 
-        #check on target
-        #if [ "$target_name" = "hw" ]; then
-            echo "cd $LOCAL_PATH/$project_name/src/hw"
-            echo "mkdir build_hw && cd build_hw"
-            echo "cmake ../ -DFDEV_NAME=$FDEV_NAME"
-            echo "make project && make bitgen"
+        #define build_folder
+        build_folder="$LOCAL_PATH/$project_name/$template_name/hw/build_hw"
+
+        #copy
+        if [ -f "$build_folder/bitstreams/$COYOTE_SHELL_NAME" ]; then
+            #copy relevant compile files
+            cp -rf $build_folder $DIR/$template_name/hw
+            cp $DIR/$template_name/hw/build_hw/bitstreams/$COYOTE_SHELL_NAME $DIR
+            cp $DIR/$template_name/hw/build_hw/bitstreams/$COYOTE_SHELL_TOP $DIR
+            #cp $build_folder/bitstreams/$COYOTE_SHELL_NAME $DIR
+            #cp $build_folder/bitstreams/$COYOTE_SHELL_TOP $DIR
+            #cp -rf $build_folder $DIR/src/hw
+
+            #create xpr simlink
+            echo "create xpr simlink!"
             echo ""
-            cd $LOCAL_PATH/$project_name/src/hw
-            mkdir build_hw && cd build_hw
-            cmake ../ -DFDEV_NAME=$FDEV_NAME
-            make project && make bitgen
+            #ln -s $DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr $DIR/open_nic_shell.xpr
 
-            #save build_folder
-            build_folder="$LOCAL_PATH/$project_name/src/hw/build_hw/bitstreams"
+            #save .device_config
+            cp $DIR/configs/device_config $DIR/.device_config
+            chmod a-w "$DIR/.device_config"
 
-            #copy
-            if [ -f "$build_folder/$COYOTE_SHELL_NAME" ]; then
-                #copy relevant compile files
-                cp $build_folder/$COYOTE_SHELL_NAME $DIR
-                cp $build_folder/$COYOTE_SHELL_TOP $DIR
+            #remove
+            #rm -rf $build_folder
 
-                #create xpr simlink
-                echo "create xpr simlink!"
-                echo ""
-                #ln -s $DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr $DIR/open_nic_shell.xpr
+            #print message
+            echo ""
+            echo "${bold}${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
+            echo ""
+        fi
 
-                #save .device_config
-                cp $DIR/configs/device_config $DIR/.device_config
-                chmod a-w "$DIR/.device_config"
-
-                #remove
-                rm -rf $build_folder
-
-                #print message
-                echo ""
-                echo "${bold}${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
-                echo ""
-            fi
-        #fi
-
-
-        #echo "cd $LOCAL_PATH/$project_name/open-nic-shell/script"
-        #echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
-        #echo ""
-        #cd $LOCAL_PATH/$project_name/open-nic-shell/script
-        #vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
-        
-        #copy and send email
-        #if [ -f "$LOCAL_PATH/$project_name/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$COYOTE_SHELL_NAME" ]; then
-        #    #copy back
-        #    cp -rf $LOCAL_PATH/$project_name/open-nic-shell/* $DIR/open-nic-shell
-        #    
-        #    #remove temporal project on local
-        #    rm -rf $LOCAL_PATH/$project_name
-        #    
-        #    #copy to project
-        #    cp "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$COYOTE_SHELL_NAME" "$project_shell"
-        #
-        #    #save .device_config
-        #    cp $DIR/configs/device_config $DIR/.device_config
-        #    chmod a-w "$DIR/.device_config"
-        #
-        #    #print message
-        #    echo ""
-        #    echo "${bold}${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
-        #    echo ""
-        #
-        #    #create xpr simlink
-        #    ln -s $DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr $DIR/open_nic_shell.xpr
-        #
-        #    #send email
-        #    #user_email=$USER@ethz.ch
-        #    #echo "Subject: Good news! hdev build coyote (${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
-        #fi
+        #remove from local
+        #rm -rf $LOCAL_PATH/$project_name
     fi
 fi
 
@@ -218,18 +176,18 @@ rm -rf $DRIVER_DIR/build
 #application compilation
 echo "${bold}Application compilation:${normal}"
 echo ""
-echo "cd $DIR/src/sw"
+echo "cd $DIR/$template_name/sw"
 echo "mkdir build_sw && cd build_sw"
 echo "cmake ../"
 echo "make"
 echo ""
-cd $DIR/src/sw
+cd $DIR/$template_name/sw
 mkdir build_sw && cd build_sw
 cmake ../
 make
 
 #remove build_sw
-rm -rf $DIR/src/sw/build_sw
+rm -rf $DIR/$template_name/sw/build_sw
 
 #remove drivier files (generated while compilation)
 #rm $DRIVER_DIR/Module.symvers

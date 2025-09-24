@@ -96,11 +96,11 @@ rm -rf $DIR/coyote
 #remove files
 rm $DIR/*.md
 
-#create src folder
-mkdir $DIR/src
+#create template_name folder
+mkdir $DIR/$template_name
 
 #copy template files
-cp -r $DIR/examples/$template_name/* $DIR/src
+cp -r $DIR/examples/$template_name/* $DIR/$template_name
 
 #delete examples
 rm -rf $DIR/examples/
@@ -111,9 +111,7 @@ cp $HDEV_PATH/api/config_delete $DIR
 
 #add template files
 cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
-#cp $HDEV_PATH/templates/$WORKFLOW/Makefile $DIR/Makefile
 cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
-#cp -r $HDEV_PATH/templates/$WORKFLOW/src $DIR
 cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
 
 #compile files
@@ -127,8 +125,8 @@ if [[ -n "$device_index" ]]; then
 fi
 
 #update CMakeLists.txt
-sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/src/hw/CMakeLists.txt" #hardware, hw
-sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/src/sw/CMakeLists.txt" #software, sw
+sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/hw/CMakeLists.txt" #hardware, hw
+sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/sw/CMakeLists.txt" #software, sw
 
 #push files
 if [ "$push_option" = "1" ]; then 
