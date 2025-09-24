@@ -55,8 +55,13 @@ FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
 #get template_name
 template_name=$(cat $DIR/COYOTE_TEMPLATE)
 
+#get BITSTREAM_NAME 
+BITSTREAM_NAME=${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
+#SHELL_TOP_NAME=${COYOTE_SHELL_TOP%.bin}.$FDEV_NAME.$vivado_version.bin
+
 #define shell
-project_shell="$DIR/${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+#project_shell="$DIR/${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+project_shell="$DIR/$BITSTREAM_NAME"
 
 #bitstream compilation is only allowed on CPU (build) servers
 if [ "$is_build" = "1" ] && [ "$target_name" = "hw" ]; then
@@ -128,8 +133,8 @@ if [ "$is_build" = "1" ] && [ "$target_name" = "hw" ]; then
         if [ -f "$build_folder/bitstreams/$COYOTE_SHELL_NAME" ]; then
             #copy relevant compile files
             cp -rf $build_folder $DIR/$template_name/hw
-            cp $DIR/$template_name/hw/build_hw/bitstreams/$COYOTE_SHELL_NAME $DIR
-            cp $DIR/$template_name/hw/build_hw/bitstreams/$COYOTE_SHELL_TOP $DIR
+            cp $DIR/$template_name/hw/build_hw/bitstreams/$COYOTE_SHELL_NAME $DIR/$BITSTREAM_NAME
+            #cp $DIR/$template_name/hw/build_hw/bitstreams/$COYOTE_SHELL_TOP $DIR/$SHELL_TOP_NAME
             #cp $build_folder/bitstreams/$COYOTE_SHELL_NAME $DIR
             #cp $build_folder/bitstreams/$COYOTE_SHELL_TOP $DIR
             #cp -rf $build_folder $DIR/src/hw
