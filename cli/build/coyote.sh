@@ -153,7 +153,7 @@ if [ "$is_build" = "1" ] && [ "$target_name" = "hw" ]; then
         fi
 
         #remove from local
-        #rm -rf $LOCAL_PATH/$project_name
+        rm -rf $LOCAL_PATH/$project_name
     fi
 fi
 
