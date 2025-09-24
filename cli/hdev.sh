@@ -1914,6 +1914,9 @@ case "$command" in
       -h|--help)
         run_help
         ;;
+      coyote)
+        source "$CLI_PATH/$command/.$arguments"
+        ;;
       opennic)
         #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then

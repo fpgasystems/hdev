@@ -501,6 +501,9 @@ run_help() {
     echo ""
     echo "ARGUMENTS:"
     if [ "$vivado_enabled" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Runs your Coyote application."
+    fi
+    if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi
     echo "   ${bold}sockperf${normal}        - Network performance assessment with sockperf."
@@ -527,6 +530,15 @@ run_help() {
 #  fi
 #  exit
 #}
+
+run_coyote_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    $CLI_PATH/help/run_coyote $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    echo ""
+  fi
+  exit
+}
 
 run_opennic_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
