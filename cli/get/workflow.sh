@@ -14,33 +14,33 @@ if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ]; then
     exit
 fi
 
-is_opennic(){
-    local device_index=$1
-
-    # Get device MAC address
-    MACs=$($CLI_PATH/get/get_fpga_device_param "$device_index" MAC)
-    MAC0="${MACs%%/*}"
-
-    # Convert MAC address to lowercase
-    MAC0=$(echo "$MAC0" | tr '[:upper:]' '[:lower:]')
-
-    # Get device IP address
-    IPs=$($CLI_PATH/get/get_fpga_device_param "$device_index" IP)
-    IP0="${IPs%%/*}"
-
-    # Use ifconfig and awk to check for both IP and MAC in the same interface block
-    if ifconfig | awk -v ip="$IP0" -v mac="$MAC0" '
-        BEGIN { found_ip = 0; found_mac = 0; }
-        /inet/ && $2 == ip { found_ip = 1 }
-        /ether/ && $2 == mac { found_mac = 1 }
-        found_ip && found_mac { exit 0 }  # Found both IP and MAC, success
-        END { exit (found_ip && found_mac ? 0 : 1) }  # Return success if both are found
-    '; then
-        echo "1"
-    else
-        echo "0"
-    fi
-}
+#is_opennic(){
+#    local device_index=$1
+#
+#    # Get device MAC address
+#    MACs=$($CLI_PATH/get/get_fpga_device_param "$device_index" MAC)
+#    MAC0="${MACs%%/*}"
+#
+#    # Convert MAC address to lowercase
+#    MAC0=$(echo "$MAC0" | tr '[:upper:]' '[:lower:]')
+#
+#    # Get device IP address
+#    IPs=$($CLI_PATH/get/get_fpga_device_param "$device_index" IP)
+#    IP0="${IPs%%/*}"
+#
+#    # Use ifconfig and awk to check for both IP and MAC in the same interface block
+#    if ifconfig | awk -v ip="$IP0" -v mac="$MAC0" '
+#        BEGIN { found_ip = 0; found_mac = 0; }
+#        /inet/ && $2 == ip { found_ip = 1 }
+#        /ether/ && $2 == mac { found_mac = 1 }
+#        found_ip && found_mac { exit 0 }  # Found both IP and MAC, success
+#        END { exit (found_ip && found_mac ? 0 : 1) }  # Return success if both are found
+#    '; then
+#        echo "1"
+#    else
+#        echo "0"
+#    fi
+#}
 
 #constants
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
