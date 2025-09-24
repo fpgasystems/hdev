@@ -83,8 +83,9 @@ if [ "$flags" = "" ]; then
 	    bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00    
         if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 1 ]]; then
             #check on integrations
-            opennic=$(is_opennic "$device_index")
-            if [ "$opennic" = "1" ]; then
+            driver_name=$(lspci -s $bdf -nnk | awk -F': ' '/Kernel driver in use:/ {print $2}')
+            #opennic=$(is_opennic "$device_index")
+            if [ "$driver_name" = "onic" ]; then
                 workflow="onic"
                 #check on XDP (check on first interface)
                 ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
@@ -96,6 +97,9 @@ if [ "$flags" = "" ]; then
                         workflow="onicxdp"
                     fi
                 fi
+                echo "$device_index: $workflow"
+            elif [ "$driver_name" = "coyote_driver" ]; then
+                workflow="coyote"
                 echo "$device_index: $workflow"
             else
                 echo "$device_index: vivado"
@@ -143,8 +147,9 @@ else
     echo ""
     if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 1 ]]; then
         #check on integrations
-        opennic=$(is_opennic "$device_index")
-        if [ "$opennic" = "1" ]; then
+        #opennic=$(is_opennic "$device_index")
+        driver_name=$(lspci -s $bdf -nnk | awk -F': ' '/Kernel driver in use:/ {print $2}')
+        if [ "$driver_name" = "onic" ]; then
             workflow="onic"
             #check on XDP (check on first interface)
             ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
@@ -156,6 +161,9 @@ else
                     workflow="onicxdp"
                 fi
             fi
+            echo "$device_index: $workflow"
+        elif [ "$driver_name" = "coyote_driver" ]; then
+            workflow="coyote"
             echo "$device_index: $workflow"
         else
             echo "$device_index: vivado"
