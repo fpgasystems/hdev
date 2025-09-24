@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev run opennic --commit $commit_name --config $config_index --project $project_name
-#example: /opt/hdev/cli/hdev run opennic --commit      8077751 --config             1 --project   hello_world
+#usage:       $CLI_PATH/hdev run coyote --commit $commit_name --config $config_index --project $project_name
+#example: /opt/hdev/cli/hdev run coyote --commit      8077751 --config             1 --project   hello_world
 
 #early exit
 url="${HOSTNAME}"
@@ -20,28 +20,19 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
     exit
 fi
 
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
-fi
-
 #inputs
 commit_name=$2
 config_index=$4
-#device_index=$6
 project_name=$6
 
 #all inputs must be provided
-if [ "$commit_name" = "" ] || [ "$config_index" = "" ] || [ "$project_name" = "" ]; then #|| [ "$device_index" = "" ] 
+if [ "$commit_name" = "" ] || [ "$config_index" = "" ] || [ "$project_name" = "" ]; then
     exit
 fi
 
 #constants
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-WORKFLOW="opennic"
+WORKFLOW="coyote"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
@@ -75,10 +66,11 @@ echo ""
 #run application
 echo "${bold}Running your OpenNIC application:${normal}"
 echo ""
-echo "./onic --config $config_index" # --device $device_index 
+#echo "./coyote --config $config_index"
+echo "./coyote"
 echo ""
-#./onic --config "$config_index" --device "$device_index"
-./onic --config "$config_index"
+#./coyote --config "$config_index"
+./coyote
 return_code=$?
 
 echo ""

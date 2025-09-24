@@ -79,9 +79,6 @@ for i in "${!device_indexes[@]}"; do
     fi
 done
 
-echo "HEY I am here"
-exit
-
 #coyote application check
 if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/coyote" ]; then
     echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
