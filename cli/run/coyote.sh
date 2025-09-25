@@ -64,7 +64,7 @@ cat $DIR/configs/$config_name
 echo ""
 
 #run application
-echo "${bold}Running your OpenNIC application:${normal}"
+echo "${bold}Running your Coyote application:${normal}"
 echo ""
 #echo "./coyote --config $config_index"
 echo "./coyote"
