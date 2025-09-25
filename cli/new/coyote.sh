@@ -127,6 +127,7 @@ fi
 #update CMakeLists.txt
 sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/hw/CMakeLists.txt" #hardware, hw
 sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/sw/CMakeLists.txt" #software, sw
+sed -i 's|set(EXEC test)|set(EXEC coyote)|' "$DIR/$template_name/sw/CMakeLists.txt"
 
 #push files
 if [ "$push_option" = "1" ]; then 
