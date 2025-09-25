@@ -178,6 +178,11 @@ echo ""
 cp -f $DRIVER_DIR/build/$COYOTE_DRIVER_NAME $DIR/$COYOTE_DRIVER_NAME
 rm -rf $DRIVER_DIR/build
 
+#check on build_sw
+if [ -d "$DIR/$template_name/sw/build_sw" ]; then
+    rm -rf "$DIR/$template_name/sw/build_sw"
+fi
+
 #application compilation
 echo "${bold}Application compilation:${normal}"
 echo ""
@@ -191,8 +196,9 @@ mkdir build_sw && cd build_sw
 cmake ../
 make
 
-#remove build_sw
-rm -rf $DIR/$template_name/sw/build_sw
+#copy and remove build_sw (we assume there is only one executable)
+cp -f "$DIR/$template_name/sw/build_sw/bin/coyote" "$DIR/coyote"
+#rm -rf $DIR/$template_name/sw/build_sw
 
 #remove drivier files (generated while compilation)
 #rm $DRIVER_DIR/Module.symvers
