@@ -68,7 +68,7 @@ echo "${bold}Running your OpenNIC application:${normal}"
 echo ""
 #echo "./coyote --config $config_index"
 echo "./coyote"
-echo ""
+#echo ""
 #./coyote --config "$config_index"
 ./coyote
 return_code=$?
