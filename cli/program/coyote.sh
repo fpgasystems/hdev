@@ -100,6 +100,9 @@ fi
 #this gives time the driver binds the device properly
 sleep 2
 
+#reporting process
+$CLI_PATH/get/dmesg | tail -5
+
 #get system interfaces (after adding the OpenNIC interface)
 #after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
