@@ -60,8 +60,8 @@ WORKFLOW="coyote"
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
 #derived
-#DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
-#VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #get hostname
 url="${HOSTNAME}"
@@ -131,7 +131,12 @@ if [ -e "$library_shell" ]; then
 fi
 echo "${bold}$CLI_NAME build $WORKFLOW (commit ID: $commit_name)${normal}"
 echo ""
-$CLI_PATH/build/coyote --commit $commit_name --project $project_name --target "none" --version $vivado_version --is_build 0
+
+echo "commit_name: $commit_name"
+echo "project_name: $project_name"
+echo "vivado_version: $vivado_version"
+
+$CLI_PATH/build/coyote --commit $commit_name --project $project_name --target "none" --version $vivado_version --is_build "0"
 echo ""
 
 #add additional echo (1/2)
