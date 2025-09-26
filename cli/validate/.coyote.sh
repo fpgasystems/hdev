@@ -116,8 +116,5 @@ if ! [ -e "$bitstream_path" ]; then
     exit 1
 fi
 
-echo "HEYE!"
-exit
-
 #run
 $CLI_PATH/validate/coyote --commit $commit_name --device $device_index --version $vivado_version
