@@ -21,18 +21,6 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
     exit
 fi
 
-check_connectivity() {
-    local interface="$1"
-    local remote_server="$2"
-
-    # Ping the remote server using the specified interface, sending only 1 packet
-    if ping -I "$interface" -c 1 "$remote_server" &> /dev/null; then
-        echo "1"
-    else
-        echo "0"
-    fi
-}
-
 #inputs
 commit_name=$2
 device_index=$4
@@ -46,7 +34,6 @@ fi
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
-#CMDB_PATH="$CLI_PATH/cmdb"
 COLOR_FAILED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FAILED)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
@@ -69,9 +56,6 @@ hostname="${url%%.*}"
 
 #get device_name
 device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
-
-#get platform_name
-#platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
 #get FDEV_NAME
 FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
@@ -118,7 +102,7 @@ echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
 chmod a-w "$DIR/configs/host_config_001"
 
 #save .device_config
-#cp $DIR/configs/device_config $DIR/.device_config
+cp $DIR/configs/device_config $DIR/.device_config
 
 #update shell configuration file
 sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
@@ -132,15 +116,8 @@ fi
 echo "${bold}$CLI_NAME build $WORKFLOW (commit ID: $commit_name)${normal}"
 echo ""
 
-echo "commit_name: $commit_name"
-echo "project_name: $project_name"
-echo "vivado_version: $vivado_version"
-
 $CLI_PATH/build/coyote --commit $commit_name --project $project_name --target "none" --version $vivado_version --is_build "0"
 echo ""
-
-#add additional echo (1/2)
-#workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
 
 #get devices number
 MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap|asoc" $DEVICES_LIST)
