@@ -1,13 +1,33 @@
 device:
-min_pkt_len   64:64:255                "Minimum packet length in bytes (default to 64)"
-max_pkt_len   256,1514,3028,4800,9600  "Maximum packet length in bytes (default to 1514)"
-use_phys_func 0,1                      "Indicates if the QDMA H2C and C2H AXI4-stream interfaces are included in the 250MHz user logic box (default to 1)"
-num_phys_func 1:4                      "Number of QDMA physical functions per QDMA subsystem (default to 1)" 
-num_qdma      1,2                      "Number of QDMA subsystems, subjects to the board model (default to 1)"
-num_queue     1,2,5,10,512,1024,2048   "Number of QDMA queues (default to 512)"
-num_cmac_port 1,2                      "Number of CMAC ports, subjects to the board model (default to 1)"
+N_REGIONS       1,2,3,4
+N_CONFIGS	1,2,3,4
+N_STRM_AXI      1,2,3,4
+N_CARD_AXI      1,2,3,4
+N_DDR_CHAN      1,2,3,4
+DDR_AUTO        0,1
+DDR_FRAG        1024,2048
+HBM_SPLIT       0,1
+DATA_DEST_BITS  4
+VADDR_BITS	48
+TLBS_S          10
+TLBS_A		4
+TLBS_BITS	12
+TLBL_S		9
+TLBL_A		2
+TLBL_BITS	21
+N_TLB_ACTV	16
+N_TCP_AXI	1,2,3,4
+N_RDMA_AXI 	1,2,3,4
+EN_NET_0        1
+EN_NET_1        0,1
+PMTU_BYTES	4096
+FPLAN_PATH	0,1
+EOS_TIME	1000000
+ACLK_F          250,300,350,400
+NCLK_F          250,300,350,400
+UCLK_F          250,300,350,400
+HCLK_F          450
 
 host:
-MAX_NUM_PINGS 10                       "Maximum number of ping messages"
-NUM_PINGS     1:MAX_NUM_PINGS          "Number of ping messages"
-remote_server xxxx-xxxxx-xx            "A reachable host in your network"
+MAX_VECTOR_SIZE 2048			"Maximum vector size"
+vector_size     512:512:MAX_VECTOR_SIZE	"Vector size"
