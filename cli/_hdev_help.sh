@@ -777,6 +777,9 @@ validate_help() {
     echo "Infrastructure functionality assessment."
     echo ""
     echo "ARGUMENTS:"
+    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Validates Coyote shell on the selected device."
+    fi
     if [ "$vivado_enabled_asoc" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-built Alveo Versal Example Design (AVED) validation."
     fi
@@ -816,6 +819,15 @@ validate_aved_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
+    echo ""
+  fi
+  exit
+}
+
+validate_coyote_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    $CLI_PATH/help/validate_coyote $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""
   fi

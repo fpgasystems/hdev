@@ -2614,6 +2614,9 @@ case "$command" in
         #run
         $CLI_PATH/validate/aved --device $device_index
         ;;
+      coyote)
+        source "$CLI_PATH/$command/.$arguments"
+        ;;
       docker)
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags

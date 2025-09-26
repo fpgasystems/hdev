@@ -31,6 +31,7 @@ COYOTE_BUILD_FLAGS=( "--commit" "--project" "--target" )
 COYOTE_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--number" "--template" )
 COYOTE_PROGRAM_FLAGS=( "--commit" "--device" "--project" "--remote" )
 COYOTE_RUN_FLAGS=( "--commit" "--config" "--project" )
+COYOTE_VALIDATE_FLAGS=( "--commit" "--device" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--hls" ) #--device
@@ -312,7 +313,7 @@ _hdev_completions()
                         commands="${commands} tensorflow"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} opennic"
+                        commands="${commands} opennic coyote"
                     fi
                     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} vitis"
@@ -517,6 +518,9 @@ _hdev_completions()
                         docker)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
+                        coyote)
+                            COMPREPLY=($(compgen -W "${COYOTE_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -718,6 +722,10 @@ _hdev_completions()
                     ;;
                 validate)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_VALIDATE_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_VALIDATE_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
