@@ -48,20 +48,22 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-#display configuration
-echo "${bold}Device parameters:${normal}"
-echo ""
-cat $DIR/.device_config
-echo ""
+if [ ! "$config_index" = "none" ]; then
+    #display configuration
+    echo "${bold}Device parameters:${normal}"
+    echo ""
+    cat $DIR/.device_config
+    echo ""
 
-#get config name
-config_string=$($CLI_PATH/common/get_config_string $config_index)
-config_name="host_config_$config_string"
+    #get config name
+    config_string=$($CLI_PATH/common/get_config_string $config_index)
+    config_name="host_config_$config_string"
 
-echo "${bold}You are running $config_name:${normal}"
-echo ""
-cat $DIR/configs/$config_name
-echo ""
+    echo "${bold}You are running $config_name:${normal}"
+    echo ""
+    cat $DIR/configs/$config_name
+    echo ""
+fi
 
 #run application
 echo "${bold}Running your Coyote application:${normal}"

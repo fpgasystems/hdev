@@ -70,8 +70,11 @@ fi
 #echo "target_name: $target_name"
 #exit
 
+#get template_name
+template_name=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/COYOTE_TEMPLATE)
+
 #we force the user to create a configuration
-if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
+if [ "$template_name" = "none" ] && [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
     #get current path
     current_path=$(pwd)
     cd "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"

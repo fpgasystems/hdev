@@ -95,6 +95,10 @@ elif [ "$pullrq_found" = "1" ]; then
     header_string="(pull request ID: #$pullrq_id)"
 fi
 
+#set default
+template_found="0"
+template_name=""
+
 #checks (command line)
 if [ ! "$flags_array" = "" ]; then
     new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
@@ -114,8 +118,13 @@ if [ "$is_build" = "1" ]; then
 else
     list_dialog "$CLI_PATH" "$CLI_PATH/devices_acap_fpga" "$CLI_PATH/constants/COYOTE_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
 fi
-template_dialog  "$CLI_PATH" "COYOTE_TEMPLATES" "${flags_array[@]}"
+#template_dialog  "$CLI_PATH" "COYOTE_TEMPLATES" "${flags_array[@]}"
 push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+
+#check on template
+if [ "$template_found" = "0" ]; then
+    template_name="none"
+fi
 
 #collect list results
 device_found=$item_found

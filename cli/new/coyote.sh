@@ -25,18 +25,6 @@ fi
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 
-check_connectivity() {
-    local interface="$1"
-    local remote_server="$2"
-
-    # Ping the remote server using the specified interface, sending only 1 packet
-    if ping -I "$interface" -c 1 "$remote_server" &> /dev/null; then
-        echo "1"
-    else
-        echo "0"
-    fi
-}
-
 #inputs
 commit_name=$2
 pullrq_id=$4
@@ -96,38 +84,41 @@ rm -rf $DIR/coyote
 #remove files
 rm $DIR/*.md
 
-#create template_name folder
-mkdir $DIR/$template_name
+#check on template_name
+if [ ! "$template_name" = "none" ]; then
+    #create template_name folder
+    mkdir $DIR/$template_name
 
-#copy template files
-cp -r $DIR/examples/$template_name/* $DIR/$template_name
+    #copy template files
+    cp -r $DIR/examples/$template_name/* $DIR/$template_name
+
+    #update CMakeLists.txt
+    sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/hw/CMakeLists.txt" #hardware, hw
+    sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/sw/CMakeLists.txt" #software, sw
+    sed -i 's|set(EXEC test)|set(EXEC coyote)|' "$DIR/$template_name/sw/CMakeLists.txt"
+else
+    #add api files
+    cp $HDEV_PATH/api/config_add $DIR
+    cp $HDEV_PATH/api/config_delete $DIR
+
+    #add template files
+    cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+    cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
+
+    #compile files
+    chmod +x $DIR/config_add
+    chmod +x $DIR/config_delete
+fi
 
 #delete examples
 rm -rf $DIR/examples/
 
-#add api files
-cp $HDEV_PATH/api/config_add $DIR
-cp $HDEV_PATH/api/config_delete $DIR
-
-#add template files
-cp $HDEV_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
-cp -r $HDEV_PATH/templates/$WORKFLOW/configs $DIR
+#copy sh.cfg (we fill it in program .coyote)
 cp $HDEV_PATH/templates/$WORKFLOW/sh.cfg $DIR/sh.cfg
-
-#compile files
-chmod +x $DIR/config_add
-chmod +x $DIR/config_delete
-
-#add to sh.cfg (get index of the first FPGA)
-device_index=$(awk -v devname="$device_name" '$6 == devname { print $1; exit }' "$DEVICES_LIST_FPGA")
-if [[ -n "$device_index" ]]; then
-    echo "$device_index: coyote" >> "$DIR/sh.cfg"
-fi
-
-#update CMakeLists.txt
-sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/hw/CMakeLists.txt" #hardware, hw
-sed -i 's|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../../../)|set(CYT_DIR ${CMAKE_SOURCE_DIR}/../..)|' "$DIR/$template_name/sw/CMakeLists.txt" #software, sw
-sed -i 's|set(EXEC test)|set(EXEC coyote)|' "$DIR/$template_name/sw/CMakeLists.txt"
+#device_index=$(awk -v devname="$device_name" '$6 == devname { print $1; exit }' "$DEVICES_LIST_FPGA")
+#if [[ -n "$device_index" ]]; then
+#    echo "$device_index: coyote" >> "$DIR/sh.cfg"
+#fi
 
 #push files
 if [ "$push_option" = "1" ]; then 

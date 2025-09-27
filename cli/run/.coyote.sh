@@ -24,11 +24,26 @@ read -r -a flags_array <<< "$flags"
 #constants
 CONFIG_PREFIX="host_config_"
 
+#set default
+config_found="0"
+config_index="none"
+
 #checks (command line)
 if [ ! "$flags_array" = "" ]; then
     commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$COYOTE_REPO" "$COYOTE_COMMIT" "${flags_array[@]}"
     project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-    if [ "$project_found" = "1" ]; then
+    #get template_name
+    template_name=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/COYOTE_TEMPLATE)
+    if [ "$project_found" = "1" ] && [ ! "$template_name" = "none" ]; then
+        word_check "$CLI_PATH" "--config" "--config" "${flags_array[@]}"
+        config_found=$word_found
+        if [ "$config_found" = "1" ]; then
+            echo ""
+            echo "Your targeted configuration is missing."
+            echo ""
+            exit 1
+        fi
+    elif [ "$project_found" = "1" ] && [ "$template_name" = "none" ]; then
         config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "yes" "${flags_array[@]}"
     fi
 fi
@@ -45,12 +60,14 @@ echo ""
 echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
 echo ""
 project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
-if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
-    echo ""
-    echo "$CHECK_ON_CONFIG_ERR_MSG"
-    echo ""
-    exit
+if [ "$template_name" = "none" ]; then
+    config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
+    if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
+        echo ""
+        echo "$CHECK_ON_CONFIG_ERR_MSG"
+        echo ""
+        exit
+    fi
 fi
 #device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 

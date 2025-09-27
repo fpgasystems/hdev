@@ -139,15 +139,17 @@ if [ "$is_build" = "1" ] && [ "$target_name" = "hw" ]; then
             #cp $build_folder/bitstreams/$COYOTE_SHELL_TOP $DIR
             #cp -rf $build_folder $DIR/src/hw
 
-            #create xpr simlink
-            echo "create xpr simlink!"
-            echo ""
-            #ln -s $DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr $DIR/open_nic_shell.xpr
+            if [ "$template_name" = "none" ]; then
+                #create xpr simlink
+                echo "create xpr simlink!"
+                echo ""
+                #ln -s $DIR/open-nic-shell/build/au55c/open_nic_shell/open_nic_shell.xpr $DIR/open_nic_shell.xpr
 
-            #save .device_config
-            cp $DIR/configs/device_config $DIR/.device_config
-            chmod a-w "$DIR/.device_config"
-
+                #save .device_config
+                cp $DIR/configs/device_config $DIR/.device_config
+                chmod a-w "$DIR/.device_config"
+            fi
+            
             #remove
             #rm -rf $build_folder
 
