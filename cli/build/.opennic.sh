@@ -1,16 +1,8 @@
 #!/bin/bash
 
 #early exit
-if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
+if [[ "$is_build" = "0" && ( "$vivado_enabled" = "0" || "$is_fpga" = "0" ) ]]; then
     exit 1
-fi
-
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
 fi
 
 #check on groups

@@ -54,6 +54,9 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "ARGUMENTS:"
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Create a new application using OS abstractions for FPGA-based devices."
+        #echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
+        fi
+        if [[ "$is_build" = "1" || ( "$vivado_enabled" = "1" && "$is_fpga" = "1" ) ]]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
@@ -105,7 +108,8 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             fi
         fi
     elif [ "$parameter" = "opennic" ]; then
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+        #if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+        if [[ ( "$is_build" = "1" || "$vivado_enabled" = "1" ) && "$is_asoc" = "0" ]]; then
             echo ""
             echo "${bold}$CLI_NAME new opennic [flags] [--help]${normal}"
             echo ""

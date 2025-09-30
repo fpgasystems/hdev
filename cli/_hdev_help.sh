@@ -358,7 +358,7 @@ program_help() {
     if [ "$vivado_enabled_asoc" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}image${COLOR_OFF}${normal}           - Programs a Programmable Device Image (PDI) to a given device."
     fi
-    if [ "$is_vivado_developer" = "1" ]; then
+    if [ "$is_vivado_developer" = "1" ] && [ "$is_fpga" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
     fi
     if [ ! "$is_asoc" = "1" ]; then
@@ -426,7 +426,7 @@ program_image_help() {
 }
 
 program_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
@@ -503,7 +503,7 @@ run_help() {
     if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Runs your Coyote application."
     fi
-    if [ "$vivado_enabled" = "1" ]; then
+    if [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi
     echo "   ${bold}sockperf${normal}        - Network performance assessment with sockperf."
@@ -541,7 +541,7 @@ run_coyote_help() {
 }
 
 run_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
@@ -784,7 +784,7 @@ validate_help() {
     echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-built Alveo Versal Example Design (AVED) validation."
     fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
-    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
     fi
     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
@@ -849,7 +849,7 @@ validate_docker_help() {
 }
 
 validate_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
     $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""

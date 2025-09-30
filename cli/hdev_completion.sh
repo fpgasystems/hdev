@@ -158,7 +158,10 @@ _hdev_completions()
                         commands="${commands} vrt coyote"
                     fi
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} opennic coyote"
+                        commands="${commands} coyote"
+                    fi
+                    if [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; then
+                        commands="${commands} opennic"
                     fi
                     if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                         commands="${commands} xdp"
@@ -208,7 +211,10 @@ _hdev_completions()
                             commands="${commands} tensorflow"
                         fi
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "1" ]; then
-                            commands="${commands} opennic coyote"
+                            commands="${commands} coyote"
+                        fi
+                        if [ "$is_build" = "0" ] && [ "$is_fpga" = "1" ]; then
+                            commands="${commands} opennic"
                         fi
                         if [ "$is_build" = "0" ] && [ "$nic_enabled" = "1" ]; then
                             commands="${commands} xdp"
@@ -236,7 +242,10 @@ _hdev_completions()
                             commands="${commands} bitstream"
                         fi
                         if [ "$is_vivado_developer" = "1" ]; then
-                            commands="${commands} opennic coyote"
+                            commands="${commands} coyote"
+                        fi
+                        if [ "$is_vivado_developer" = "1" ] && [ "$is_fpga" = "1" ]; then
+                            commands="${commands} opennic"
                         fi
                         if [ ! "$is_asoc" = "1" ]; then
                             commands="${commands} reset"
@@ -268,7 +277,10 @@ _hdev_completions()
                         commands="${commands} tensorflow"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} opennic coyote"
+                        commands="${commands} coyote"
+                    fi
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
+                        commands="${commands} opennic"
                     fi
                     if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_nic" = "1" ]; then
                         commands="${commands} sockperf"
@@ -313,7 +325,10 @@ _hdev_completions()
                         commands="${commands} tensorflow"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} opennic coyote"
+                        commands="${commands} coyote"
+                    fi
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
+                        commands="${commands} opennic"
                     fi
                     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} vitis"
