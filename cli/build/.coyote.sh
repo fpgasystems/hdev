@@ -39,11 +39,6 @@ if [ ! "$flags_array" = "" ]; then
     fi
 fi
 
-#additional forbidden combination
-if [ "$is_build" = "0" ] && [ "$platform_found" = "1" ]; then
-    build_opennic_help
-fi
-
 #dialogs
 commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$COYOTE_REPO" "$COYOTE_COMMIT" "${flags_array[@]}"
 commit_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "COYOTE_COMMIT"
@@ -54,14 +49,18 @@ echo ""
 project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
 #target_dialog "$CLI_PATH" "COYOTE_TARGETS" "hw" "$is_build" "${flags_array[@]}"
 
-#check on target_name
+#set project_shell
 device_name=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/COYOTE_DEVICE_NAME)
 FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
 project_shell="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${COYOTE_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-if [ ! -e "$project_shell" ]; then
+
+#check on target_name
+if [ "$is_build" = "1" ] && [ ! -e "$project_shell" ]; then
+    target_found="1"
     target_name="hw"
 elif [ "$target_found" = "0" ]; then
-    target_name="none"
+    #target_name="none"
+    target_dialog "$CLI_PATH" "COYOTE_TARGETS" "hw" "$is_build" "${flags_array[@]}"
 fi
 
 #echo "device_name: $device_name"
