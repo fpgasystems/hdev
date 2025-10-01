@@ -24,6 +24,9 @@ read -r -a flags_array <<< "$flags"
 #target_found="0"
 #target_name=""
 
+#temporal (we do not have build servers for AVED)
+is_build="1"
+
 #checks (command line)
 if [ ! "$flags_array" = "" ]; then
     tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
@@ -53,4 +56,4 @@ target_dialog "$CLI_PATH" "VRT_TARGETS" "hw_all" "$is_build" "${flags_array[@]}"
 #fi
 
 #run with all set to one (as compiling with hacc-build servers did not work) 
-$CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version --all 1
+$CLI_PATH/build/vrt --project $project_name --tag $tag_name --target $target_name --version $vivado_version --all $is_build
