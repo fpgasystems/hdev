@@ -36,7 +36,7 @@ else
     PS3=""
     select target_name in "${filtered_targets[@]}"; do
         if [[ -n "$target_name" ]]; then
-            #echo "You selected: $target_name"
+            echo "$target_name"
             break
         fi
     done
