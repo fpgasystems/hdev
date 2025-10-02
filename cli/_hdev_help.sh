@@ -743,7 +743,8 @@ set_performance_help() {
 update_help() {
   if [ "$is_sudo" = "1" ]; then
     #get latest tag
-    latest_tag=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
+    #latest_tag=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
+    latest_tag=$(gh release list -R "$HDEV_REPO" -L 1 | awk '{print $1}')
     echo ""
     echo "${bold}$CLI_NAME update [flags] [--latest --help]${normal}"
     echo ""

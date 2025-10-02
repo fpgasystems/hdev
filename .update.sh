@@ -20,7 +20,8 @@ elif [ "$2" = "--latest" ]; then
     update_help
     exit 1
     fi
-    tag_name=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
+    #tag_name=$(gh release list -R "$HDEV_REPO" --limit 1 --json tagName --jq '.[0].tagName')
+    tag_name=$(gh release list -R "$HDEV_REPO" -L 1 | awk '{print $1}')
     pullrq_id="none"
 elif [ "$2" = "-n" ] || [ "$2" = "--number" ]; then
     word_check "$CLI_PATH" "-n" "--number" "${flags_array[@]}"
