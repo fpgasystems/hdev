@@ -81,12 +81,12 @@ if ! [ -d "$DIR" ]; then
 fi
 
 #cleanup
-rm -f $DIR/configs/host_config_000
+#rm -f $DIR/configs/host_config_000
 
 #create default configurations
 #device
-touch $DIR/configs/device_config
-echo "min_pkt_len = 64;" >> "$DIR/configs/device_config"
+#touch $DIR/configs/device_config
+#echo "min_pkt_len = 64;" >> "$DIR/configs/device_config"
 #echo "max_pkt_len = 1514;" >> "$DIR/configs/device_config"
 #echo "use_phys_func = 1;" >> "$DIR/configs/device_config"
 #echo "num_phys_func = 1;" >> "$DIR/configs/device_config"
@@ -96,16 +96,16 @@ echo "min_pkt_len = 64;" >> "$DIR/configs/device_config"
 #chmod a-w "$DIR/configs/device_config"
 
 #host
-touch $DIR/configs/host_config_001
-echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
+#touch $DIR/configs/host_config_001
+#echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
 #echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
-chmod a-w "$DIR/configs/host_config_001"
+#chmod a-w "$DIR/configs/host_config_001"
 
 #save .device_config
-cp $DIR/configs/device_config $DIR/.device_config
+#cp $DIR/configs/device_config $DIR/.device_config
 
 #update shell configuration file
-sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
+#sed -i "/^\[workflows\]/!b;n;s/^[0-9]\+: /$device_index: /" "$DIR/sh.cfg"
 
 #build
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/$TEMPLATE_NAME/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
