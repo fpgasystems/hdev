@@ -34,7 +34,7 @@ COYOTE_RUN_FLAGS=( "--commit" "--config" "--project" )
 COYOTE_VALIDATE_FLAGS=( "--commit" "--device" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
-OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--hls" ) #--device
+OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
 OPENNIC_RUN_FLAGS=( "--commit" "--config" "--project" ) #"--device" 
 OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
@@ -45,7 +45,6 @@ SET_BALANCING_FLAGS=( "--value" )
 SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
-SOCKPERF_RUN_FLAGS=( "--interface" "--server" "--size" )
 TENSORFLOW_RUN_FLAGS=( "--config" "--project" )
 TENSORFLOW_NEW_FLAGS=( "--project" "--push" )
 UPDATE_FLAGS=( "--latest" "--number" "--tag" )
@@ -282,9 +281,6 @@ _hdev_completions()
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
                         commands="${commands} opennic"
                     fi
-                    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_nic" = "1" ]; then
-                        commands="${commands} sockperf"
-                    fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
@@ -488,9 +484,6 @@ _hdev_completions()
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
-                        sockperf)
-                            COMPREPLY=($(compgen -W "${SOCKPERF_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         tensorflow)
                             COMPREPLY=($(compgen -W "${TENSORFLOW_RUN_FLAGS[*]} --help" -- "${cur}"))
@@ -705,10 +698,6 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
-                        sockperf)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SOCKPERF_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         tensorflow)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${TENSORFLOW_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -880,10 +869,6 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
-                        sockperf)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SOCKPERF_RUN_FLAGS[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -1047,10 +1032,6 @@ _hdev_completions()
                                 coyote_flags=("${tmp[@]}")
                             fi
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
-                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            ;;
-                        opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)

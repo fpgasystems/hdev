@@ -66,7 +66,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo -e "   ${bold}${COLOR_ON2}vrt${COLOR_OFF}${normal}             - Generates an Alveo V80 RunTime (VRT) project."
         fi
         if [ "$is_build" = "1" ] || [ "$nic_enabled" = "1" ]; then
-        echo "   ${bold}xdp${normal}             - Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
+        echo "   ${bold}xdp${normal}             - Extended Berkeley Packet Filter (eBPF) networking applications."
         fi
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -117,7 +117,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "FLAGS:"
             echo "   ${bold}-c, --commit${normal}    - GitHub shell and driver commit IDs (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
-            echo "       ${bold}--hls${normal}       - Adds an HLS wrapper for user logic boxes."
+            #echo "       ${bold}--hls${normal}       - Adds an HLS wrapper for user logic boxes."
             if [ "$is_build" = "0" ]; then
             echo "   ${bold}-n, --name${normal}      - Device Name (according to ${bold}$CLI_NAME get name${normal})."
             elif [ "$is_build" = "1" ]; then
@@ -183,7 +183,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "${bold}$CLI_NAME new $parameter [flags] [--help]${normal}"
             echo ""
-            echo "Express Data Path (XDP) networking applications with Extended Berkeley Packet Filter (eBPF)."
+            echo "Extended Berkeley Packet Filter (eBPF) networking applications."
             echo ""
             echo "FLAGS:"
             echo "   ${bold}-c, --commit${normal}    - bpftool and libbpf commit IDs (default: ${bold}$XDP_BPFTOOL_COMMIT,$XDP_LIBBPF_COMMIT${normal})."

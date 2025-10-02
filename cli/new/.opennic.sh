@@ -12,7 +12,7 @@ vivado_developers_check "$USER"
 gh_check "$CLI_PATH"
 
 #check on flags
-valid_flags="-c --commit -n --name --project --push --hls --help" #-d --device
+valid_flags="-c --commit -n --name --project --push --help" #-d --device --hls
 flags_check $command_arguments_flags"@"$valid_flags
 
 #inputs (split the string into an array)
@@ -84,7 +84,7 @@ if [ ! "$flags_array" = "" ]; then
     new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
     #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
     list_check "$CLI_PATH" "$CLI_PATH/constants/ONIC_DEVICE_NAMES" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
-    hls_check "$CLI_PATH" "${flags_array[@]}"
+    #hls_check "$CLI_PATH" "${flags_array[@]}"
     push_check "$CLI_PATH" "${flags_array[@]}"
 fi
 
@@ -99,7 +99,7 @@ if [ "$is_build" = "1" ]; then
 else
     list_dialog "$CLI_PATH" "$CLI_PATH/devices_acap_fpga" "$CLI_PATH/constants/ONIC_DEVICE_NAMES" "$CHECK_ON_DEVICE_MSG" "$CHECK_ON_DEVICE_NAME_ERR_MSG" "${flags_array[@]}"
 fi
-hls_dialog "$CLI_PATH" "${flags_array[@]}"
+#hls_dialog "$CLI_PATH" "${flags_array[@]}"
 push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
 
 #collect list results
@@ -114,4 +114,4 @@ if ! grep -Fxq "$device_name" "$ONIC_DEVICE_NAMES"; then
 fi
 
 #run
-$CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --name $device_name --push $push_option --hls $hls_option
+$CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --name $device_name --push $push_option #--hls $hls_option

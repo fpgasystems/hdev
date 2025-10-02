@@ -48,7 +48,6 @@ CHECK_ON_REMOTE_FILE_ERR_MSG="Please, specify an absolute path for remote progra
 CHECK_ON_REVERT_ERR_MSG="Please, revert your device first."
 CHECK_ON_SERVER_ERR_MSG="Please, choose a valid server name."
 CHECK_ON_SHELL_CFG_ERR_MSG="Your targeted shell configuration file is missing."
-CHECK_ON_SOCKPERF_SERVER_ERR_MSG="Please, start your sockperf server first."
 CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_TARGET_ERR_MSG="Please, choose a valid target name."
 CHECK_ON_TARGET_BUILD_ERR_MSG="Please, build your target first."
@@ -489,59 +488,42 @@ gpu_check() {
   fi
 }
 
-hls_dialog() {
-  local CLI_PATH=$1
-  #local MY_PROJECTS_PATH=$2
-  #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
-  #local commit_name=$4 #arguments and workflow are the same (i.e. opennic)
-  shift 1
-  local flags_array=("$@")
+#hls_dialog() {
+#  local CLI_PATH=$1
+#  shift 1
+#  local flags_array=("$@")
+#
+#  if [ "$flags_array" = "" ]; then
+#    echo $CHECK_ON_HLS_MSG
+#    hls_option=$($CLI_PATH/common/push_dialog)
+#    echo ""
+#  else
+#    hls_check "$CLI_PATH" "${flags_array[@]}"
+#    #forgotten mandatory
+#    if [[ $hls_found = "0" ]]; then
+#        echo $CHECK_ON_HLS_MSG
+#        hls_option=$($CLI_PATH/common/push_dialog)
+#        echo ""
+#    fi
+#  fi
+#}
 
-  #new_found=""
-  #new_name=""
-
-  if [ "$flags_array" = "" ]; then
-    #new_dialog
-    echo $CHECK_ON_HLS_MSG
-    #echo ""
-    #result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name)
-
-    hls_option=$($CLI_PATH/common/push_dialog)
-
-    #new_found=$(echo "$result" | sed -n '1p')
-    #new_name=$(echo "$result" | sed -n '2p')
-    echo ""
-  else
-    hls_check "$CLI_PATH" "${flags_array[@]}"
-    #forgotten mandatory
-    if [[ $hls_found = "0" ]]; then
-        echo $CHECK_ON_HLS_MSG
-        #echo ""
-        #result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name)
-        #new_found=$(echo "$result" | sed -n '1p')
-        #new_name=$(echo "$result" | sed -n '2p')
-        hls_option=$($CLI_PATH/common/push_dialog)
-        echo ""
-    fi
-  fi
-}
-
-hls_check(){
-  local CLI_PATH=$1
-  shift 1
-  local flags_array=("$@")
-  #push_dialog_check
-  word_check "$CLI_PATH" "--hls" "--hls" "${flags_array[@]}"
-  hls_found=$word_found
-  hls_option=$word_value
-  #forbidden combinations
-  if [[ "$hls_found" = "1" && "$hls_option" != "0" && "$hls_option" != "1" ]]; then 
-      echo ""
-      echo "$CHECK_ON_HLS_ERR_MSG"
-      echo ""
-      exit 1
-  fi
-}
+#hls_check(){
+#  local CLI_PATH=$1
+#  shift 1
+#  local flags_array=("$@")
+#  #push_dialog_check
+#  word_check "$CLI_PATH" "--hls" "--hls" "${flags_array[@]}"
+#  hls_found=$word_found
+#  hls_option=$word_value
+#  #forbidden combinations
+#  if [[ "$hls_found" = "1" && "$hls_option" != "0" && "$hls_option" != "1" ]]; then 
+#      echo ""
+#      echo "$CHECK_ON_HLS_ERR_MSG"
+#      echo ""
+#      exit 1
+#  fi
+#}
 
 iface_dialog() {
   local CLI_PATH=$1
@@ -1391,7 +1373,7 @@ target_dialog() {
       #new_dialog
       echo $CHECK_ON_TARGET_MSG
       echo ""
-      result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
+      result=$($CLI_PATH/common/target_dialog "$CLI_PATH" "$TARGETS_FILE" "$TARGET_DEPLOY_EXCLUDE" "$is_build")
       target_found=$(echo "$result" | sed -n '1p')
       target_name=$(echo "$result" | sed -n '2p')
       echo ""
@@ -1401,7 +1383,7 @@ target_dialog() {
       if [[ $target_found = "0" ]]; then
           echo $CHECK_ON_TARGET_MSG
           echo ""
-          result=$($CLI_PATH/common/target_dialog $CLI_PATH $TARGETS_FILE $TARGET_DEPLOY_EXCLUDE $is_build)
+          result=$($CLI_PATH/common/target_dialog "$CLI_PATH" "$TARGETS_FILE" "$TARGET_DEPLOY_EXCLUDE" "$is_build")
           target_found=$(echo "$result" | sed -n '1p')
           target_name=$(echo "$result" | sed -n '2p')
           echo ""

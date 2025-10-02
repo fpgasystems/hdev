@@ -41,7 +41,7 @@ LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH LOCAL_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_JOBS="8"
 WORKFLOW="opennic"
-WRAPPER_NAME="hls-wrapper"
+#WRAPPER_NAME="hls-wrapper"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
@@ -107,17 +107,17 @@ if [ "$all" = "1" ]; then
         #cd $LOCAL_PATH/$project_name/open-nic-shell/script
         
         #run Vivado HLS
-        if [ -d "$LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME" ]; then
-            echo "${bold}Building HLS wrappers:${normal}"
-            echo ""
-            echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
-            echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
-            echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
-            echo ""
-            cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
-            vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
-            echo ""
-        fi
+        #if [ -d "$LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME" ]; then
+        #    echo "${bold}Building HLS wrappers:${normal}"
+        #    echo ""
+        #    echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
+        #    echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
+        #    echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
+        #    echo ""
+        #    cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+        #    vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
+        #    echo ""
+        #fi
 
         #run compilation
         echo "${bold}Building OpenNIC shell:${normal}"
