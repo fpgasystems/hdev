@@ -506,7 +506,6 @@ run_help() {
     if [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi
-    echo "   ${bold}sockperf${normal}        - Network performance assessment with sockperf."
     if [ "$gpu_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Runs your TensorFlow application."
     fi
@@ -545,15 +544,6 @@ run_opennic_help() {
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
-  fi
-  exit
-}
-
-run_sockperf_help() {
-  if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_nic" = "1" ]; then
-    $CLI_PATH/help/run_sockperf $CLI_PATH $CLI_NAME
-    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
-    #echo ""
   fi
   exit
 }
