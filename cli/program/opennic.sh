@@ -71,7 +71,8 @@ BITSTREAM_NAME=${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
 workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device (it DOES NOT remove the driver)
-if [[ "$workflow" = "vivado" ]] || [[ "$workflow" = "opennic" ]]; then
+#if [[ "$workflow" = "vivado" ]] || [[ "$workflow" = "opennic" ]]; then
+if [[ ! "$workflow" = "vitis" ]]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
     echo ""
 fi
