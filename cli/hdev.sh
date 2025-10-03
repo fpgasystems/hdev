@@ -797,56 +797,9 @@ case "$command" in
     esac
     ;;
   validate)
-    #create workflow directory
-    #mkdir -p "$MY_PROJECTS_PATH/$arguments"
-
     case "$arguments" in
       aved)
-        #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
-          exit
-        fi
-
-        #check on flags
-        valid_flags="-d --device --help"
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #checks (command line 2/2)
-        if [ ! "$flags_array" = "" ]; then
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-          if [ ! "$device_type" = "asoc" ]; then
-            echo ""
-            echo "Sorry, this command is not available on device $device_index."
-            echo ""
-            exit
-          fi
-        fi
-
-        #dialogs
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (tag ID: $AVED_TAG)${normal}"
-        #echo ""
-        if [ "$multiple_devices" = "0" ]; then
-          device_found="1"
-          device_index="1"
-        else
-          echo ""
-          device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-          if [ ! "$device_type" = "asoc" ]; then
-            echo ""
-            echo "Sorry, this command is not available on device $device_index."
-            echo ""
-            exit
-          fi
-        fi
-
-        #run
-        $CLI_PATH/validate/aved --device $device_index
+        source "$CLI_PATH/$command/.$arguments"
         ;;
       coyote)
         source "$CLI_PATH/$command/.$arguments"
