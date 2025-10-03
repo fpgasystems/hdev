@@ -122,11 +122,9 @@ cli_help() {
   echo "    ${bold}get${normal}            - Devices and host information."
   fi
   if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
-  #if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
   echo "    ${bold}open${normal}           - Opens a windowed application for user interaction."
-  #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
   if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
@@ -212,33 +210,17 @@ read command_arguments_flags <<< $@ #command$arguments
 # ensure -h or --help are going at the beginning
 #-h
 if [[ $(echo "$command_arguments_flags" | grep "\-h\b" | wc -l) = 1 ]]; then
-  #echo "first: $command_arguments_flags"
-  #remove -h
   command_arguments_flags=${command_arguments_flags/-h/""}
-  #echo "second: $command_arguments_flags"
-  #remove command and arguments
   command_arguments_flags=${command_arguments_flags/$command" "/""}
-  #echo "third: $command_arguments_flags"
   command_arguments_flags=${command_arguments_flags/$arguments" "/""}
-  #echo "fourth: $command_arguments_flags"
-  #add it at the beginning
   command_arguments_flags=$command" "$arguments" -h "$command_arguments_flags
-  #echo "fifth: $command_arguments_flags"
 fi
 #--help
 if [[ $(echo "$command_arguments_flags" | grep "\-\-help\b" | wc -l) = 1 ]]; then
-  #echo "first: $command_arguments_flags"
-  #remove --help
   command_arguments_flags=${command_arguments_flags/--help/""}
-  #echo "second: $command_arguments_flags"
-  #remove command and arguments
   command_arguments_flags=${command_arguments_flags/$command" "/""}
-  #echo "third: $command_arguments_flags"
   command_arguments_flags=${command_arguments_flags/$arguments" "/""}
-  #echo "fourth: $command_arguments_flags"
-  #add it at the beginning
   command_arguments_flags=$command" "$arguments" -h "$command_arguments_flags
-  #echo "fifth: $command_arguments_flags"
 fi
 
 #help 
