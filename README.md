@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-<img src="https://github.com/fpgasystems/hdev/blob/main/hdev-removebg.png" align="center" width="350">
+<img src="./docs/images/hdev-removebg.png" align="center" width="350">
 </p>
 
 <h1 align="center">
@@ -35,11 +35,11 @@ Overall, **hdev** helps create better acceleration solutions for research instit
 ## Sections
 * [Citation](#citation)
 * [Disclaimer](#disclaimer)
-* [Features](./features.md#features)
-* [Installation](https://github.com/fpgasystems/hdev_install/?tab=readme-ov-file#installation)
-* [Known limitations](./known-limitations.md#known-limitations)
+* [Features](./docs/features.md)
+* [Installation](./docs/installation.md)
+* [Known limitations](./docs/known-limitations.md)
 
-![HACC Development (hdev) stack.](./stack.png "HACC Development (hdev) stack.")
+![HACC Development (hdev) stack.](./docs/images/stack.png "HACC Development (hdev) stack.")
 *HACC Development (hdev) stack.*
 
 # Disclaimer
