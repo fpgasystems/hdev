@@ -199,10 +199,10 @@ command_run() {
 }
 
 #hdev_dialogs
-source "$CLI_PATH/_${CLI_NAME}_dialogs"
+source "$CLI_PATH/.${CLI_NAME}_dialogs"
 
 #hdev_help
-source "$CLI_PATH/_${CLI_NAME}_help"
+source "$CLI_PATH/.${CLI_NAME}_help"
 
 # read all input parameters (@)
 read command_arguments_flags <<< $@ #command$arguments
