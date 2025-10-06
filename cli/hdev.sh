@@ -25,7 +25,7 @@ COYOTE_REPO=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_REPO)
 COYOTE_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_SHELL_NAME)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 HDEV_REPO=$($CLI_PATH/common/get_constant $CLI_PATH HDEV_REPO)
-IS_GPU_DEVELOPER="1"
+IS_HIP_DEVELOPER="1"
 MTU_DEFAULT=$($CLI_PATH/common/get_constant $CLI_PATH MTU_DEFAULT)
 MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
 MTU_MIN=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MIN)
@@ -78,6 +78,7 @@ is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
+is_hip_developer=$IS_HIP_DEVELOPER
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -101,7 +102,7 @@ if [ -s "$DEVICES_LIST_NETWORKING" ]; then
 fi
 
 #evaluate integrations
-gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+hip_enabled=$([ "$is_hip_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
@@ -121,7 +122,7 @@ cli_help() {
   else
   echo "    ${bold}get${normal}            - Devices and host information."
   fi
-  if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+  if [ "$is_build" = "1" ] || [ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
   echo "    ${bold}open${normal}           - Opens a windowed application for user interaction."
@@ -131,7 +132,7 @@ cli_help() {
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
-  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
+  if [ ! "$is_build" = "1" ] && ([ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
   echo "    ${bold}run${normal}            - Executes your accelerated application."
   fi
   if [ "$is_build" = "1" ]; then
@@ -454,13 +455,16 @@ case "$command" in
       coyote)
         source "$CLI_PATH/$command/.$arguments"
         ;;
+      hip)
+        source "$CLI_PATH/$command/.$arguments"
+        ;;
       opennic)
         source "$CLI_PATH/$command/.$arguments"
         ;;
       tensorflow)
         #early exit
-        #if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
-        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
+        #if [ "$is_build" = "0" ] && [ "$hip_enabled" = "0" ]; then
+        if [ "$is_build" = "0" ] && [ "$hip_enabled" = "0" ]; then
           exit 1
         fi
 
@@ -587,7 +591,7 @@ case "$command" in
         ;;
       tensorflow)
         #early exit
-        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
+        if [ "$is_build" = "0" ] && [ "$hip_enabled" = "0" ]; then
           exit 1
         fi
         
@@ -756,7 +760,7 @@ case "$command" in
         ;;
       tensorflow)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$hip_enabled" = "0" ]; then
           exit
         fi
 

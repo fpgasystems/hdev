@@ -13,7 +13,7 @@ is_build=$6
 is_fpga=$7
 is_gpu=$8
 is_nic=$9
-is_gpu_developer=${10}
+is_hip_developer=${10}
 is_vivado_developer=${11}
 is_network_developer=${12}
 is_hdev_developer=${13}
@@ -38,13 +38,13 @@ COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 #evaluate integrations
-gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+hip_enabled=$([ "$is_hip_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
 
-if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]; then
-#if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
+if [ "$is_build" = "1" ] || [ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]; then
+#if [ ! "$is_build" = "1" ] && ([ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$is_network_developer" = "1" ]); then
     if [ "$parameter" = "--help" ]; then
         echo ""
         echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"
@@ -54,12 +54,14 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "ARGUMENTS:"
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Create a new application using OS abstractions for FPGA-based devices."
-        #echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
+        fi
+        if [ "$is_build" = "1" ] || [ "$hip_enabled" = "1" ]; then
+        echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
         fi
         if [[ "$is_build" = "1" || ( "$vivado_enabled" = "1" && "$is_fpga" = "1" ) ]]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
-        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$hip_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Create machine and deep learning learning applications with TensorFlow."
         fi
         if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
@@ -74,7 +76,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         if [ "$is_build" = "1" ]; then
             $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "1"
         else
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $hip_enabled
         fi
         echo ""
     elif [ "$parameter" = "coyote" ]; then
@@ -107,6 +109,22 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
                 echo ""
             fi
         fi
+    elif [ "$parameter" = "hip" ]; then
+        if [ "$is_build" = "1" ] || [ "$hip_enabled" = "1" ]; then
+            echo ""
+            echo "${bold}$CLI_NAME new hip [--help]${normal}"
+            echo ""
+            echo "Portable single-source ROCm applications."
+            echo ""
+            echo "FLAGS:"
+            echo "       ${bold}--project${normal}   - Specifies your HIP project name." 
+            echo "       ${bold}--push${normal}      - Pushes your HIP project to your GitHub account." 
+            echo ""
+            echo "   ${bold}-h, --help${normal}      - Help to use this command."
+            echo ""
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
+            echo ""
+        fi
     elif [ "$parameter" = "opennic" ]; then
         #if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         if [[ ( "$is_build" = "1" || "$vivado_enabled" = "1" ) && "$is_asoc" = "0" ]]; then
@@ -132,7 +150,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
         fi
     elif [ "$parameter" = "tensorflow" ]; then
-        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$hip_enabled" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new tensorflow [--help]${normal}"
             echo ""

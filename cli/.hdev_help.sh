@@ -11,7 +11,7 @@ build_help() {
     is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
     is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
     is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-    $CLI_PATH/help/build $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_GPU_DEVELOPER $is_vivado_developer $is_network_developer
+    $CLI_PATH/help/build $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_HIP_DEVELOPER $is_vivado_developer $is_network_developer
     exit
 }
 
@@ -270,7 +270,7 @@ new_help() {
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_GPU_DEVELOPER $is_vivado_developer $is_network_developer $is_hdev_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_nic $IS_HIP_DEVELOPER $is_vivado_developer $is_network_developer $is_hdev_developer
   exit
 }
 
@@ -282,6 +282,13 @@ new_coyote_help() {
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
   $CLI_PATH/help/new $CLI_PATH $CLI_NAME "coyote" $is_acap $is_asoc $is_build $is_fpga "0" "0" "0" $is_vivado_developer "0" $is_hdev_developer
+  exit
+}
+
+new_hip_help() {
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" "0" "0" $is_build "0" $is_gpu "0" $IS_HIP_DEVELOPER "0"
   exit
 }
 
@@ -298,7 +305,7 @@ new_opennic_help() {
 new_tensorflow_help() {
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "tensorflow" "0" "0" $is_build "0" $is_gpu "0" $IS_GPU_DEVELOPER "0"
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "tensorflow" "0" "0" $is_build "0" $is_gpu "0" $IS_HIP_DEVELOPER "0"
   exit
 }
 
@@ -493,7 +500,7 @@ reboot_help() {
 # run ------------------------------------------------------------------------------------------------------------------------
 
 run_help() {
-  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
+  if [ ! "$is_build" = "1" ] && ([ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
     echo ""
     echo "${bold}$CLI_NAME run [arguments [flags]] [--help]${normal}"
     echo ""
@@ -506,7 +513,7 @@ run_help() {
     if [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi
-    if [ "$gpu_enabled" = "1" ]; then
+    if [ "$hip_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Runs your TensorFlow application."
     fi
     if [ "$vivado_enabled_asoc" = "1" ]; then
@@ -515,7 +522,7 @@ run_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $hip_enabled
     echo ""
   fi  
   exit
@@ -549,7 +556,7 @@ run_opennic_help() {
 }
 
 run_tensorflow_help() {
-  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME run tensorflow [flags] [--help]${normal}"
     echo ""
@@ -778,7 +785,7 @@ validate_help() {
     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
     fi
-    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+    if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Validates TensorFlow on the selected device." 
     fi
     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
@@ -793,7 +800,7 @@ validate_help() {
     if [ ! "$is_build" = "1" ]; then
     echo ""
     fi
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $vitis_enabled "0" $vivado_enabled $gpu_enabled
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $vitis_enabled "0" $vivado_enabled $hip_enabled
     echo ""
     exit
 }
@@ -849,7 +856,7 @@ validate_opennic_help() {
 }
 
 validate_tensorflow_help() {
-  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME validate tensorflow [flags] [--help]${normal}"
     echo ""

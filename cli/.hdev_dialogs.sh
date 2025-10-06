@@ -488,6 +488,18 @@ gpu_check() {
   fi
 }
 
+hip_developers_check() {
+  local username=$1
+  member_1=$($CLI_PATH/common/is_member $username render)
+  member_2=$($CLI_PATH/common/is_member $username vivado_developers)
+  if [ "$member" = "0" ]; then
+      echo ""
+      echo $CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
 #hls_dialog() {
 #  local CLI_PATH=$1
 #  shift 1

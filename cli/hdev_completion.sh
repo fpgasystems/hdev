@@ -14,14 +14,14 @@ is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
 is_numa=$($CLI_PATH/common/is_numa $CLI_PATH)
 
 #check on groups
-IS_GPU_DEVELOPER="1"
+IS_HIP_DEVELOPER="1"
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #evaluate integrations
-gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+hip_enabled=$([ "$IS_HIP_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
@@ -33,6 +33,7 @@ COYOTE_PROGRAM_FLAGS=( "--commit" "--device" "--project" "--remote" )
 COYOTE_RUN_FLAGS=( "--commit" "--config" "--project" )
 COYOTE_VALIDATE_FLAGS=( "--commit" "--device" )
 GET_PERFORMANCE_FLAGS=( "--device" )
+HIP_NEW_FLAGS=( "--project" "--push" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
@@ -111,10 +112,10 @@ _hdev_completions()
             if [ "$is_gpu" = "1" ]; then
                 commands="${commands} build"
             fi
-            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$nic_enabled" = "1" ]); then
+            if [ ! "$is_build" = "1" ] && ([ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$nic_enabled" = "1" ]); then
                 commands="${commands} new"
             fi
-            if [ "$gpu_enabled" = "1" ]; then
+            if [ "$hip_enabled" = "1" ]; then
                 commands="${commands} build"
             fi
             if [ "$vivado_enabled" = "1" ]; then
@@ -123,13 +124,13 @@ _hdev_completions()
             if [ ! "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                 commands="${commands} build run"
             fi
-            if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+            if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
                 commands="${commands} run"
             fi
             if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                 commands="${commands} program"
             fi
-            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]); then
+            if [ ! "$is_build" = "1" ] && ([ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]); then
                 commands="${commands} run"
             fi
 
@@ -200,14 +201,14 @@ _hdev_completions()
                         commands="--help"
                     
                         if [ "$is_build" = "1" ]; then
-                            commands="${commands} vrt tensorflow opennic xdp coyote"
+                            commands="${commands} vrt tensorflow opennic xdp coyote hip"
                         fi
 
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "1" ]; then
                             commands="${commands} vrt"
                         fi
-                        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "1" ]; then
-                            commands="${commands} tensorflow"
+                        if [ "$is_build" = "0" ] && [ "$hip_enabled" = "1" ]; then
+                            commands="${commands} tensorflow hip"
                         fi
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "1" ]; then
                             commands="${commands} coyote"
@@ -272,7 +273,7 @@ _hdev_completions()
                     if [ "$vivado_enabled_asoc" = "1" ]; then
                         commands="${commands} vrt"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
                         commands="${commands} tensorflow"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
@@ -317,7 +318,7 @@ _hdev_completions()
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
                         commands="${commands} aved vrt"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
                         commands="${commands} tensorflow"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
@@ -424,6 +425,9 @@ _hdev_completions()
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
                             COMPREPLY=($(compgen -W "${COYOTE_NEW_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${TENSORFLOW_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
@@ -604,6 +608,10 @@ _hdev_completions()
                                 coyote_flags=("${tmp[@]}")
                             fi
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${TENSORFLOW_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)
