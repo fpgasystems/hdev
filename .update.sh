@@ -61,7 +61,7 @@ sudo mv $UPDATES_PATH/$REPO_NAME/.update.sh $HDEV_PATH/.update
 
 #take care of hidden files
 for file in $(find "$CLI_PATH" -type f -name ".*.sh"); do
-    mv "$file" "${file%.sh}"
+    sudo mv "$file" "${file%.sh}"
 done
 
 #remove temporal copy
