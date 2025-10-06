@@ -246,6 +246,11 @@ if [ $update = "1" ]; then
   sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
   sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
 
+  #take care of hidden files
+  for file in $(find "$installation_path/cli" -type f -name ".*.sh"); do
+      sudo mv "$file" "${file%.sh}"
+  done
+
   #ensure ownership
   sudo chown -R root:root $installation_path
   

@@ -59,11 +59,6 @@ git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
 sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
 sudo mv $UPDATES_PATH/$REPO_NAME/.update.sh $HDEV_PATH/.update
 
-#take care of hidden files
-for file in $(find "$CLI_PATH" -type f -name ".*.sh"); do
-    sudo mv "$file" "${file%.sh}"
-done
-
 #remove temporal copy
 rm -rf $UPDATES_PATH/$REPO_NAME
 
