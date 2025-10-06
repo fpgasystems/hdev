@@ -1,8 +1,12 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
+HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
+
+#usage:       $CLI_PATH/hdev new hip --tag  $HIP_TAG --project   $new_name --push $push_option
+#example: /opt/hdev/cli/hdev new hip --tag  2025.6.1 --project hello_world --push            0
 
 #early exit
 url="${HOSTNAME}"
@@ -15,93 +19,67 @@ if [ "$is_build" = "0" ] && [ "$hip_enabled" = "0" ]; then
     exit 1
 fi
 
+#inputs
+HIP_TAG=$2
+new_name=$4
+push_option=$6
+
+#all inputs must be provided
+if [ "$HIP_TAG" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
+    exit
+fi
+
+echo "HEY I am here"
+echo "HIP_TAG: $HIP_TAG"
+echo "new_name: $new_name"
+echo "push_option: $push_option"
+
 #constants
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="hip"
 
-#get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
+#define directories
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$HIP_TAG/$new_name"
 
-# create my_projects directory
-DIR="$MY_PROJECTS_PATH"
-if ! [ -d "$DIR" ]; then
-    mkdir ${DIR}
-fi
-
-# create hip directory
-DIR="$MY_PROJECTS_PATH/$WORKFLOW"
-#if ! [ -d "$DIR" ]; then
-#    mkdir ${DIR}
-#fi
+#create directories
 mkdir -p $DIR
 
-# create project
-echo ""
-echo "${bold}hdev new hip${normal}"
-echo ""
-echo "${bold}Please, insert a non-existing name for your HIP project:${normal}"
-echo ""
-while true; do
-    read -p "" project_name
-    #project_name cannot start with validate_
-    if  [[ $project_name == validate_* ]]; then
-        project_name=""
-    fi
-    DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
-    if ! [ -d "$DIR" ]; then
-        break
-    fi
-done
-
 #change directory
-cd $MY_PROJECTS_PATH/$WORKFLOW
+cd $MY_PROJECTS_PATH/$WORKFLOW/$HIP_TAG
 
-#add to GitHub if gh is installed
-commit="0"
-if [[ $(which gh) ]]; then
+#create repository
+if [ "$push_option" = "1" ]; then 
+    gh repo create $new_name --public --clone
     echo ""
-    echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
-    while true; do
-        read -p "" yn
-        case $yn in
-            "y") 
-                echo ""
-                #create GitHub repository and clone directory
-                gh repo create $project_name --public --clone
-                commit="1"
-                break
-                ;;
-            "n") 
-                #create plain directory
-                mkdir $DIR
-                break
-                ;;
-        esac
-    done
-    echo ""
+else
+    mkdir -p $DIR
 fi
 
-#catch gh repo create error (DIR has not been created)
-if ! [ -d "$DIR" ]; then
-    echo "Please, start GitHub CLI first using hdev set gh"
-    echo ""
-    exit
-fi
+#save HIP_TAG
+echo "$HIP_TAG" > $DIR/HIP_TAG
+
+#add api files
+cp $HDEV_PATH/api/config_add $DIR
+cp $HDEV_PATH/api/config_delete $DIR
+
+#add template files
 
 #copy template from HDEV_PATH
 HDEV_PATH=$(dirname "$CLI_PATH")
-cp -rf $HDEV_PATH/templates/$WORKFLOW/hello_world/* $DIR
+cp -rf $HDEV_PATH/templates/$WORKFLOW/* $DIR
 #compile src
-cd $DIR/src
-g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
+#cd $DIR/src
+#g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
 #g++ -std=c++17 create_data.cpp -o ../create_data
 
-#commit files
-if [ "$commit" = "1" ]; then 
+#push files
+if [ "$push_option" = "1" ]; then 
     cd $DIR
     #update README.md 
-    echo "# "$project_name >> README.md
+    if [ -e README.md ]; then
+        rm README.md
+    fi
+    echo "# "$new_name >> README.md
     #add gitignore
     echo ".DS_Store" >> .gitignore
     #add, commit, push
@@ -112,5 +90,7 @@ if [ "$commit" = "1" ]; then
 fi
 
 #echo ""
-echo "The project ${bold}$MY_PROJECTS_PATH/$WORKFLOW/$project_name${normal} has been created!"
+echo "The project ${bold}$DIR${normal} has been created!"
 echo ""
+
+#author: https://github.com/jmoya82
