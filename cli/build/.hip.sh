@@ -27,6 +27,9 @@ flags_check $command_arguments_flags"@"$valid_flags
 #inputs (split the string into an array)
 read -r -a flags_array <<< "$flags"
 
+#set defaults
+tag_found="0"
+
 #checks on command line
 if [ ! "$flags_array" = "" ]; then
     word_check "$CLI_PATH" "-t" "--tag" "${flags_array[@]}"
@@ -46,6 +49,16 @@ echo ""
 echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
 echo ""
 project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+
+#we force the user to create a configuration
+if [ ! -f "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/device_config" ]; then
+    #get current path
+    current_path=$(pwd)
+    cd "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name"
+    echo "${bold}Adding device and host configurations with ./config_add:${normal}"
+    ./config_add
+    cd "$current_path"
+fi
 
 #run
 $CLI_PATH/build/hip --tag $tag_name --project $project_name
