@@ -249,6 +249,9 @@ case "$command" in
       coyote)
         source "$CLI_PATH/$command/.$arguments"
         ;;
+      hip)
+        source "$CLI_PATH/$command/.$arguments"
+        ;;
       opennic)
         source "$CLI_PATH/$command/.$arguments"
         ;;

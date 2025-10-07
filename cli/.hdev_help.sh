@@ -40,6 +40,13 @@ build_coyote_help() {
     exit
 }
 
+build_hip_help() {
+    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+    is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+    $CLI_PATH/help/build_hip $CLI_NAME $is_build $is_gpu $is_hip_developer $HIP_TAG
+    exit
+}
+
 build_opennic_help() {
     is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
     is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)

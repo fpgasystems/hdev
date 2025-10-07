@@ -38,6 +38,9 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Build your accelerated application on top of Coyote shell."
     #echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."
 fi
+if [ "$is_build" = "1" ] || [ "$hip_enabled" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - HIP/ROCm binaries for your projects."
+fi
 if [[ "$is_build" = "1" || ( "$vivado_enabled" = "1" && "$is_fpga" = "1" ) ]]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
 fi

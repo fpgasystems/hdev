@@ -34,6 +34,7 @@ COYOTE_RUN_FLAGS=( "--commit" "--config" "--project" )
 COYOTE_VALIDATE_FLAGS=( "--commit" "--device" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 HIP_NEW_FLAGS=( "--project" "--push" )
+HIP_BUILD_FLAGS=( "--tag" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
@@ -165,6 +166,9 @@ _hdev_completions()
                     fi
                     if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                         commands="${commands} xdp"
+                    fi
+                    if [ "$is_build" = "0" ] && [ "$hip_enabled" = "1" ]; then
+                        commands="${commands} hip"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -347,12 +351,11 @@ _hdev_completions()
                         coyote)
                             COMPREPLY=($(compgen -W "${COYOTE_BUILD_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${HIP_BUILD_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         opennic)
-                            #if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
-                                COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
-                            #elif [ "$is_vivado_developer" = "1" ]; then
-                            #    COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --platform --help" -- "${cur}"))
-                            #fi
+                            COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         vrt)
                             COMPREPLY=($(compgen -W "${VRT_BUILD_FLAGS[*]} --help" -- "${cur}"))
@@ -566,16 +569,13 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_BUILD_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${HIP_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
-                            #--commit --platform --project
-                            #if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
-                                #platform is not offered
-                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]}")
-                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            #elif [ "$is_vivado_developer" = "1" ]; then
-                            #    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
-                            #    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            #fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_BUILD_FLAGS[*]}")
