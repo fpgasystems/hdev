@@ -29,11 +29,6 @@ if [ "$HIP_TAG" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
-echo "HEY I am here"
-echo "HIP_TAG: $HIP_TAG"
-echo "new_name: $new_name"
-echo "push_option: $push_option"
-
 #constants
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="hip"

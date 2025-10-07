@@ -5,7 +5,6 @@ if [ "$is_build" = "0" ] && [ "$hip_enabled" = "0" ]; then
     exit 1
 fi
 
-
 #check on software
 gh_check "$CLI_PATH"
 #tf_check "$CLI_PATH"
