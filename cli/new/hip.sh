@@ -84,6 +84,8 @@ if [ "$push_option" = "1" ]; then
     echo ""
 fi
 
+sleep 2
+
 #echo ""
 echo "The project ${bold}$DIR${normal} has been created!"
 echo ""
