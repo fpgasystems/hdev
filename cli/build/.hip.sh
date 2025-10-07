@@ -32,26 +32,20 @@ if [ ! "$flags_array" = "" ]; then
     word_check "$CLI_PATH" "-t" "--tag" "${flags_array[@]}"
     tag_found=$word_found
     tag_name=$word_value
-    #tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
     project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 fi
 
 #dialogs
-#tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$VRT_REPO" "$VRT_TAG" "${flags_array[@]}"
-#tag_check_pwd "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "VRT_TAG"
-
 #check on tag
 if [ "$tag_found" = "0" ]; then
     tag_found="1"
     tag_name=$(cat $HDEV_PATH/TAG)
 fi
-
 project_check_empty "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name"
 echo ""
 echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
 echo ""
 project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-#target_dialog "$CLI_PATH" "COYOTE_TARGETS" "hw" "$is_build" "${flags_array[@]}"
 
 #run
 $CLI_PATH/build/hip --tag $tag_name --project $project_name
