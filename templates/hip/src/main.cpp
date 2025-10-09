@@ -7,7 +7,9 @@
 #include "hip/hip_runtime.h"
 #include "gpu_kernels.hpp" 
 #include "../global_params.hpp"
-#include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
+#include "../configs/device_config.hpp"
+#include "../configs/host_config_000.hpp"
+//#include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
 
 #define HIP_ASSERT(x) (assert((x)==hipSuccess))
  

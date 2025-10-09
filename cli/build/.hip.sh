@@ -50,6 +50,51 @@ echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
 echo ""
 project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 
+#define directories
+DIR="$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name"
+
+#create or select a configuration
+cd $DIR/configs/
+if [[ $(ls -l | wc -l) = 2 ]]; then
+    #only config_000 exists and we create config_001
+    #we compile create_config (in case there were changes)
+    cd $DIR/src
+    g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
+    cd $DIR
+    ./create_config
+    cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
+    config="config_001.hpp"
+elif [[ $(ls -l | wc -l) = 3 ]]; then
+    #config_000 and config_001 exist
+    cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
+    config="config_001.hpp"
+    echo ""
+elif [[ $(ls -l | wc -l) > 4 ]]; then
+    cd $DIR/configs/
+    configs=( "config_"*.hpp )
+    echo ""
+    echo "${bold}Please, choose your configuration:${normal}"
+    echo ""
+    PS3=""
+    select config in "${configs[@]:1}"; do
+        if [[ -z $config ]]; then
+            echo "" >&/dev/null
+        else
+            break
+        fi
+    done
+    # copy selected config as config_000.hpp
+    cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
+fi
+
+#save config id
+cd $DIR/configs/
+if [ -e config_*.active ]; then
+    rm *.active
+fi
+config_id="${config%%.*}"
+touch $config_id.active
+
 #we force the user to create a configuration
 if [ ! -f "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/device_config" ]; then
     #get current path
@@ -58,6 +103,31 @@ if [ ! -f "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/device_c
     echo "${bold}Adding device and host configurations with ./config_add:${normal}"
     ./config_add
     cd "$current_path"
+fi
+
+#const int N = 2560;
+#const int N_THREADS = 128;
+#device_config.hpp N_THREADS
+#host_config_001.hpp N ==> host_config_000.hpp
+
+#remove first
+rm -f $DIR/configs/host_config_*.hpp
+
+#convert to hpp
+$CLI_PATH/common/convert_to_hpp device_config
+for file in host_config_*; do
+    # Skip if no files match
+    [[ -e "$file" ]] || continue
+    "$CLI_PATH/common/convert_to_hpp" "$file"
+done
+
+#select configuration and save as host_config_000.hpp
+hpp_files=( host_config_*.hpp )
+if (( ${#hpp_files[@]} == 1 )); then
+    config="host_config_001.hpp"
+    cp -fr $DIR/configs/$config $DIR/configs/host_config_000.hpp
+else
+    echo "→ One or zero .hpp files"
 fi
 
 #run
