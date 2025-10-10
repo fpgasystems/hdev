@@ -66,13 +66,8 @@ project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags
 #define directories
 DIR="$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name"
 
-#save config id
+#change directory
 cd $DIR/configs/
-if [ -e config_*.active ]; then
-    rm *.active
-fi
-config_id="${config%%.*}"
-touch $config_id.active
 
 #we force the user to create a configuration
 if [ ! -f "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/device_config" ]; then
@@ -90,6 +85,7 @@ if (( ${#hpp_files[@]} == 1 )); then
     config_name="host_config_001.hpp"
     #cp -fr $DIR/configs/$config_name $DIR/configs/host_config_000.hpp
 else
+    rm -f $DIR/configs/host_config_*.active
     config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "$add_echo" "${flags_array[@]}"
     if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/$config_name" ]; then
         echo ""
@@ -112,7 +108,14 @@ for file in host_config_*; do
 done
 
 #save as host_config_000.hpp
-cp -fr $DIR/configs/$config_name $DIR/configs/host_config_000.hpp
+cp -fr $DIR/configs/$config_name.hpp $DIR/configs/host_config_000.hpp
+
+#save active configuration
+if [ -e config_*.active ]; then
+    rm *.active
+fi
+config_id="${config_name%%.*}"
+touch $config_id.active
 
 #run
 $CLI_PATH/build/hip --tag $tag_name --project $project_name
