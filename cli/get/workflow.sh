@@ -18,6 +18,7 @@ fi
 COYOTE_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_DRIVER_NAME)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 ONIC_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
+VRT_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH VRT_DRIVER_NAME)
 
 #get hostname
 url="${HOSTNAME}"
@@ -38,6 +39,7 @@ read -a flags <<< "$@"
 #get actual filename (i.e. onik.ko without the path)
 COYOTE_DRIVER_NAME="${COYOTE_DRIVER_NAME%.ko}"
 ONIC_DRIVER_NAME="${ONIC_DRIVER_NAME%.ko}"
+VRT_DRIVER_NAME="${VRT_DRIVER_NAME%.ko}"
 
 #check on flags
 device_found=""
@@ -68,6 +70,9 @@ if [ "$flags" = "" ]; then
                 echo "$device_index: $workflow"
             elif [ "$driver_name" = "$COYOTE_DRIVER_NAME" ]; then
                 workflow="coyote"
+                echo "$device_index: $workflow"
+            elif [ "$driver_name" = "$VRT_DRIVER_NAME" ]; then
+                workflow="vrt"
                 echo "$device_index: $workflow"
             else
                 echo "$device_index: vivado"
