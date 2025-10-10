@@ -47,6 +47,25 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
+#display configuration
+echo "${bold}Device parameters:${normal}"
+echo ""
+cat $DIR/configs/device_config
+echo ""
+
+#get config name
+cd $DIR/configs
+active_file=( host_config_*.active )
+if [[ -e ${active_file[0]} ]]; then
+    config_name="${active_file[0]%.active}"
+fi
+cd $DIR
+
+echo "${bold}Host parameters ($config_name):${normal}"
+echo ""
+cat $DIR/configs/$config_name
+echo ""
+
 #get cpp files
 cpp_files=$($CLI_PATH/common/get_files $DIR/src/gpu_kernels .cpp)
 
@@ -57,3 +76,5 @@ sleep 1
 echo "hipcc $DIR/src/main.cpp $cpp_files -o $APP_BUILD_DIR/main"
 echo ""
 hipcc $DIR/src/main.cpp $cpp_files -o $APP_BUILD_DIR/main
+
+echo "HIP compilation ${bold}($config_name)${normal} done!${normal}"
