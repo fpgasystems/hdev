@@ -82,7 +82,7 @@ fi
 #select configuration and save as host_config_000.hpp
 hpp_files=( host_config_*.hpp )
 if (( ${#hpp_files[@]} == 1 )); then
-    config_name="host_config_001.hpp"
+    config_name="host_config_001"
     #cp -fr $DIR/configs/$config_name $DIR/configs/host_config_000.hpp
 else
     rm -f $DIR/configs/host_config_*.active
