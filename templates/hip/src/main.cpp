@@ -114,11 +114,11 @@ int main( int argc, char* argv[] )
    HIP_ASSERT(hipMemcpy(CPUArrayC,GPUArrayC, bytes, hipMemcpyDeviceToHost));
 
    //Compute for CPU 
-   for(i=0; i <N; i++)
-   {
-    CPUVerifyArrayC[i] = CPUArrayA[i] + CPUArrayB[i];
-   }
-   //cpu::vadd(CPUArrayA,CPUArrayB,CPUArrayC,N,CPU_DEVICE_ID);
+   //for(i=0; i <N; i++)
+   //{
+   // CPUVerifyArrayC[i] = CPUArrayA[i] + CPUArrayB[i];
+   //}
+   cpu::vadd(CPUArrayA,CPUArrayB,CPUVerifyArrayC,N,CPU_DEVICE_ID);
 
     //Verfiy results
     int err = 0;
