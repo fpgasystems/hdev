@@ -5,11 +5,14 @@
 
 //HIP application workflow
 #include "hip/hip_runtime.h"
+#include "cpu_kernels.hpp" 
 #include "gpu_kernels.hpp" 
 #include "../global_params.hpp"
 #include "../configs/device_config.hpp"
 #include "../configs/host_config_000.hpp"
 //#include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
+
+constexpr int CPU_DEVICE_ID = -1;
 
 #define HIP_ASSERT(x) (assert((x)==hipSuccess))
  
@@ -115,6 +118,7 @@ int main( int argc, char* argv[] )
    {
     CPUVerifyArrayC[i] = CPUArrayA[i] + CPUArrayB[i];
    }
+   //cpu::vadd(CPUArrayA,CPUArrayB,CPUArrayC,N,CPU_DEVICE_ID);
 
     //Verfiy results
     int err = 0;

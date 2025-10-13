@@ -67,14 +67,15 @@ cat $DIR/configs/$config_name
 echo ""
 
 #get cpp files
-cpp_files=$($CLI_PATH/common/get_files $DIR/src/gpu_kernels .cpp)
+cpu_cpp_files=$($CLI_PATH/common/get_files $DIR/src/cpu_kernels .cpp)
+gpu_cpp_files=$($CLI_PATH/common/get_files $DIR/src/gpu_kernels .cpp)
 
 #copy and compile
 echo "${bold}Compiling HIP project:${normal}"
 echo ""
 sleep 1
-echo "hipcc $DIR/src/main.cpp $cpp_files -o $APP_BUILD_DIR/main"
+echo "hipcc $DIR/src/main.cpp $cpu_cpp_files $gpu_cpp_files -o $APP_BUILD_DIR/main"
 echo ""
-hipcc $DIR/src/main.cpp $cpp_files -o $APP_BUILD_DIR/main
+hipcc $DIR/src/main.cpp $cpu_cpp_files $gpu_cpp_files -o $APP_BUILD_DIR/main
 
 echo "HIP compilation ${bold}($config_name)${normal} done!${normal}"
