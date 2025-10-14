@@ -43,9 +43,6 @@ if [ ! "$flags_array" = "" ]; then
     tag_found=$word_found
     tag_name=$word_value
     project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
-    
-    echo "hallo?"
-    
     if [ "$project_found" = "1" ]; then
         config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "yes" "${flags_array[@]}"
     fi
