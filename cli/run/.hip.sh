@@ -74,5 +74,18 @@ if [ ! -x "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/hip" ]; then
     exit 1
 fi
 
+#define directories
+DIR="$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name"
+
+#get kernel from kn.cfg / add to kn.cfg
+kernel_name=$(grep "^${device_index}:" $DIR/kn.cfg | cut -d':' -f2 | xargs)
+if [ -z "$kernel_name" ]; then
+    first_kernel=$(basename "$(ls "$DIR/src/gpu_kernels"/*.cpp | head -n 1)" .cpp)
+    if [[ -n "$first_kernel" ]]; then
+        # Ensure newline before appending
+        printf "\n%s: %s\n" "$device_index" "$first_kernel" >> "$DIR/kn.cfg"
+    fi
+fi
+
 #run
 $CLI_PATH/run/hip --device $device_index --tag $tag_name --project $project_name 

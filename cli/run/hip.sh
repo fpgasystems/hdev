@@ -36,7 +36,6 @@ WORKFLOW="hip"
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
 
 #change directory
-echo ""
 echo "${bold}Changing directory:${normal}"
 echo ""
 echo "cd $DIR"
