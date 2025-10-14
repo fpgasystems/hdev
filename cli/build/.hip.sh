@@ -11,6 +11,10 @@ gh_check "$CLI_PATH"
 #constants
 ROCM_PATH=$($CLI_PATH/common/get_constant $CLI_PATH ROCM_PATH)
 
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
 #verify hip workflow (based on installed software)
 test1=$(dkms status | grep amdgpu)
 if [ -z "$test1" ] || [ ! -d "$ROCM_PATH/bin/" ]; then
