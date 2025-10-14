@@ -21,13 +21,21 @@ int main( int argc, char* argv[] )
     // Size of vectors (replaced by N in config_000)
     //int n = 10240; 
 
-    int deviceId = 0; // Default value in case no argument is provided.
+    //int deviceId = 0; // Default value in case no argument is provided.
 
     // Convert the first command-line argument (argv[1]) to an integer.
-    if (argc > 1) // Ensure that at least one command-line argument is provided.
-    {
-        deviceId = std::atoi(argv[1]);
+    //if (argc > 1) // Ensure that at least one command-line argument is provided.
+    //{
+    //    deviceId = std::atoi(argv[1]);
+    //}
+
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <deviceId> <kernelName>\n";
+        return 1;
     }
+
+    int deviceId = std::atoi(argv[1]);
+    std::string kernelName = argv[2];
 
     // Set the device from the host code
     hipError_t setDeviceResult = hipSetDevice(deviceId);
@@ -102,23 +110,36 @@ int main( int argc, char* argv[] )
     gridSize = (int)ceil((float)N/N_THREADS);
  
     // Execute the kernel
-    gpu::vadd<<<gridSize,N_THREADS>>>(GPUArrayA,GPUArrayB,GPUArrayC,N,deviceId);
-    
+    //gpu::vadd<<<gridSize,N_THREADS>>>(GPUArrayA,GPUArrayB,GPUArrayC,N,deviceId);
+
+    // Launch the GPU kernel based on kernelName
+    if (kernelName == "vadd") {
+        gpu::vadd<<<gridSize, N_THREADS>>>(GPUArrayA, GPUArrayB, GPUArrayC, N, deviceId);
+        cpu::vadd(CPUArrayA,CPUArrayB,CPUVerifyArrayC,N,CPU_DEVICE_ID);
+    }
+    else if (kernelName == "vsub") {
+        gpu::vsub<<<gridSize, N_THREADS>>>(GPUArrayA, GPUArrayB, GPUArrayC, N, deviceId);
+        cpu::vsub(CPUArrayA,CPUArrayB,CPUVerifyArrayC,N,CPU_DEVICE_ID);
+    }
+    else {
+        std::cerr << "Unknown kernel: " << kernelName << std::endl;
+        return 1;
+    }
+
+    // Copy array back to host    
     hipError_t syncResult = hipDeviceSynchronize();
     if (syncResult != hipSuccess) {
         std::cerr << "hipDeviceSynchronize failed with error: " << hipGetErrorString(syncResult) << std::endl;
         return 1;
     }
-
-    // Copy array back to host
-   HIP_ASSERT(hipMemcpy(CPUArrayC,GPUArrayC, bytes, hipMemcpyDeviceToHost));
+    HIP_ASSERT(hipMemcpy(CPUArrayC,GPUArrayC, bytes, hipMemcpyDeviceToHost));
 
    //Compute for CPU 
    //for(i=0; i <N; i++)
    //{
    // CPUVerifyArrayC[i] = CPUArrayA[i] + CPUArrayB[i];
    //}
-   cpu::vadd(CPUArrayA,CPUArrayB,CPUVerifyArrayC,N,CPU_DEVICE_ID);
+   //cpu::vadd(CPUArrayA,CPUArrayB,CPUVerifyArrayC,N,CPU_DEVICE_ID);
 
     //Verfiy results
     int err = 0;
