@@ -35,6 +35,7 @@ COYOTE_VALIDATE_FLAGS=( "--commit" "--device" )
 GET_PERFORMANCE_FLAGS=( "--device" )
 HIP_NEW_FLAGS=( "--project" "--push" )
 HIP_BUILD_FLAGS=( "--tag" "--project" )
+HIP_RUN_FLAGS=( "--device" "--tag" "--project" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
@@ -278,7 +279,7 @@ _hdev_completions()
                         commands="${commands} vrt"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
-                        commands="${commands} tensorflow"
+                        commands="${commands} tensorflow hip"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} coyote"
@@ -488,6 +489,9 @@ _hdev_completions()
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
                             COMPREPLY=($(compgen -W "${COYOTE_RUN_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${HIP_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
@@ -702,6 +706,10 @@ _hdev_completions()
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${HIP_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -871,6 +879,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
                         coyote)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${HIP_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         opennic)

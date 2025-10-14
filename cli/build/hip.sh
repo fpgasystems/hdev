@@ -78,4 +78,8 @@ echo "hipcc $DIR/src/main.cpp $cpu_cpp_files $gpu_cpp_files -o $APP_BUILD_DIR/ma
 echo ""
 hipcc $DIR/src/main.cpp $cpu_cpp_files $gpu_cpp_files -o $APP_BUILD_DIR/main
 
+#copy to root
+cp $APP_BUILD_DIR/main $DIR/hip
+rm -rf $APP_BUILD_DIR
+
 echo "HIP compilation ${bold}($config_name)${normal} done!${normal}"

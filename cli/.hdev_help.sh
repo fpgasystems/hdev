@@ -517,6 +517,9 @@ run_help() {
     if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Runs your Coyote application."
     fi
+    if [ "$hip_enabled" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given device."
+    fi
     if [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
     fi
@@ -548,6 +551,26 @@ run_coyote_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/run_coyote $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    echo ""
+  fi
+  exit
+}
+
+run_hip_help() {
+  if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
+    echo ""
+    echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
+    echo ""
+    echo "Runs your HIP application on a given device."
+    echo ""
+    echo "FLAGS"
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo "   ${bold}-p, --project${normal}   - Specifies your HIP project name."
+    echo "   ${bold}-t, --tag${normal}       - GitHub commit tag (default: ${bold}$HIP_TAG${normal})."
+    echo ""
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
     echo ""
   fi
   exit
