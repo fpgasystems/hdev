@@ -29,6 +29,9 @@ if [ "$device_index" = "" ] || [ "$tag_name" = "" ] || [ "$project_name" = "" ];
 fi
 
 #constants
+COLOR_FAILED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FAILED)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="hip"
 
@@ -62,7 +65,21 @@ echo "$DIR/hip $device_index $kernel_name"
 echo ""
 
 #the GPU index starts at 0
-device_index=$(($device_index-1))
-$DIR/hip $device_index $kernel_name
+device_index_hip=$(($device_index-1))
+$DIR/hip $device_index_hip $kernel_name
+return_code=$?
+
+#print message
+if [ $return_code -eq 0 ]; then
+    #print
+    echo -e "${COLOR_PASSED}Kernel ${bold}$kernel_name (device $device_index)${normal} ${COLOR_PASSED}worked!${COLOR_OFF}"
+    echo ""
+else 
+    echo -e "${COLOR_FAILED}Kernel ${bold}$kernel_name (device $device_index)${normal} ${COLOR_FAILED}failed!${COLOR_OFF}"
+    echo ""
+fi
+
+#exit with return code
+exit $return_code
 
 echo ""

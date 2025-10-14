@@ -58,7 +58,7 @@ int main( int argc, char* argv[] )
     }
 
     // Your program logic using the deviceId goes here.
-    std::cout << "Device ID: " << deviceId << std::endl;
+    //std::cout << "Device ID: " << deviceId << std::endl;
 
     // Host input vectors
     double *CPUArrayA;
@@ -145,18 +145,18 @@ int main( int argc, char* argv[] )
     int err = 0;
     for (int i = 0; i < N; i++) {
         if (abs(CPUVerifyArrayC[i] - CPUArrayC[i]) > 1e-5) {
-            printf("Error at position i %d, Expected: %f, Found: %f \n", i, CPUVerifyArrayC[i], CPUArrayC[i]);
+            //printf("Error at position i %d, Expected: %f, Found: %f \n", i, CPUVerifyArrayC[i], CPUArrayC[i]);
             err = 1;
             break;
         }       
     }
 
     //print error message
-    if (err == 0) {    
-        printf("TEST PASSED!\n");
-    } else {
-        printf("TEST FAILED!\n");
-    }
+    //if (err == 0) {    
+    //    printf("TEST PASSED!\n");
+    //} else {
+    //    printf("TEST FAILED!\n");
+    //}
 
     // Release device memory
     HIP_ASSERT(hipFree(GPUArrayA));
@@ -169,5 +169,5 @@ int main( int argc, char* argv[] )
     free(CPUArrayC);
     free(CPUVerifyArrayC);
  
-    return 0;
+    return err;
 }
