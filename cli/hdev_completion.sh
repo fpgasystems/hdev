@@ -36,6 +36,7 @@ GET_PERFORMANCE_FLAGS=( "--device" )
 HIP_NEW_FLAGS=( "--project" "--push" )
 HIP_BUILD_FLAGS=( "--tag" "--project" )
 HIP_RUN_FLAGS=( "--device" "--tag" "--project" )
+HIP_VALIDATE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
 OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
@@ -324,7 +325,7 @@ _hdev_completions()
                         commands="${commands} aved vrt"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
-                        commands="${commands} tensorflow"
+                        commands="${commands} tensorflow hip"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} coyote"
@@ -539,6 +540,9 @@ _hdev_completions()
                             ;;
                         coyote)
                             COMPREPLY=($(compgen -W "${COYOTE_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${HIP_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_VALIDATE_FLAGS[*]} --help" -- "${cur}"))

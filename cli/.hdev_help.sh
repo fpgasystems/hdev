@@ -812,6 +812,9 @@ validate_help() {
     echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-built Alveo Versal Example Design (AVED) validation."
     fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
+    if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected device." 
+    fi
     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
     fi
@@ -874,6 +877,15 @@ validate_docker_help() {
   echo "   ${bold}-h, --help${normal}      - Help to use this command."
   echo ""
   exit 1
+}
+
+validate_hip_help() {
+  if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
+    $CLI_PATH/help/validate_hip $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
+    echo ""
+  fi
+  exit
 }
 
 validate_opennic_help() {

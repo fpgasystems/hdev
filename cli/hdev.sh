@@ -762,6 +762,9 @@ case "$command" in
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
+      hip)
+        source "$CLI_PATH/$command/.$arguments"
+        ;;
       opennic)
         source "$CLI_PATH/$command/.$arguments"
         ;;
