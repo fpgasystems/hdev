@@ -515,13 +515,13 @@ run_help() {
     echo ""
     echo "ARGUMENTS:"
     if [ "$vivado_enabled" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Runs your Coyote application."
+      echo -e "   ${bold}${COLOR_ON2}coyote${COLOR_OFF}${normal}          - Execute a Coyote-based design."
     fi
     if [ "$hip_enabled" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given device."
+      echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Launch a HIP application on available GPUs."
     fi
     if [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs your OpenNIC application."
+      echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Start an OpenNIC deployment."
     fi
     if [ "$hip_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON5}tensorflow${COLOR_OFF}${normal}      - Runs your TensorFlow application."
@@ -561,7 +561,7 @@ run_hip_help() {
     echo ""
     echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
     echo ""
-    echo "Runs your HIP application on a given device."
+    echo "Launch a HIP application on available GPUs."
     echo ""
     echo "FLAGS"
     echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."

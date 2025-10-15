@@ -11,7 +11,7 @@ ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 echo ""
 echo "${bold}$CLI_NAME run opennic [flags] [--help]${normal}"
 echo ""
-echo "Runs your OpenNIC application."
+echo "Start an OpenNIC deployment."
 echo ""
 echo "FLAGS:"
 echo "       ${bold}--commit${normal}    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."

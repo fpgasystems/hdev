@@ -10,7 +10,7 @@ COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 echo ""
 echo "${bold}$CLI_NAME run coyote [flags] [--help]${normal}"
 echo ""
-echo "Runs your Coyote application."
+echo "Execute a Coyote-based design."
 echo ""
 echo "FLAGS:"
 echo "       ${bold}--commit${normal}    - GitHub commit (default: ${bold}$COYOTE_COMMIT${normal})."
