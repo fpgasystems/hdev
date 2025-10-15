@@ -69,8 +69,5 @@ else
     #fi
 fi
 
-echo "Here"
-exit
-
 #run
 $CLI_PATH/validate/hip --device $device_index
