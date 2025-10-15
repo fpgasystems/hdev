@@ -7,7 +7,6 @@ fi
 
 #constants
 DEVICES_LIST="$CLI_PATH/devices_gpu"
-#ROCM_PATH=$($CLI_PATH/common/get_constant $CLI_PATH ROCM_PATH)
 
 #get hostname
 url="${HOSTNAME}"
@@ -41,13 +40,6 @@ multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 #checks (command line 2/2)
 if [ ! "$flags_array" = "" ]; then
     device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-    #device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-    #if [ ! "$device_type" = "gpu" ]; then
-    #    echo ""
-    #    echo "Sorry, this command is not available on device $device_index."
-    #    echo ""
-    #    exit
-    #fi
 fi
 
 #dialogs
@@ -60,13 +52,6 @@ if [ "$multiple_devices" = "0" ]; then
 else
     echo ""
     device_dialog_gpu "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-    #device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-    #if [ ! "$device_type" = "asoc" ]; then
-    #    echo ""
-    #    echo "Sorry, this command is not available on device $device_index."
-    #    echo ""
-    #    exit
-    #fi
 fi
 
 #run
