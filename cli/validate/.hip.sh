@@ -59,7 +59,7 @@ if [ "$multiple_devices" = "0" ]; then
     device_index="1"
 else
     echo ""
-    device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+    device_dialog_gpu "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
     #device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
     #if [ ! "$device_type" = "asoc" ]; then
     #    echo ""

@@ -338,6 +338,69 @@ device_check() {
   fi
 }
 
+device_dialog_gpu() {
+  local CLI_PATH=$1
+  local CLI_NAME=$2
+  local command=$3
+  local arguments=$4
+  local multiple_devices=$5
+  local MAX_DEVICES=$6
+  shift 6
+  local flags_array=("$@")
+  
+  device_found=""
+  device_index=""
+
+  if [[ $multiple_devices = "0" ]]; then
+    device_found="1"
+    device_index="1"
+  else
+    if [ "$flags_array" = "" ]; then
+      #device_dialog
+      echo $CHECK_ON_DEVICE_MSG
+      echo ""
+      result=$($CLI_PATH/common/device_dialog_gpu $CLI_PATH $MAX_DEVICES $multiple_devices)
+      device_found=$(echo "$result" | sed -n '1p')
+      device_index=$(echo "$result" | sed -n '2p')
+      echo ""
+    else
+      #forgotten mandatory
+      device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+      if [[ $device_found = "0" ]]; then
+        echo $CHECK_ON_DEVICE_MSG
+        echo ""
+        result=$($CLI_PATH/common/device_dialog_gpu $CLI_PATH $MAX_DEVICES $multiple_devices)
+        device_found=$(echo "$result" | sed -n '1p')
+        device_index=$(echo "$result" | sed -n '2p')
+        echo ""
+      fi
+    fi
+  fi
+}
+
+device_check_gpu() {
+  local CLI_PATH=$1
+  local CLI_NAME=$2
+  local command=$3
+  local arguments=$4
+  local multiple_devices=$5
+  local MAX_DEVICES=$6
+  shift 6
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
+  device_found=$(echo "$result" | sed -n '1p')
+  device_index=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || 
+     ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && ! [[ "$device_index" =~ ^[0-9]+$ ]]) || 
+     ([ "$device_found" = "1" ] && (! [[ "$device_index" =~ ^[0-9]+$ ]] || [[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+       echo ""
+       echo "$CHECK_ON_DEVICE_ERR_MSG"
+       echo ""
+       exit
+  fi
+}
+
 driver_check() {
   local CLI_PATH=$1
   shift 1
