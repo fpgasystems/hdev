@@ -813,7 +813,7 @@ validate_help() {
     fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
     if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected device." 
+    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs HIP/ROCm bandwidth test." 
     fi
     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
