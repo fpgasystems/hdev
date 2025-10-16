@@ -27,10 +27,27 @@ if [ "$device_index" = "" ]; then
     exit
 fi
 
+#constants
+ROCM_PATH=$($CLI_PATH/common/get_constant $CLI_PATH ROCM_PATH)
+SECONDS_COUNT=5
+SECONDS_INCREASE=0.2
+TMP_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+
 #get rocm-bandwidth-test version
 hip_version=$(dpkg -l | grep rocm-core | awk '{print $3}' | cut -d '.' -f 1-3)
 
+#mimic rocm-bandwidth-test
+iterations=$(echo "$SECONDS_COUNT / $SECONDS_INCREASE" | bc)
+for ((i=0; i<iterations; i++)); do
+    echo -n "."
+    sleep "$SECONDS_INCREASE"
+done
+
 #run bandwith test
-eval "/opt/rocm-$hip_version/bin/rocm-bandwidth-test"
+$ROCM_PATH-$hip_version/bin/rocm-bandwidth-test > $TMP_PATH/rocm_bandwidth_test_output
+cat "$TMP_PATH/rocm_bandwidth_test_output"
+
+#remove temporal file
+rm -f $TMP_PATH/rocm_bandwidth_test_output
 
 #author: https://github.com/jmoya82
