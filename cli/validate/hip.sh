@@ -28,6 +28,7 @@ if [ "$device_index" = "" ]; then
 fi
 
 #constants
+COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
 ROCM_PATH=$($CLI_PATH/common/get_constant $CLI_PATH ROCM_PATH)
 SECONDS_COUNT=5
 SECONDS_INCREASE=0.2
@@ -45,7 +46,22 @@ done
 
 #run bandwith test
 $ROCM_PATH-$hip_version/bin/rocm-bandwidth-test > $TMP_PATH/rocm_bandwidth_test_output
-cat "$TMP_PATH/rocm_bandwidth_test_output"
+
+#get device bus (BDF)
+bus=$($CLI_PATH/get/get_gpu_device_param $device_index bus)
+
+#get device line
+device_line=$(grep -F "${bus/:00./:0.}" "$TMP_PATH/rocm_bandwidth_test_output" | head -n 1)
+device_index_mapped=$(echo "$device_line" | awk -F'[,: ]+' '{print $3}')
+
+#print with format
+while IFS= read -r line; do
+    if [[ $line =~ ^[[:space:]]*$device_index_mapped[[:space:]] ]]; then
+        echo -e "${COLOR_PASSED}${bold}${line}${normal}"
+    else
+        echo "$line"
+    fi
+done < "$TMP_PATH/rocm_bandwidth_test_output"
 
 #remove temporal file
 rm -f $TMP_PATH/rocm_bandwidth_test_output
