@@ -203,61 +203,61 @@ if [ $update = "1" ]; then
 
   #remove old version
   echo "${bold}Removing old version:${normal}"
-  sudo rm -rf $installation_path/cli
+  sudo $CLI_PATH/common/rm -rf $installation_path/cli
   sleep 1
-  sudo rm -rf $installation_path/templates
+  sudo $CLI_PATH/common/rm -rf $installation_path/templates
   sleep 1
   echo "Done!"
   echo ""
   
   #copy files (from /tmp/hdev to /opt/hdev)
   echo "${bold}Copying new version:${normal}"
-  sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
+  sudo $CLI_PATH/common/mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
   sleep 1
-  sudo mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
+  sudo $CLI_PATH/common/mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
   sleep 1
   echo "Done!"
   echo ""
   
   #overwrite bitstreams
   echo "${bold}Restoring device files:${normal}"
-  sudo rm -rf $installation_path/cli/bitstreams
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams
+  sudo $CLI_PATH/common/rm -rf $installation_path/cli/bitstreams
+  sudo $CLI_PATH/common/cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams
   sleep 1
   #overwrite device related info
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
-  #sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
+  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
+  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
+  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
+  #sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
   sleep 1
   #overwrite constants
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
+  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
   sleep 1
   #overwrite cmdb
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_cmdb/* $installation_path/cli/cmdb
+  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_cmdb/* $installation_path/cli/cmdb
   sleep 1
   echo "Done!"
   echo ""
 
   #copy COMMIT and COMMIT_DATE
-  #sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
-  #sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
+  #sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
+  #sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
 
   #copy TAG and TAG_DATE
-  sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
-  sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
+  sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
+  sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
 
   #take care of hidden files
   for file in $(find "$installation_path/cli" -type f -name ".*.sh"); do
-      sudo mv "$file" "${file%.sh}"
+      sudo $CLI_PATH/common/mv "$file" "${file%.sh}"
   done
 
   #ensure ownership
-  sudo chown -R root:root $installation_path
+  sudo $CLI_PATH/common/chown -R root:root $installation_path
   
   #copying hdev_completion
-  sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
-  sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
+  sudo $CLI_PATH/common/mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
+  sudo $CLI_PATH/common/chown root:root /usr/share/bash-completion/completions/$CLI_NAME
 
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
