@@ -1,12 +1,14 @@
 #!/bin/bash
 
 #early exit
-if [ "$is_sudo" = "0" ]; then
+is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
+is_sudo=$($CLI_PATH/common/is_sudo $USER)
+if [ "$is_sudo" = "0" ] && [ "$is_hdev_developer" = "0" ]; then
     exit
 fi
 
 #check on sudo
-sudo_check $USER
+#sudo_check $USER
 
 #inputs (split the string into an array)
 read -r -a flags_array <<< "$@"
@@ -56,8 +58,10 @@ cd $UPDATES_PATH
 git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/hdev.git
 
 #copy update
-sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
-sudo mv $UPDATES_PATH/$REPO_NAME/.update.sh $HDEV_PATH/.update
+#sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
+#sudo mv $UPDATES_PATH/$REPO_NAME/.update.sh $HDEV_PATH/.update
+sudo $CLI_PATH/common/mv $UPDATES_PATH/$REPO_NAME/.update.sh $HDEV_PATH/.update
+sudo $CLI_PATH/common/mv $UPDATES_PATH/$REPO_NAME/update.sh $HDEV_PATH/update
 
 #remove temporal copy
 rm -rf $UPDATES_PATH/$REPO_NAME

@@ -138,7 +138,7 @@ _hdev_completions()
             fi
 
             # Check on groups
-            if [ "$is_sudo" = "1" ]; then
+            if [ "$is_sudo" = "1" ] || [ "$is_hdev_developer" = "1" ]; then
                 commands="${commands} reboot update"
             fi
             #if [ "$is_sudo" = "1" ]; then

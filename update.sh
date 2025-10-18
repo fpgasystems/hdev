@@ -20,8 +20,9 @@ chmod_x() {
 }
 
 #early exit
+is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
-if [ "$is_sudo" = "0" ]; then
+if [ "$is_sudo" = "0" ] && [ "$is_hdev_developer" = "0" ]; then
     exit
 fi
 

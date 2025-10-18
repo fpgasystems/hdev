@@ -141,7 +141,7 @@ cli_help() {
   else
   echo "    ${bold}set${normal}            - Devices and host configuration."
   fi
-  if [ "$is_sudo" = "1" ]; then
+  if [ "$is_sudo" = "1" ] || [ "$is_hdev_developer" = "1" ]; then
   echo "    ${bold}update${normal}         - Updates ${bold}$CLI_NAME${normal} to a specific version."
   fi
   echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
