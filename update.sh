@@ -68,13 +68,6 @@ local_commit_date=$(cat $HDEV_PATH/TAG_DATE)
 #convert to Unix timestamps
 local_timestamp=$(date -d "$local_commit_date" +%s)
 
-#echo "pullrq_id: $pullrq_id"
-#echo "tag_name: $tag_name"
-#echo "remote_tag_date: $remote_tag_date"
-#echo "local_commit_date: $local_commit_date"
-#echo "remote_timestamp: $remote_timestamp"
-#echo "local_timestamp: $local_timestamp"
-
 #compare the timestamps and confirm update
 update="0"
 if [ ! $pullrq_id = "none" ]; then
@@ -201,56 +194,56 @@ if [ $update = "1" ]; then
 
   #remove old version
   echo "${bold}Removing old version:${normal}"
-  sudo $CLI_PATH/common/rm $installation_path/cli
+  sudo rm -rf $installation_path/cli
   sleep 1
-  sudo $CLI_PATH/common/rm $installation_path/templates
+  sudo rm -rf $installation_path/templates
   sleep 1
   echo "Done!"
   echo ""
   
   #copy files (from /tmp/hdev to /opt/hdev)
   echo "${bold}Copying new version:${normal}"
-  sudo $CLI_PATH/common/mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
+  sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
   sleep 1
-  sudo $CLI_PATH/common/mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
+  sudo mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
   sleep 1
   echo "Done!"
   echo ""
   
   #overwrite bitstreams
   echo "${bold}Restoring device files:${normal}"
-  sudo $CLI_PATH/common/rm $installation_path/cli/bitstreams
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams
+  sudo rm -rf $installation_path/cli/bitstreams
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams
   sleep 1
   #overwrite device related info
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
   sleep 1
   #overwrite constants
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
   sleep 1
   #overwrite cmdb
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_cmdb/* $installation_path/cli/cmdb
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_cmdb/* $installation_path/cli/cmdb
   sleep 1
   echo "Done!"
   echo ""
 
   #copy TAG and TAG_DATE
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
-  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
 
   #take care of hidden files
   for file in $(find "$installation_path/cli" -type f -name ".*.sh"); do
-      sudo $CLI_PATH/common/mv "$file" "${file%.sh}"
+      sudo mv "$file" "${file%.sh}"
   done
 
   #ensure ownership
-  sudo $CLI_PATH/common/chown root:root $installation_path
+  sudo chown -R root:root $installation_path
   
   #copying hdev_completion
-  sudo $CLI_PATH/common/mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
-  sudo $CLI_PATH/common/chown root:root /usr/share/bash-completion/completions/$CLI_NAME
+  sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
+  sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
 
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
