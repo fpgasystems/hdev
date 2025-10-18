@@ -178,8 +178,6 @@ if [ $update = "1" ]; then
   sleep 1
   cp $CLI_PATH/devices_network $UPDATES_PATH/$REPO_NAME/backup_devices_network
   sleep 1
-  #cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo
-  #sleep 1
   cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants
   sleep 1
   cp -rf $CLI_PATH/cmdb $UPDATES_PATH/$REPO_NAME/backup_cmdb
@@ -203,9 +201,9 @@ if [ $update = "1" ]; then
 
   #remove old version
   echo "${bold}Removing old version:${normal}"
-  sudo $CLI_PATH/common/rm -rf $installation_path/cli
+  sudo $CLI_PATH/common/rm $installation_path/cli
   sleep 1
-  sudo $CLI_PATH/common/rm -rf $installation_path/templates
+  sudo $CLI_PATH/common/rm $installation_path/templates
   sleep 1
   echo "Done!"
   echo ""
@@ -221,31 +219,26 @@ if [ $update = "1" ]; then
   
   #overwrite bitstreams
   echo "${bold}Restoring device files:${normal}"
-  sudo $CLI_PATH/common/rm -rf $installation_path/cli/bitstreams
-  sudo $CLI_PATH/common/cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams
+  sudo $CLI_PATH/common/rm $installation_path/cli/bitstreams
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams
   sleep 1
   #overwrite device related info
-  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
-  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
-  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
-  #sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
   sleep 1
   #overwrite constants
-  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
   sleep 1
   #overwrite cmdb
-  sudo $CLI_PATH/common/cp -r $UPDATES_PATH/$REPO_NAME/backup_cmdb/* $installation_path/cli/cmdb
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/backup_cmdb/* $installation_path/cli/cmdb
   sleep 1
   echo "Done!"
   echo ""
 
-  #copy COMMIT and COMMIT_DATE
-  #sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
-  #sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
-
   #copy TAG and TAG_DATE
-  sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
-  sudo $CLI_PATH/common/cp -f $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
+  sudo $CLI_PATH/common/cp $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
 
   #take care of hidden files
   for file in $(find "$installation_path/cli" -type f -name ".*.sh"); do
@@ -253,7 +246,7 @@ if [ $update = "1" ]; then
   done
 
   #ensure ownership
-  sudo $CLI_PATH/common/chown -R root:root $installation_path
+  sudo $CLI_PATH/common/chown root:root $installation_path
   
   #copying hdev_completion
   sudo $CLI_PATH/common/mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
