@@ -55,10 +55,10 @@ reset_mtu_on_data_nic() {
 
   if command -v ip >/dev/null 2>&1; then
     # uses the modern ip command
-    exec /usr/sbin/ip link set dev "$data_network_iface" mtu "$MTU_DEFAULT" up
+    /usr/sbin/ip link set dev "$data_network_iface" mtu "$MTU_DEFAULT" up
   else
     # fallback for when ip is not yet supported
-    exec /usr/sbin/ifconfig $data_network_iface mtu $MTU_DEFAULT up
+    /usr/sbin/ifconfig $data_network_iface mtu $MTU_DEFAULT up
   fi
 }
 
