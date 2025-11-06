@@ -1,0 +1,7 @@
+device:
+MAX_N_THREADS 256,1024,2048         "Maximum number of threads per block"
+N_THREADS     256:256:MAX_N_THREADS "Threads per block"
+
+host:
+MAX_N         10240                 "Choose computation precision (if using mixed precision or tensor cores)"
+N             2560:2560:MAX_N       "Maximum number of vector elements (size)"

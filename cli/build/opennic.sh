@@ -10,21 +10,15 @@ normal=$(tput sgr0)
 #early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+#is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+#vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled=$([[ "$is_vivado_developer" = "1" && "$is_fpga" = "1" ]] && echo 1 || echo 0)
 if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
     exit 1
-fi
-
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
 fi
 
 #inputs
@@ -47,7 +41,7 @@ LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH LOCAL_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_JOBS="8"
 WORKFLOW="opennic"
-WRAPPER_NAME="hls-wrapper"
+#WRAPPER_NAME="hls-wrapper"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
@@ -113,17 +107,17 @@ if [ "$all" = "1" ]; then
         #cd $LOCAL_PATH/$project_name/open-nic-shell/script
         
         #run Vivado HLS
-        if [ -d "$LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME" ]; then
-            echo "${bold}Building HLS wrappers:${normal}"
-            echo ""
-            echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
-            echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
-            echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
-            echo ""
-            cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
-            vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
-            echo ""
-        fi
+        #if [ -d "$LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME" ]; then
+        #    echo "${bold}Building HLS wrappers:${normal}"
+        #    echo ""
+        #    echo "cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz"
+        #    echo "vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl"
+        #    echo "vitis_hls -f p2p_322mhz_hls_$FDEV_NAME.tcl (ToDo)"
+        #    echo ""
+        #    cd $LOCAL_PATH/$project_name/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+        #    vitis_hls -f p2p_250mhz_hls_$FDEV_NAME.tcl
+        #    echo ""
+        #fi
 
         #run compilation
         echo "${bold}Building OpenNIC shell:${normal}"

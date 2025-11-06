@@ -17,27 +17,38 @@ INC_STEPS=2
 INC_DECIMALS=2
 
 get_config_id() {
-    #change directory
-    CONFIGS_PATH=$1/configs
-    cd $CONFIGS_PATH
-    #get configs
-    configs=( "host_config_"* )
+    # change directory
+    CONFIGS_PATH="$1/configs"
+    cd "$CONFIGS_PATH" || { echo "path not found"; return 1; }
+
+    # collect only real host_config_* files that are NOT .hpp
+    configs_filtered=()
+    for f in host_config_*; do
+        [[ -e "$f" ]] || continue              # no matches -> skip
+        [[ "$f" == *.hpp ]] && continue        # skip headers
+        configs_filtered+=("$f")
+    done
+
     # If no configs exist, set the first one
-    if [[ ${configs[0]} == "host_config_*" ]]; then
+    if [[ ${#configs_filtered[@]} -eq 0 ]]; then
         config_id="host_config_001"
     else
-        #get the last configuration name
-        last_config="${configs[-1]}"
-        #extract the number part of the configuration name
-        number_part="${last_config##*_}"  # This will extract the part after the last underscore
-        number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
-        #construct the new configuration name
+        # find the maximum numeric suffix among filtered configs
+        max_num=0
+        for f in "${configs_filtered[@]}"; do
+            num="${f##*_}"                     # part after last underscore
+            [[ "$num" =~ ^[0-9]+$ ]] || continue
+            (( 10#$num > max_num )) && max_num=$((10#$num))
+        done
+        number=$(printf "%03d" $((max_num + 1)))
         config_id="host_config_$number"
     fi
-    #change back directory
+
+    # change back directory
     cd ..
-    #return
-    echo $config_id
+
+    # return
+    echo "$config_id"
 }
 
 generate_selectable_values() {

@@ -14,24 +14,31 @@ is_nic=$($CLI_PATH/common/is_nic $CLI_PATH $hostname)
 is_numa=$($CLI_PATH/common/is_numa $CLI_PATH)
 
 #check on groups
-IS_GPU_DEVELOPER="1"
+IS_HIP_DEVELOPER="1"
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_network_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 
 #evaluate integrations
-gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+hip_enabled=$([ "$IS_HIP_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 nic_enabled=$([ "$is_network_developer" = "1" ] && [ "$is_nic" = "1" ] && echo 1 || echo 0)
 
 #flags
-COMPOSER_NEW_FLAGS=( "--model" "--project" "--push" "--tag" )
-COMPOSER_OPEN_FLAGS=( "--project" "--tag" )
+COYOTE_BUILD_FLAGS=( "--commit" "--project" "--target" )
+COYOTE_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--number" "--template" )
+COYOTE_PROGRAM_FLAGS=( "--commit" "--device" "--project" "--remote" )
+COYOTE_RUN_FLAGS=( "--commit" "--config" "--project" )
+COYOTE_VALIDATE_FLAGS=( "--commit" "--device" )
 GET_PERFORMANCE_FLAGS=( "--device" )
+HIP_NEW_FLAGS=( "--project" "--push" )
+HIP_BUILD_FLAGS=( "--tag" "--project" )
+HIP_RUN_FLAGS=( "--device" "--tag" "--project" )
+HIP_VALIDATE_FLAGS=( "--device" )
 OPENNIC_BUILD_FLAGS=( "--commit" "--project" )
-OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" "--hls" ) #--device
+OPENNIC_NEW_FLAGS=( "--commit" "--name" "--project" "--push" )
 OPENNIC_PROGRAM_FLAGS=( "--commit" "--device" "--fec" "--project" "--remote" ) #"--xdp"
 OPENNIC_RUN_FLAGS=( "--commit" "--config" "--project" ) #"--device" 
 OPENNIC_VALIDATE_FLAGS=( "--commit" "--device" "--fec" )
@@ -42,12 +49,11 @@ SET_BALANCING_FLAGS=( "--value" )
 SET_HUGEPAGES_FLAGS=( "--pages" "--size" )
 SET_MTU_FLAGS=( "--device" "--port" "--value" )
 SET_PERFORMANCE_FLAGS=( "--device" "--value" )
-SOCKPERF_RUN_FLAGS=( "--interface" "--server" "--size" )
 TENSORFLOW_RUN_FLAGS=( "--config" "--project" )
 TENSORFLOW_NEW_FLAGS=( "--project" "--push" )
 UPDATE_FLAGS=( "--latest" "--number" "--tag" )
 VIVADO_OPEN_FLAGS=( "--path" )
-VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--name" )
+VRT_NEW_FLAGS=( "--project" "--push" "--tag" "--template" "--name" "--number" )
 VRT_BUILD_FLAGS=( "--project" "--tag" "--target" )
 VRT_PROGRAM_FLAGS=( "--device" "--project" "--tag" "--remote" )
 VRT_RUN_FLAGS=( "--project" "--tag" "--target" )
@@ -109,10 +115,10 @@ _hdev_completions()
             if [ "$is_gpu" = "1" ]; then
                 commands="${commands} build"
             fi
-            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$nic_enabled" = "1" ]); then
+            if [ ! "$is_build" = "1" ] && ([ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$nic_enabled" = "1" ]); then
                 commands="${commands} new"
             fi
-            if [ "$gpu_enabled" = "1" ]; then
+            if [ "$hip_enabled" = "1" ]; then
                 commands="${commands} build"
             fi
             if [ "$vivado_enabled" = "1" ]; then
@@ -121,18 +127,18 @@ _hdev_completions()
             if [ ! "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                 commands="${commands} build run"
             fi
-            if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+            if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
                 commands="${commands} run"
             fi
             if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                 commands="${commands} program"
             fi
-            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]); then
+            if [ ! "$is_build" = "1" ] && ([ "$hip_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]); then
                 commands="${commands} run"
             fi
 
             # Check on groups
-            if [ "$is_sudo" = "1" ]; then
+            if [ "$is_sudo" = "1" ] || [ "$is_hdev_developer" = "1" ]; then
                 commands="${commands} reboot update"
             fi
             #if [ "$is_sudo" = "1" ]; then
@@ -152,13 +158,19 @@ _hdev_completions()
                 build)
                     commands="c --help"
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} vrt"
+                        commands="${commands} vrt coyote"
                     fi
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+                        commands="${commands} coyote"
+                    fi
+                    if [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     if [ "$is_nic" = "1" ] && [ "$is_network_developer" = "1" ]; then
                         commands="${commands} xdp"
+                    fi
+                    if [ "$is_build" = "0" ] && [ "$hip_enabled" = "1" ]; then
+                        commands="${commands} hip"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -195,16 +207,19 @@ _hdev_completions()
                         commands="--help"
                     
                         if [ "$is_build" = "1" ]; then
-                            commands="${commands} vrt tensorflow opennic xdp"
+                            commands="${commands} vrt tensorflow opennic xdp coyote hip"
                         fi
 
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "1" ]; then
                             commands="${commands} vrt"
                         fi
-                        if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "1" ]; then
-                            commands="${commands} tensorflow"
+                        if [ "$is_build" = "0" ] && [ "$hip_enabled" = "1" ]; then
+                            commands="${commands} tensorflow hip"
                         fi
                         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "1" ]; then
+                            commands="${commands} coyote"
+                        fi
+                        if [ "$is_build" = "0" ] && [ "$is_fpga" = "1" ]; then
                             commands="${commands} opennic"
                         fi
                         if [ "$is_build" = "0" ] && [ "$nic_enabled" = "1" ]; then
@@ -233,6 +248,9 @@ _hdev_completions()
                             commands="${commands} bitstream"
                         fi
                         if [ "$is_vivado_developer" = "1" ]; then
+                            commands="${commands} coyote"
+                        fi
+                        if [ "$is_vivado_developer" = "1" ] && [ "$is_fpga" = "1" ]; then
                             commands="${commands} opennic"
                         fi
                         if [ ! "$is_asoc" = "1" ]; then
@@ -261,14 +279,14 @@ _hdev_completions()
                     if [ "$vivado_enabled_asoc" = "1" ]; then
                         commands="${commands} vrt"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-                        commands="${commands} tensorflow"
+                    if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
+                        commands="${commands} tensorflow hip"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} opennic"
+                        commands="${commands} coyote"
                     fi
-                    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_nic" = "1" ]; then
-                        commands="${commands} sockperf"
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
+                        commands="${commands} opennic"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -306,10 +324,13 @@ _hdev_completions()
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
                         commands="${commands} aved vrt"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-                        commands="${commands} tensorflow"
+                    if [ ! "$is_build" = "1" ] && [ "$hip_enabled" = "1" ]; then
+                        commands="${commands} tensorflow hip"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+                        commands="${commands} coyote"
+                    fi
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ] && [ "$is_fpga" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
@@ -329,12 +350,14 @@ _hdev_completions()
                         c)
                             COMPREPLY=($(compgen -W "--source --help" -- ${cur}))
                             ;;
+                        coyote)
+                            COMPREPLY=($(compgen -W "${COYOTE_BUILD_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${HIP_BUILD_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         opennic)
-                            if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
-                                COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
-                            elif [ "$is_vivado_developer" = "1" ]; then
-                                COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --platform --help" -- "${cur}"))
-                            fi
+                            COMPREPLY=($(compgen -W "${OPENNIC_BUILD_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         vrt)
                             COMPREPLY=($(compgen -W "${VRT_BUILD_FLAGS[*]} --help" -- "${cur}"))
@@ -405,6 +428,12 @@ _hdev_completions()
                     ;;
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        coyote)
+                            COMPREPLY=($(compgen -W "${COYOTE_NEW_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${TENSORFLOW_NEW_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_NEW_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -431,6 +460,9 @@ _hdev_completions()
                         bitstream) 
                             COMPREPLY=($(compgen -W "${PROGRAM_BITSTREAM_FLAGS[*]} --help" -- "${cur}"))
                             ;;
+                        coyote)
+                            COMPREPLY=($(compgen -W "${COYOTE_PROGRAM_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
@@ -456,11 +488,14 @@ _hdev_completions()
                     ;;
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        coyote)
+                            COMPREPLY=($(compgen -W "${COYOTE_RUN_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${HIP_RUN_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_RUN_FLAGS[*]} --help" -- "${cur}"))
-                            ;;
-                        sockperf)
-                            COMPREPLY=($(compgen -W "${SOCKPERF_RUN_FLAGS[*]} --help" -- "${cur}"))
                             ;;
                         tensorflow)
                             COMPREPLY=($(compgen -W "${TENSORFLOW_RUN_FLAGS[*]} --help" -- "${cur}"))
@@ -503,6 +538,12 @@ _hdev_completions()
                         docker)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
+                        coyote)
+                            COMPREPLY=($(compgen -W "${COYOTE_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
+                        hip)
+                            COMPREPLY=($(compgen -W "${HIP_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
+                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "${OPENNIC_VALIDATE_FLAGS[*]} --help" -- "${cur}"))
                             ;;
@@ -532,16 +573,17 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-4]}" in
                 build)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${HIP_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
-                            #--commit --platform --project
-                            if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
-                                #platform is not offered
-                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]}")
-                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            elif [ "$is_vivado_developer" = "1" ]; then
-                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
-                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_BUILD_FLAGS[*]}")
@@ -556,6 +598,30 @@ _hdev_completions()
                     ;;
                 new)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        coyote)
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${TENSORFLOW_NEW_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -569,7 +635,23 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -578,6 +660,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
                         bitstream)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         driver)
@@ -620,12 +706,16 @@ _hdev_completions()
                     ;;
                 run)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
-                        opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
-                        sockperf)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SOCKPERF_RUN_FLAGS[*]}")
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${HIP_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         tensorflow)
@@ -656,6 +746,10 @@ _hdev_completions()
                     ;;
                 validate)
                     case "${COMP_WORDS[COMP_CWORD-3]}" in
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_VALIDATE_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_VALIDATE_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -691,11 +785,9 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-6]}" in
                 build)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
-                        opennic)
-                            if [ "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                                remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_BUILD_FLAGS[*]} --platform")
-                                COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
-                            fi
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_BUILD_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_BUILD_FLAGS[*]}")
@@ -705,6 +797,26 @@ _hdev_completions()
                     ;;
                 new)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
+                        coyote)
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
@@ -714,7 +826,23 @@ _hdev_completions()
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -723,6 +851,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
                         bitstream)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         driver)
@@ -749,12 +881,16 @@ _hdev_completions()
                     ;;
                 run)
                     case "${COMP_WORDS[COMP_CWORD-5]}" in
-                        opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
-                        sockperf)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${SOCKPERF_RUN_FLAGS[*]}")
+                        hip)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${HIP_RUN_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        opennic)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_RUN_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
@@ -807,12 +943,48 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-8]}" in
                 new)
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
+                        coyote)
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
                         opennic)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -821,6 +993,10 @@ _hdev_completions()
                     case "${COMP_WORDS[COMP_CWORD-7]}" in
                         bitstream)
                             remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${PROGRAM_BITSTREAM_FLAGS[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+                            ;;
+                        coyote)
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${COYOTE_PROGRAM_FLAGS[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         image)
@@ -862,12 +1038,44 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-10]}" in
                 new)
                     case "${COMP_WORDS[COMP_CWORD-9]}" in
-                        opennic)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${OPENNIC_NEW_FLAGS[*]}")
+                        coyote)
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                         vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
                     esac
@@ -907,10 +1115,45 @@ _hdev_completions()
             case "${COMP_WORDS[COMP_CWORD-12]}" in
                 new)
                     case "${COMP_WORDS[COMP_CWORD-11]}" in
-                        vrt)
-                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+                        coyote)
+                            # Start from the default flags
+                            local coyote_flags=("${COYOTE_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --commit and --number
+                            if [[ " $prev " == *" --commit "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --commit
+                                local tmp=()
+                                for f in "${coyote_flags[@]}"; do [[ "$f" != "--commit" ]] && tmp+=("$f"); done
+                                coyote_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${coyote_flags[*]}")
                             COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                             ;;
+                        vrt)
+                            # Start from the default flags
+                            local vrt_flags=("${VRT_NEW_FLAGS[@]}")
+                            local prev="${previous_flags[*]}"
+
+                            # Enforce mutual exclusion between --tag and --number
+                            if [[ " $prev " == *" --tag "* ]]; then
+                                # remove --number
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--number" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            elif [[ " $prev " == *" --number "* ]]; then
+                                # remove --tag
+                                local tmp=()
+                                for f in "${vrt_flags[@]}"; do [[ "$f" != "--tag" ]] && tmp+=("$f"); done
+                                vrt_flags=("${tmp[@]}")
+                            fi
+                            remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${vrt_flags[*]}")
+                            COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
                     esac
                     ;;
                 program)
@@ -945,13 +1188,27 @@ _hdev_completions()
         #    #COMP_CWORD-2: --xdp
         #    #COMP_CWORD-1: 0
         #
-        #    For extending the code: 
-        #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
-        #        ...
-        #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
-        #        echo "previous_flags: ${previous_flags[@]}"
-        #        echo "remaining_flags: ${remaining_flags[@]}"
+        #    #    For extending the code: 
+        #    #        echo "-14: ${COMP_WORDS[COMP_CWORD-14]}"
+        #    #        ...
+        #    #        echo "-1: ${COMP_WORDS[COMP_CWORD-1]}"
+        #    #        echo "previous_flags: ${previous_flags[@]}"
+        #    #        echo "remaining_flags: ${remaining_flags[@]}"
+        #    
+        #    # The following is code that is working (jmoya82, 16.09.2025)
+        #       
+        #    previous_flags=("${COMP_WORDS[COMP_CWORD-2]}" "${COMP_WORDS[COMP_CWORD-4]}" "${COMP_WORDS[COMP_CWORD-6]}" "${COMP_WORDS[COMP_CWORD-8]}" "${COMP_WORDS[COMP_CWORD-10]}" "${COMP_WORDS[COMP_CWORD-12]}")
         #
+        #    case "${COMP_WORDS[COMP_CWORD-14]}" in
+        #        new)
+        #            case "${COMP_WORDS[COMP_CWORD-13]}" in
+        #                vrt)
+        #                    remaining_flags=$($CLI_PATH/common/get_remaining_flags "${previous_flags[*]}" "${VRT_NEW_FLAGS[*]}")
+        #                    COMPREPLY=($(compgen -W "${remaining_flags}" -- "${cur}"))
+        #                    ;;
+        #            esac
+        #            ;;
+        #    esac
         #    ;;
         *)
             COMPREPLY=()

@@ -70,8 +70,15 @@ fi
 #clone repository
 $CLI_PATH/common/git_clone_vrt $CLI_PATH $DIR $tag_name $pullrq_id
 
-#save tag_name and template_name
-echo "$tag_name" > $DIR/VRT_TAG
+#save tag_name
+if [ "$pullrq_id" = "none" ]; then
+    id="$tag_name"
+else
+    id="$pullrq_id"
+fi
+echo "$id" > $DIR/VRT_TAG
+
+#save template_name
 echo "$template_name" > $DIR/VRT_TEMPLATE
 
 #move files

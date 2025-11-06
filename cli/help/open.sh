@@ -17,7 +17,7 @@ COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 #evaluate integrations
-#gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+#hip_enabled=$([ "$is_hip_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 #vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 #vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
@@ -32,7 +32,7 @@ if [ "$parameter" = "--help" ]; then
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
+    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $hip_enabled
     #echo ""
 elif [ "$parameter" = "vivado" ]; then
     #if [ "$vivado_enabled" = "1" ]; then

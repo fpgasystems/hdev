@@ -11,21 +11,14 @@ normal=$(tput sgr0)
 #early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+#is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+#vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled=$([[ "$is_vivado_developer" = "1" && "$is_fpga" = "1" ]] && echo 1 || echo 0)
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-    exit
-fi
-
-#temporal exit condition
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
     exit
 fi
 
@@ -78,7 +71,8 @@ BITSTREAM_NAME=${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
 workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device (it DOES NOT remove the driver)
-if [[ "$workflow" = "vivado" ]] || [[ "$workflow" = "opennic" ]]; then
+#if [[ "$workflow" = "vivado" ]] || [[ "$workflow" = "opennic" ]]; then
+if [[ ! "$workflow" = "vitis" ]]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
     echo ""
 fi

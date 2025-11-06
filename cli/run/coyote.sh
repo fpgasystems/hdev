@@ -1,0 +1,83 @@
+#!/bin/bash
+
+CLI_PATH="$(dirname "$(dirname "$0")")"
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+#usage:       $CLI_PATH/hdev run coyote --commit $commit_name --config $config_index --project $project_name
+#example: /opt/hdev/cli/hdev run coyote --commit      8077751 --config             1 --project   hello_world
+
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+    exit
+fi
+
+#inputs
+commit_name=$2
+config_index=$4
+project_name=$6
+
+#all inputs must be provided
+if [ "$commit_name" = "" ] || [ "$config_index" = "" ] || [ "$project_name" = "" ]; then
+    exit
+fi
+
+#constants
+MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+WORKFLOW="coyote"
+
+#define directories (1)
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
+
+#get FDEV_NAME
+#platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+#FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
+
+#change directory
+echo "${bold}Changing directory:${normal}"
+echo ""
+echo "cd $DIR"
+echo ""
+cd $DIR
+
+if [ ! "$config_index" = "none" ]; then
+    #display configuration
+    echo "${bold}Device parameters:${normal}"
+    echo ""
+    cat $DIR/.device_config
+    echo ""
+
+    #get config name
+    config_string=$($CLI_PATH/common/get_config_string $config_index)
+    config_name="host_config_$config_string"
+
+    echo "${bold}You are running $config_name:${normal}"
+    echo ""
+    cat $DIR/configs/$config_name
+    echo ""
+fi
+
+#run application
+echo "${bold}Running your Coyote application:${normal}"
+echo ""
+#echo "./coyote --config $config_index"
+echo "./coyote"
+#echo ""
+#./coyote --config "$config_index"
+./coyote
+return_code=$?
+
+echo ""
+
+#exit with return code
+exit $return_code
+
+#author: https://github.com/jmoya82

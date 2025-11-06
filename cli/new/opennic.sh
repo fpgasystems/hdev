@@ -5,33 +5,26 @@ HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --name  $device_name --push $push_option --hls $hls_option
-#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --name xcu280_u55c_0 --push            0 --hls           1
+#usage:       $CLI_PATH/hdev new opennic --commit $commit_name_shell $commit_name_driver --project   $new_name --name  $device_name --push $push_option 
+#example: /opt/hdev/cli/hdev new opennic --commit             807775             1cf2578 --project hello_world --name xcu280_u55c_0 --push            0
 
 #early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+#is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+#vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled=$([[ "$is_vivado_developer" = "1" && "$is_fpga" = "1" ]] && echo 1 || echo 0)
 if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
-#if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
     exit 1
 fi
 
 #temporal exit condition
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-if [ "$is_asoc" = "1" ]; then
-    echo ""
-    echo "Sorry, we are working on this!"
-    echo ""
-    exit
-fi
 
 check_connectivity() {
     local interface="$1"
@@ -51,10 +44,10 @@ commit_name_driver=$3
 new_name=$5
 device_name=$7
 push_option=$9
-hls_option=${11}
+#hls_option=${11}
 
 #all inputs must be provided
-if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$device_name" = "" ] || [ "$push_option" = "" ] || [ "$hls_option" = "" ]; then
+if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$device_name" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
@@ -71,7 +64,7 @@ NETWORKING_DEVICE_INDEX="1"
 NETWORKING_PORT_INDEX="1"
 #ONIC_DEVICE_NAMES="$CLI_PATH/constants/ONIC_DEVICE_NAMES"
 WORKFLOW="opennic"
-WRAPPER_NAME="hls-wrapper"
+#WRAPPER_NAME="hls-wrapper"
 
 #get devices number
 if [ -s "$DEVICES_LIST_NETWORKING" ]; then
@@ -134,17 +127,17 @@ FDEV_NAME=$(echo "$device_name" | cut -d'_' -f2)
 
 #hls-wrapper
 #if [ -f "$HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls_$FDEV_NAME.tcl" ]; then
-if [ "$hls_option" = "1" ]; then
-    #copy plugin
-    cp -r $DIR/open-nic-shell/plugin/p2p $DIR/open-nic-shell/plugin/$WRAPPER_NAME
-    #250mhz
-    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls_$FDEV_NAME.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
-    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
-    #322mhz
-    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls_$FDEV_NAME.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
-    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
-fi
-rm -rf $DIR/$WRAPPER_NAME
+#if [ "$hls_option" = "1" ]; then
+#    #copy plugin
+#    cp -r $DIR/open-nic-shell/plugin/p2p $DIR/open-nic-shell/plugin/$WRAPPER_NAME
+#    #250mhz
+#    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls_$FDEV_NAME.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+#    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_250mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_250mhz
+#    #322mhz
+#    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls_$FDEV_NAME.tcl $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
+#    cp $HDEV_PATH/templates/$WORKFLOW/$WRAPPER_NAME/p2p_322mhz_hls.cpp $DIR/open-nic-shell/plugin/$WRAPPER_NAME/box_322mhz
+#fi
+#rm -rf $DIR/$WRAPPER_NAME
 
 #get interface name
 interface_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)

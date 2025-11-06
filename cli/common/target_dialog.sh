@@ -29,12 +29,17 @@ else
     filtered_targets=("${all_targets[@]}")
 fi
 
-PS3=""
-select target_name in "${filtered_targets[@]}"; do
-    if [[ -n "$target_name" ]]; then
-        echo "You selected: $target_name"
-        break
-    fi
-done
+if [[ ${#filtered_targets[@]} -eq 1 ]]; then
+    target_name=${filtered_targets[0]}
+    #echo "You selected: $target_name"
+else
+    PS3=""
+    select target_name in "${filtered_targets[@]}"; do
+        if [[ -n "$target_name" ]]; then
+            echo "$target_name"
+            break
+        fi
+    done
+fi
 
 echo "$target_name"
