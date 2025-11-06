@@ -57,7 +57,10 @@ function cold_reboot() {
   #   - https://servermanagementportal.ext.hpe.com/docs/concepts/redfishauthentication
 
   BMC_HOSTNAME=$(get_hacc_bmc_hostname)
-  source /etc/hdev/bmc-credentials.sh
+  BMC_CREDENTIALS_FILE=/etc/hdev/bmc-credentials.sh
+  if [ -f "BMC_CREDENTIALS_FILE" ]; then
+    source $BMC_CREDENTIALS_FILE
+  fi
 
   # Authenticate a redfish BMC session and capture headers
   response_headers=$(curl --insecure -s -D - -o /dev/null \
@@ -97,17 +100,28 @@ function cold_reboot() {
 }
 
 #Check permissions
-is_build=$($CLI_PATH/common/is_build $CLI_PATH $(hostname -s))
-if  [ "$is_build" = "1" ]; then
-  echo "ERROR: This is a build server, only admins are allowed to reboot these."
+if [ "$EUID" -ne 0 ]; then
+  echo "Permission denied: This command must be run as root (using sudo)."
   exit 1
 fi
 
-is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$is_vivado_developer" = "0" ]; then
-  echo "ERROR: You don't have the priviledges to reboot servers."
-  echo "If you believe you need this ability, contact the cluster maintainer to request access to the 'vivado_developers' group."
-  exit 1
+set +e
+# temporarily disable 'fail on non-zero', because is_sudo does not adhere to this
+is_sudo=$($CLI_PATH/common/is_sudo $CLI_PATH $SU_UID)
+set -e
+if [ "$is_sudo" = "0" ]; then
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $(hostname -s))
+  if  [ "$is_build" = "1" ]; then
+    echo "Permission denied: This is a build server, only admins are allowed to reboot these."
+    exit 1
+  fi
+
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  if [ "$is_vivado_developer" = "0" ]; then
+    echo "Permission denied: You don't have the correct privileges to reboot servers."
+    echo "If you believe you need this ability, contact the cluster maintainer to request access to the 'vivado_developers' group."
+    exit 1
+  fi
 fi
 
 # Parse flags
@@ -122,9 +136,8 @@ while [[ $# -gt 0 ]]; do
       reboot_confirmed=1
       ;;
     -h|--help)
-      echo "Usage: $0 [--build] [--vivado] [-o FILE]"
       echo ""
-      echo "${bold}$CLI_NAME reboot [--help]${normal}"
+      echo "Usage: ${bold}hdev reboot [--cold] [--yes]${normal}"
       echo ""
       echo "Reboots the server."
       echo ""
@@ -149,9 +162,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Confirmation prompt
-if ["$reboot_confirmed" -eq "0"]; then
+if [[ "$reboot_confirmed" -eq "0" ]]; then
   echo "NOTE: Rebooting a server may cause data loss. Make sure you have saved your work."
-  if [ prompt_yn "Are you sure you want to reboot?" ]; then
+  if ! prompt_yn "Are you sure you want to reboot?"; then
     echo "Reboot aborted"
     exit 0
   fi
