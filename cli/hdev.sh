@@ -1951,23 +1951,8 @@ case "$command" in
     esac
     ;;
   reboot)
-    case "$arguments" in
-      -h|--help)
-        reboot_help
-        ;;
-      *)
-        #early exit
-        if [ "$is_sudo" != "1" ] && ! ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
-          exit 1
-        fi
-        
-        if [ "$#" -ne 1 ]; then
-          reboot_help
-          exit 1
-        fi
-        sudo $CLI_PATH/reboot
-        ;;
-    esac
+    shift
+    $CLI_PATH/reboot "$@"
     ;;
   run)
     case "$arguments" in
