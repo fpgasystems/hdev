@@ -1,7 +1,12 @@
 #!/bin/bash
 
-CLI_PATH=$(dirname "$0")
-CLI_NAME=${0##*/}
+CLI_PATH="${BASH_SOURCE[0]}"
+while [ -h "$CLI_PATH" ]; do
+  # follow links if there are any
+  CLI_PATH="$(readlink "$CLI_PATH")"
+done
+CLI_NAME=$(basename "$CLI_PATH")
+CLI_PATH="$(dirname "$CLI_PATH")"
 HDEV_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
