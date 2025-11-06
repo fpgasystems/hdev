@@ -58,8 +58,11 @@ function cold_reboot() {
 
   BMC_HOSTNAME=$(get_hacc_bmc_hostname)
   BMC_CREDENTIALS_FILE=/etc/hdev/bmc-credentials.sh
-  if [ -f "BMC_CREDENTIALS_FILE" ]; then
+  if [ -f "$BMC_CREDENTIALS_FILE" ]; then
     source $BMC_CREDENTIALS_FILE
+  else
+    echo "ERROR: BMC credentials file not found. Can't continue, aborting..."
+    exit 1
   fi
 
   # Authenticate a redfish BMC session and capture headers
@@ -107,7 +110,7 @@ fi
 
 set +e
 # temporarily disable 'fail on non-zero', because is_sudo does not adhere to this
-is_sudo=$($CLI_PATH/common/is_sudo $CLI_PATH $SU_UID)
+is_sudo=$($CLI_PATH/common/is_sudo $CLI_PATH $USER)
 set -e
 if [ "$is_sudo" = "0" ]; then
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $(hostname -s))
