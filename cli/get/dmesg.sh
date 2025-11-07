@@ -26,6 +26,6 @@ echo ""
 echo "${bold}hdev get dmesg${normal}"
 echo ""
 
-eval "sudo /usr/bin/dmesg"
+eval "sudo /usr/bin/dmesg --color=always"
 
 echo ""

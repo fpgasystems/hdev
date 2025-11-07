@@ -20,8 +20,9 @@ chmod_x() {
 }
 
 #early exit
+is_hdev_developer=$($CLI_PATH/common/is_member $USER hdev_developers)
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
-if [ "$is_sudo" = "0" ]; then
+if [ "$is_sudo" = "0" ] && [ "$is_hdev_developer" = "0" ]; then
     exit
 fi
 
@@ -66,13 +67,6 @@ local_commit_date=$(cat $HDEV_PATH/TAG_DATE)
 
 #convert to Unix timestamps
 local_timestamp=$(date -d "$local_commit_date" +%s)
-
-#echo "pullrq_id: $pullrq_id"
-#echo "tag_name: $tag_name"
-#echo "remote_tag_date: $remote_tag_date"
-#echo "local_commit_date: $local_commit_date"
-#echo "remote_timestamp: $remote_timestamp"
-#echo "local_timestamp: $local_timestamp"
 
 #compare the timestamps and confirm update
 update="0"
@@ -177,8 +171,6 @@ if [ $update = "1" ]; then
   sleep 1
   cp $CLI_PATH/devices_network $UPDATES_PATH/$REPO_NAME/backup_devices_network
   sleep 1
-  #cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo
-  #sleep 1
   cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants
   sleep 1
   cp -rf $CLI_PATH/cmdb $UPDATES_PATH/$REPO_NAME/backup_cmdb
@@ -227,7 +219,6 @@ if [ $update = "1" ]; then
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
-  #sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
   sleep 1
   #overwrite constants
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
@@ -238,13 +229,14 @@ if [ $update = "1" ]; then
   echo "Done!"
   echo ""
 
-  #copy COMMIT and COMMIT_DATE
-  #sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
-  #sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
-
   #copy TAG and TAG_DATE
   sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG $installation_path/TAG
   sudo cp -f $UPDATES_PATH/$REPO_NAME/TAG_DATE $installation_path/TAG_DATE
+
+  #take care of hidden files
+  for file in $(find "$installation_path/cli" -type f -name ".*.sh"); do
+      sudo mv "$file" "${file%.sh}"
+  done
 
   #ensure ownership
   sudo chown -R root:root $installation_path

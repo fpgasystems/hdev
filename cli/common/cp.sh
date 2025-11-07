@@ -3,4 +3,4 @@
 origin=$1
 destination=$2
 
-sudo cp -f $origin $destination
+sudo cp -rf $origin $destination

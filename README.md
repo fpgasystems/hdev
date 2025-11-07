@@ -5,11 +5,25 @@
 </p>
 
 <p align="center">
-<img src="https://github.com/fpgasystems/hdev/blob/main/hdev-removebg.png" align="center" width="350">
+<img src="./docs/images/hdev-removebg.png" align="center" width="350">
 </p>
 
 <h1 align="center">
   HACC Development
+  <p align="center">
+  <a href="https://github.com/fpgasystems/hdev/releases">
+    <img src="https://img.shields.io/github/v/release/fpgasystems/hdev" alt="Latest release" />
+  </a>
+  <a href="https://github.com/fpgasystems/hdev/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/fpgasystems/hdev" alt="License" />
+  </a>
+  <a href="https://github.com/fpgasystems/hdev/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/fpgasystems/hdev?color=blue" alt="Contributors" />
+  </a>
+  <a href="https://github.com/fpgasystems/hdev/stargazers">
+    <img src="https://img.shields.io/github/stars/fpgasystems/hdev?style=flat" alt="GitHub stars" />
+  </a>
+  </p>
 </h1> 
 
 Initially developed for the [ETH Zurich Heterogeneous Accelerated Compute Cluster (ETHZ-HACC),](https://github.com/fpgasystems/hacc) **HACC Development (hdev)** is a versatile development platform designed for use on any AMD-compatible heterogeneous cluster. 
@@ -21,12 +35,11 @@ Overall, **hdev** helps create better acceleration solutions for research instit
 ## Sections
 * [Citation](#citation)
 * [Disclaimer](#disclaimer)
-* [Features](./features.md#features)
-* [Installation](https://github.com/fpgasystems/hdev_install/?tab=readme-ov-file#installation)
-* [License](#license)
-* [Known limitations](./known-limitations.md#known-limitations)
+* [Features](./docs/features.md)
+* [Installation](./docs/installation.md)
+* [Known limitations](./docs/known-limitations.md)
 
-![HACC Development (hdev) stack.](./stack.png "HACC Development (hdev) stack.")
+![HACC Development (hdev) stack.](./docs/images/stack.png "HACC Development (hdev) stack.")
 *HACC Development (hdev) stack.*
 
 # Disclaimer
@@ -52,28 +65,3 @@ If you use **hdev** in your work, we kindly request that you cite it as follows:
   note         = {\url{https://doi.org/10.5281/zenodo.14202998}},
   doi          = {10.5281/zenodo.14202998}
 }
-```
-
-# License
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-Copyright (c) 2024 FPGA @ Systems Group, ETH Zurich
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
