@@ -25,6 +25,8 @@ function prompt_yn {
   done
 }
 
+# TODO: make this more general not only for ETHZ HACC
+#     - Track the BMC hostname/ip in the constants or cmdb
 # Function to append '-ra' to the first part of the hostname
 get_hacc_bmc_hostname() {
     local full_hostname
