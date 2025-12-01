@@ -349,7 +349,7 @@ done
 while read -r line || [[ -n "$line" ]]; do
   # Extract all MAC addresses from the line
   # Match typical MAC patterns: xx:xx:xx:xx:xx:xx
-  macs=$(echo "$line" | grep -oE '([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}')
+  macs=$(echo "$line" | grep -oE '([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}' | awk '{print tolower($0)}')
 
   for mac in $macs; do
     # Find interface for this MAC
