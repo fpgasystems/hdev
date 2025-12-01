@@ -73,22 +73,28 @@ case "$parameter" in
       fi
       ;;
     STATE)
-      if [ ! "$iface" = "" ]; then
-        STATE=$(nmcli dev | grep "$iface" | awk '{print $3}')
-        echo $STATE
-      fi
+      echo "Deprecated option (get_nic_config): $parameter"
+      exit 1
+      #if [ ! "$iface" = "" ]; then
+      #  STATE=$(nmcli dev | grep "$iface" | awk '{print $3}')
+      #  echo $STATE
+      #fi
       ;;
     CONNECTION)
-      if [ ! "$iface" = "" ]; then
-        CONNECTION=$(nmcli dev | grep "$iface" | awk '{print $4}')
-        echo $SCONNECTIONTATE
-      fi
+      echo "Deprecated option (get_nic_config): $parameter"
+      exit 1
+      #if [ ! "$iface" = "" ]; then
+      #  CONNECTION=$(nmcli dev | grep "$iface" | awk '{print $4}')
+      #  echo $SCONNECTIONTATE
+      #fi
       ;;
     TYPE)
-      if [ ! "$iface" = "" ]; then
-        TYPE=$(nmcli dev | grep "$iface" | awk '{print $2}')
-        echo $TYPE
-      fi
+      echo "Deprecated option (get_nic_config): $parameter"
+      exit 1
+      #if [ ! "$iface" = "" ]; then
+      #  TYPE=$(nmcli dev | grep "$iface" | awk '{print $2}')
+      #  echo $TYPE
+      #fi
       ;;
     XDP)
       if [ ! "$iface" = "" ]; then

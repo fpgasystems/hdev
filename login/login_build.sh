@@ -109,8 +109,29 @@ fi
 cd
 
 #set MTU on Mellanox interface
-mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
-sudo ifconfig $mellanox_name mtu $MTU_DEFAULT up
+while read -r line || [[ -n "$line" ]]; do
+  # Extract all MAC addresses from the line
+  # Match typical MAC patterns: xx:xx:xx:xx:xx:xx
+  macs=$(echo "$line" | grep -oE '([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}')
+
+  for mac in $macs; do
+    # Find interface for this MAC
+    iface=$(for i in /sys/class/net/*; do
+      if [[ "$(cat "$i/address")" == "$mac" ]]; then
+        basename "$i"
+        break
+      fi
+    done)
+
+    if [[ -n "$iface" ]]; then
+      echo "Setting MTU $MTU_DEFAULT on interface $iface (MAC $mac)"
+      sudo ip link set dev "$iface" mtu $MTU_DEFAULT up
+    else
+      echo "No interface found for MAC $mac"
+    fi
+  done
+done < "/opt/hdev/cli/devices_network"
+echo ""
 
 #print welcome message (2/2)
 weekday=$(date +%A)
