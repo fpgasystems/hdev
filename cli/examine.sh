@@ -111,21 +111,21 @@ if [[ -s "$DEVICE_LIST_NETWORK" ]]; then
         #get DEVICE and TYPE (ports 1 and 2)
         DEVICE_1=$($CLI_PATH/get/get_nic_config $i 1 DEVICE)
         if [ ! "$DEVICE_1" = "" ]; then
-          TYPE_1=$($CLI_PATH/get/get_nic_config $i 1 TYPE)
+          #TYPE_1=$($CLI_PATH/get/get_nic_config $i 1 TYPE)
+          TYPE_1="(ethernet)"
           XDP_1=$($CLI_PATH/get/get_nic_config $i 1 XDP)
           if [ ! "$XDP_1" = "" ]; then
-            TYPE_1="ethxdp"
+            TYPE_1="(ethxdp)"
           fi
-          TYPE_1="($TYPE_1)"
         fi
         DEVICE_2=$($CLI_PATH/get/get_nic_config $i 2 DEVICE)
         if [ ! "$DEVICE_2" = "" ]; then
-          TYPE_2=$($CLI_PATH/get/get_nic_config $i 2 TYPE)
+          #TYPE_2=$($CLI_PATH/get/get_nic_config $i 2 TYPE)
+          TYPE_2="(ethernet)"
           XDP_2=$($CLI_PATH/get/get_nic_config $i 2 XDP)
           if [ ! "$XDP_2" = "" ]; then
-            TYPE_2="ethxdp"
+            TYPE_2="(ethxdp)"
           fi
-          TYPE_2="($TYPE_2)"
         fi
         #print row
         echo "$id            : $bdf : $device_type_name : $add_0 : $DEVICE_1 $TYPE_1"
