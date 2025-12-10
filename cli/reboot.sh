@@ -226,7 +226,7 @@ fi
 # Confirmation prompt
 if [[ "$reboot_confirmed" -eq "0" ]]; then
   echo "NOTE: Rebooting a server may cause data loss. Make sure you have saved your work."
-  if ! prompt_yn "Are you sure you want to reboot?"; then
+  if ! prompt_yn "Are you sure you want to ${bold}$reboot_type reboot${normal}?"; then
     echo "${bold}Reboot Aborted${normal}"
     exit 0
   fi
