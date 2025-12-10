@@ -1,7 +1,12 @@
 #!/bin/bash
 
 #early exit
-if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ] || [ "$is_asoc" = "1" ]; then
+if [ "$is_build" = "1" ]; then
+    echo "ERROR: Can't run this command on build servers"
+    exit 1
+fi
+if [ "$vivado_enabled" = "0" ]; then
+    echo "ERROR: Vivado has not been found in the PATH"
     exit 1
 fi
 
@@ -40,7 +45,13 @@ else #if [ ! "$flags_array" = "" ]; then
     bitstream_found=$(echo "$result" | sed -n '1p')
     bitstream_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations (1/2)
-    if [ "$bitstream_found" = "0" ] || ([ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ])); then
+    if [ "$bitstream_found" = "0" ] || \
+      ( [ "$bitstream_found" = "1" ] && \
+        ( [ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || \
+          ( [ "${bitstream_name##*.}" != "bit" ] && [ "${bitstream_name##*.}" != "pdi" ] ) \
+        ) \
+      )
+    then
         echo ""
         echo "Please, choose a valid bitstream name."
         echo ""
@@ -63,7 +74,7 @@ else #if [ ! "$flags_array" = "" ]; then
     word_check "$CLI_PATH" "--hotplug" "--hotplug" "${flags_array[@]}"
     hotplug_found=$word_found
     hotplug_value=$word_value
-    
+
     #check on hotplug value
     if [ "$hotplug_found" = "0" ]; then
     #enabled by default
@@ -89,4 +100,4 @@ if [ "$deploy_option" = "1" ] && [[ "$bitstream_name" == "./"* ]]; then
 fi
 
 #run
-$CLI_PATH/program/bitstream --path $bitstream_name --device $device_index --version $vivado_version --hotplug $hotplug_value --remote $deploy_option "${servers_family_list[@]}" 
+$CLI_PATH/program/bitstream --path $bitstream_name --device $device_index --version $vivado_version --hotplug $hotplug_value --remote $deploy_option "${servers_family_list[@]}"
