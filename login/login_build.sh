@@ -49,12 +49,14 @@ echo "    Linux kernel: ${bold}$linux_kernel${normal}"
 echo "    Uptime      : ${bold}$uptime_info${normal}"
 echo ""
 
-echo "Xilinx Tools (XRT, Vivado, Vitis, Vitis_HLS) need to be enabled for proper operation:"
+echo "Xilinx Tools (XRT, Vivado, Vitis, Vitis_HLS) are not loaded into the environment by default"
+echo "Load them into the environment using:"
 echo ""
-echo "    XRT             : ${bold}source /opt/hdev/cli/enable/xrt${normal} "
-echo "    Vivado          : ${bold}source /opt/hdev/cli/enable/vivado${normal} "
-echo "    Vitis, Vitis_HLS: ${bold}source /opt/hdev/cli/enable/vitis${normal} "
+echo "    Vivado, Vitis, Vitis_HLS    : ${bold}module load vivado/<release>${normal}"
+echo "    XRT                         : ${bold}source /opt/hdev/cli/enable/xrt${normal}"
 echo ""
+echo "The 'module' command allows for easy swapping of Bash Environment Variables. See all modules that are available using: ${bold}module avail${normal}"
+echo "More modules will follow in the future. If you have a request please send them to hacc@ethz.ch with the subject starting with '[Feature Request]'."
 
 #get installed versions
 cd $VIVADO_PATH
