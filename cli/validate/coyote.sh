@@ -184,7 +184,7 @@ if lsmod | grep -q "${DRIVER_NAME%.ko}"; then
     echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
     echo ""
     echo "sudo /opt/hdev/cli/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
-    echo "sudo /opt/hdev/cli/common/rm $MY_DRIVERS_PATH/${DRIVER_NAME%.ko}.*"
+    echo "sudo rm -rf $MY_DRIVERS_PATH/${DRIVER_NAME%.ko}.*"
     $CLI_PATH/hdev program driver --remove "${DRIVER_NAME%.ko}" >/dev/null 2>&1
     echo ""
 fi

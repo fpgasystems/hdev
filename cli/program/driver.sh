@@ -81,12 +81,12 @@ else
                 echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
                 echo ""
                 echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
-                echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
+                echo "sudo rm -rf $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
                 #echo ""
 
                 #change ownership to ensure writing permissions and remove
                 sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
-                sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
+                sudo rm -rf $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
                 break
                 ;;
             "n") 
@@ -143,7 +143,7 @@ if [ "$params_string" = "" ]; then
 fi
 
 #programming remote servers (if applies)
-programming_string_1="sudo rmmod ${driver_name_base%.ko} 2>/dev/null; sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH 2>/dev/null; sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.* 2>/dev/null; $CLI_PATH/program/driver --insert $driver_name --params $params_string --remote 0"
+programming_string_1="sudo rmmod ${driver_name_base%.ko} 2>/dev/null; sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH 2>/dev/null; sudo rm -rf $MY_DRIVERS_PATH/${driver_name_base%.ko}.* 2>/dev/null; $CLI_PATH/program/driver --insert $driver_name --params $params_string --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string_1" "$servers_family_list"
 
 #author: https://github.com/jmoya82

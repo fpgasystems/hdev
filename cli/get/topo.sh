@@ -60,7 +60,7 @@ if [ -s "$NETWORK_DEVICES_LIST" ]; then
 fi
 
 #remove first
-sudo $CLI_PATH/common/rm $TMP_PATH/lstopo_output
+sudo rm -f $TMP_PATH/lstopo_output
 
 #create temporal output
 lstopo-no-graphics 2>/dev/null > $TMP_PATH/lstopo_output
