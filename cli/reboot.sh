@@ -204,6 +204,14 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+# Get the user who ran sudo
+user="${SUDO_USER:-}"
+
+if [[ -z "$user" ]]; then
+    echo "Error: SUDO_USER is not set. Run this script via sudo."
+    exit 1
+fi
+
 set +e
 # temporarily disable 'fail on non-zero', because is_sudo does not adhere to this
 is_sudo=$($CLI_PATH/common/is_sudo $CLI_PATH $USER)
@@ -251,6 +259,7 @@ case "$reboot_type" in
       echo "${bold}Reboot Aborted${normal}"
       exit 1
     fi
+    loginctl terminate-user "$user"
     exit 0
     ;;
   *)
