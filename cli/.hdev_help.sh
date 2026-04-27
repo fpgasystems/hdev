@@ -726,26 +726,6 @@ set_license_help() {
   exit
 }
 
-set_mtu_help() {
-  if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-    echo ""
-    echo "${bold}$CLI_NAME set mtu [flags] [--help]${normal}"
-    echo ""
-    echo "Sets a valid MTU value to a device."
-    echo ""
-    echo "FLAGS:"
-    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
-    echo "   ${bold}-p, --port${normal}      - Specifies the port number for the network adapter."
-    echo "   ${bold}-v, --value${normal}     - Maximum Transmission Unit (MTU) value between ${bold}$MTU_MIN${normal} and ${bold}$MTU_MAX${normal} bytes."
-    echo ""
-    echo "   ${bold}-h, --help${normal}      - Help to use this command."
-    echo ""
-    echo "                     ${bold}NICs${normal}"
-    echo ""
-  fi
-  exit
-}
-
 set_performance_help() {
   if [ "$is_gpu" = "1" ]; then
     echo ""

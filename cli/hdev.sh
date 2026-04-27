@@ -720,7 +720,7 @@ case "$command" in
         source "$CLI_PATH/$command/.$arguments"
         ;;
       mtu)
-        source "$CLI_PATH/$command/.$arguments"
+        exec $CLI_PATH/$command/$argumnets
         ;;
       performance)
         source "$CLI_PATH/$command/.$arguments"
