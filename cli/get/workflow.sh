@@ -74,6 +74,9 @@ if [ "$flags" = "" ]; then
             elif [ "$driver_name" = "$VRT_DRIVER_NAME" ]; then
                 workflow="vrt"
                 echo "$device_index: $workflow"
+            elif [ "$driver_name" = "ami" ]; then
+                workflow="aved"
+                echo "$device_index: $workflow"
             else
                 echo "$device_index: vivado"
             fi
