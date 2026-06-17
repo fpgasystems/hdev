@@ -354,13 +354,8 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       hugepages)
-        #early exit
-        if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help"
-        command_run $command_arguments_flags"@"$valid_flags
+        shift 2
+        "$CLI_PATH"/get/hugepages "$@"
         ;;
       ifconfig)
         valid_flags="-d --device -p --port -h --help"
@@ -687,7 +682,7 @@ case "$command" in
         ;;
       *)
         run_help
-      ;;  
+        ;;
     esac
     ;;
   set)
@@ -706,7 +701,8 @@ case "$command" in
         eval "$CLI_PATH/set/gh"
         ;;
       hugepages)
-        source "$CLI_PATH/$command/.$arguments"
+        shift 2
+        $CLI_PATH/set/hugepages "$@"
         ;;
       keys)
         echo ""
