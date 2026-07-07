@@ -10,7 +10,7 @@ usage() {
     echo ""
     echo "Usage: ${bold}hdev set hugepages [--num-2m N] [--num-1g N] [--node N]${normal}"
     echo ""
-    echo "Set the number of hugepages per NUMA node and per page size."
+    echo "Set the number of hugepages per NUMA node and per page size. ('sudo' required)"
     echo ""
     echo "Options:"
     echo "  -m, --num-2m N      Set the number of 2 MiB hugepages."
@@ -95,19 +95,6 @@ function check_max_pages_limit() {
 
 ## --------------------- Command start ------------------------------
 
-# Enforce that script is run as root
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Permission denied: this command must be run as root."
-    exit 1
-fi
-
-#early exit
-is_build=$($CLI_PATH/common/is_build $CLI_PATH $(hostname -s))
-if [ "$is_build" = "1" ]; then
-  echo "Permission denied: not allowed to set hugepages on build servers"
-  exit 1
-fi
-
 # parse flags
 if [ $# -eq 0 ]; then
   echo "No argument provided."
@@ -143,6 +130,19 @@ while [[ $# -gt 0 ]]; do
   esac
   shift
 done
+
+# Enforce that script is run as root
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Permission denied: this command must be run as root."
+    exit 1
+fi
+
+# Enforce that script is not run on build servers
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $(hostname -s))
+if [ "$is_build" = "1" ]; then
+  echo "Permission denied: not allowed to set hugepages on build servers"
+  exit 1
+fi
 
 # check if at least --num-1g or --num-2m is set
 if [ "$num_1g" -eq -1 ] && [ "$num_2m" -eq -1 ]; then
