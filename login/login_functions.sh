@@ -165,10 +165,13 @@ revert_devices() {
 }
 
 kill_other_user_processes() {
+  # parameters
+  # $1 is username to keep
+  #
   #kill processes from other users
   for i in $(ps aux | awk '{ print $1 }' | sed '1 d' | sort | uniq); 
   do
-    grep ^$i: /etc/passwd &>/dev/null || ( getent passwd $i &>/dev/null && [ "$i" != "$SUDO_USER" ] && killall -u $i );
+    grep ^$i: /etc/passwd &>/dev/null || ( getent passwd $i &>/dev/null && [ "$i" != "$1" ] && killall -u $i );
   done
 }
 

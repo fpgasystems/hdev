@@ -17,7 +17,7 @@ fi
 #get hostname
 hostname="$(hostname -s)"
 
-kill_other_user_processes
+kill_other_user_processes $username
 
 echo ""
 echo "${bold}Welcome, $username!${normal}"
