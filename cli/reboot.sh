@@ -131,7 +131,7 @@ function cold_reboot() {
       "Dell Inc.")
           vendor_specific_system_name="System.Embedded.1"
           ;;
-      "Supermicro")
+      "Supermicro"|"Giga Computing")
           vendor_specific_system_name="1"
           ;;
       *)
