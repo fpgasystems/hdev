@@ -7,8 +7,7 @@ if [[ -f "$DEVICES_LIST" ]]; then
   device_1=$(head -n 1 "$DEVICES_LIST")
   upstream_port_1=$(echo "$device_1" | awk '{print $2}') 
   if ! lspci | grep -qz $upstream_port_1; then
-    echo "ERROR: Could not find fpga in lspci. Contact the cluster maintainer"
-    exit 1
+    echo "WARNING: Could not find fpga ($upstream_port) in lspci. Rescan the PCIe bus or reboot the server."
   fi
 else
   #DEVICES_LIST does not exist
